@@ -134,7 +134,6 @@ plugins=(
   zsh-autosuggestions
   zsh-completions
   fast-syntax-highlighting
-  zsh-history-substring-search
 )
 
 autoload -U compinit && compinit
