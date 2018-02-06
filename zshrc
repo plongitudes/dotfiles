@@ -129,11 +129,12 @@ ZSH_THEME="powerlevel9k/powerlevel9k"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-  git
-  history-search-multi-word
-  zsh-autosuggestions
-  zsh-completions
-  fast-syntax-highlighting
+    docker
+    git
+    history-search-multi-word
+    zsh-autosuggestions
+    zsh-completions
+    fast-syntax-highlighting
 )
 
 autoload -U compinit && compinit

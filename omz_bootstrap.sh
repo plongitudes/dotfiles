@@ -1,53 +1,99 @@
 #!/bin/bash
 
-# detect platform
-uname_str=$(uname)
+######## to-do: figure out how to curl this script from github
+######## test get_package function in cleanroom and macos
+
 ECHO_PREFIX="...---===### "
 ECHO_SUFFIX=" ###===---..."
+PACK_MAN=""
+PROGRAM_FOUND=0
+PROGRAM_INSTALLED=0
 
-# some tiny helper funcs for messaging the user
-msg_user () {
-    printf "$ECHO_PREFIX $1 $ECHO_SUFFIX\n"
-}
+# Some tiny helper funcs for messaging the user
+msg_user () { printf "$ECHO_PREFIX $1 $ECHO_SUFFIX\n" }
+pfx_user () { printf "$ECHO_PREFIX $1" }
+#sfx_user () { printf "$1 $ECHO_SUFFIX\n" }
+sfx_user () { printf "$1\n" }
 
-pfx_user () {
-    printf "$ECHO_PREFIX $1"
-}
+# Detect platform and set package manager
+uname_str=$(uname)
 
-sfx_user () {
-    printf "$1 $ECHO_SUFFIX\n"
-}
+if [ $uname_str -eq "Darwin" ]; then
+    # Assume for now that we'll be using Homebrew, since that's the only package
+    # manager that we want for macOS. We'll verify this later on.
+    PACK_MAN="brew"
+elif [ $uname_str -eq "Linux" ]; then
+    # Detect package manager for our flavor of Linux
+
+    local APTITUDE_CMD=$(type -p aptitude 2>/dev/null)
+    local APT_GET_CMD=$(type -p apt-get 2>/dev/null)
+    local YUM_CMD=$(type -p yum 2>/dev/null)
+
+    if [ ! -z $APTITUDE_CMD ]; then
+        PACK_MAN="aptitude"
+    elif [ ! -z $APT_GET_CMD ]; then
+        PACK_MAN="apt-get"
+    elif [ ! -z $YUM_CMD ]; then
+        PACK_MAN="yum"
+    else
+        msg_user "Can't determine package manager, aborting."
+        exit 1;
+    fi
+    msg_user "Found $PACK_MAN to use as package manager."
+    msg_user "Will attempt to sudo all install commands."
+    PACK_MAN="sudo $PACK_MAN"
+fi
 
 # we need to check for various executables, so here's a helper function to test
-# for a program and to return a var that contains its location if successful.
+# for a package and to return a var that contains its location if successful.
 # failure will exit the entire script, which is fine because we don't want to
 # continue in that case anyway.
-# usage: create_var <program name> <RETURN_VAR>
-create_var () {
-    local program=$1
+# usage: find_package <package name> <RETURN_VAR>
+find_package () {
+    PROGRAM_FOUND=0
+    local package=$1
     local __resultvar=$2
 
-    pfx_user "Checking that $program exists..."
+    pfx_user "Checking if $package exists..."
     # `type -p`: type is a bash builtin. with `-p`, it will return the full path
     # of the name queried.
-    local program_location=$(type -p $program 2>/dev/null)
-    # if $program_location exists and is executeable, then hurray!
-    if [ -x "$program_location" ]; then
-        sfx_user "...[OK]"
+    local package_location=$(type -p $package 2>/dev/null)
+    # if $package_location exists and is executeable, then hurray!
+    if [ -x "$package_location" ]; then
+        sfx_user "...[SUCCESS]"
         # we can use eval to set the incoming var name as the actual var with
-        # contents from $program_location.
-        eval $__resultvar="'$program_location'"
+        # contents from $package_location.
+        eval $__resultvar="'$package_location'"
+        PROGRAM_FOUND=1
     else
-        sfx_user "...[ERROR]"
-        if [ $# -eq 3 ]; then
-            # use the third arg to run an install
-            msg_user "Attempting to install $program..."
-            $($3)
-        else
-            msg_user "Aborting: couldn't find $program installed on this machine."
-            exit 1
-        fi
+        sfx_user "...[NOT FOUND]"
+        msg_user "Aborting: couldn't find $package installed on this machine."
     fi
+}
+
+install_package () {
+    local package=$1
+    PROGRAM_INSTALLED=0
+    msg_user "Attempting to install $package..."
+    $PACK_MAN install $package
+    if [ $? -ne 0 ]; then
+        msg_user "[ERROR]: install of $package via $PACK_MAN failed with non-zero exit code."
+    else
+        msg_user "[SUCCESS]: installed $package."
+        PROGRAM_INSTALLED=1
+    fi
+}
+
+get_package () {
+    local result=0
+    while [ $result -ne 0 ];
+    do
+        find_package $($1) $($2)
+        if [ $? -ne 0 ]; then
+            install_package $($1)
+            result=$?
+        fi
+    done
 }
 
 if [ $uname_str -eq "Darwin" ]; then
@@ -55,62 +101,42 @@ if [ $uname_str -eq "Darwin" ]; then
     msg_user "Detected Darwin/MacOS system"
 
     # install Homebrew
-    msg_user "Attempting to install Homebrew"
+    msg_user "Attempting to install Homebrew for package management,"
 
-    # check that curl is installed
-    create_var curl CURL_CMD
+    # curl and ruby are prerequisites for homebrew.
+    # if we can't find them, we can't install them handily, so abort.
+    find_package curl CURL_CMD; if [ $PROGRAM_FOUND -eq 0 ]; then exit 1
+    find_package ruby RUBY_CMD; if [ $PROGRAM_FOUND -eq 0 ]; then exit 1
 
-    # check that ruby is installed
-    create_var ruby RUBY_CMD
-
-    # we are go for Homebrew if we've made it this far
+    # if we've made it this far, we are go for Homebrew
     $RUBY_CMD -e "$($CURL_CMD -fssl https://raw.githubusercontent.com/homebrew/install/master/install)"
 
     # see if Brew binary exists now
-    create_var brew BREW_CMD
+    find_package brew PACK_MAN; if [ $PROGRAM_FOUND -eq 0 ]; then exit 1
 
-    # install Homebrew-Cask
+    # set up Homebrew-Cask
     msg_user "Tapping Homebrew-Cask"
-    $BREW_CMD tap caskroom/cask
+    $PACK_MAN tap caskroom/cask
 
     # install Zsh and set shell for user
-    msg_user "Installing Homebrew's Zsh"
-    $BREW_CMD install zsh
+    get_package zsh ZSH_CMD
     sudo dscl . -create /Users/$USER UserShell /usr/local/bin/zsh
 
     # and git
-    if [ -z $(which git) ]
-    msg_user "Installing git"
-    $BREW_CMD install git
+    get_package git GIT_CMD
 
 elif [ $uname_str -eq "Linux" ]; then
-    # found a flavor of Linux, let's find a package manager and keep going.
-
-    # detect package manager
-    APTITUDE_CMD=$(which aptitude)
-    APT_GET_CMD=$(which apt-get)
-
-    if [ ! -z $APTITUDE_CMD ]; then
-        $PACK_MAN="aptitude"
-    elif [ ! -z $APT_GET_CMD ]; then
-        $PACK_MAN="apt-get"
-    else
-        msg_user "Can't determine package manager, aborting."
-        exit 1;
-    fi
-
-    msg_user "Found $PACK_MAN to use as package manager."
-
-    # see if zsh is installed and install it if not.
-    if [ -z "$(which zsh)" ]; then
-        $PACK_MAN install zsh
-    fi
 
     # make sure zsh is installed
+    install_package zsh ZSH_CMD
     if [ -e "$(which zsh)" ]; then
         msg_user "changing shell to zsh:"
         chsh -s $(which zsh)
     fi
+
+    # see if zsh is installed and install it if not.
+    install_package git GIT_CMD
+fi
 
 # install oh-my-zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
