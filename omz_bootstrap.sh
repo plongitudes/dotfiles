@@ -126,6 +126,17 @@ if [ "$uname_str" == "Darwin" ]; then
     get_package git GIT_CMD
 
 elif [ "$uname_str" == "Linux" ]; then
+    # let's let the user decide if they want to assume yes answers for installations
+    echo "Do you wish to be prompted for confirmation on each installation?"
+    select yn in "Yes" "No"; do
+        case $yn in
+            Yes )
+                msg_user "Will confirm all installations." ;;
+            No )
+                msg_user "Will skip confirmation for all installations."
+                PACK_MAN="$PACK_MAN -y" ;;
+        esac
+    done
 
     # make sure zsh is installed
     install_package zsh ZSH_CMD
