@@ -105,14 +105,14 @@ if [ $uname_str -eq "Darwin" ]; then
 
     # curl and ruby are prerequisites for homebrew.
     # if we can't find them, we can't install them handily, so abort.
-    find_package curl CURL_CMD; if [ $PROGRAM_FOUND -eq 0 ]; then exit 1
-    find_package ruby RUBY_CMD; if [ $PROGRAM_FOUND -eq 0 ]; then exit 1
+    find_package curl CURL_CMD; if [ $PROGRAM_FOUND -eq 0 ]; then exit 1; fi
+    find_package ruby RUBY_CMD; if [ $PROGRAM_FOUND -eq 0 ]; then exit 1; fi
 
     # if we've made it this far, we are go for Homebrew
     $RUBY_CMD -e "$($CURL_CMD -fssl https://raw.githubusercontent.com/homebrew/install/master/install)"
 
     # see if Brew binary exists now
-    find_package brew PACK_MAN; if [ $PROGRAM_FOUND -eq 0 ]; then exit 1
+    find_package brew PACK_MAN; if [ $PROGRAM_FOUND -eq 0 ]; then exit 1; fi
 
     # set up Homebrew-Cask
     msg_user "Tapping Homebrew-Cask"
