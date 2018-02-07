@@ -77,9 +77,15 @@ export ZSH=$HOME/.oh-my-zsh
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 # Rhyd-Ddu [14:57:38] ~ [1167] >
-#ZSH_THEME="plongitudes"
-POWERLEVEL9K_MODE='nerdfont-complete'
-ZSH_THEME="powerlevel9k/powerlevel9k"
+
+local term_colors
+term_colors=$(echotc Co 2>/dev/null)
+if (( ! $? && ${term_colors:-0} < 256 )); then
+    ZSH_THEME="plongitudes"
+else
+    POWERLEVEL9K_MODE='nerdfont-complete'
+    ZSH_THEME="powerlevel9k/powerlevel9k"
+fi
 
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
