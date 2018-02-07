@@ -115,6 +115,16 @@ alias gb='git branch'
 alias gt='git tag'
 
 ###########################
+# Doing Virtualbox Things #
+###########################
+
+function vmreset () {
+    VBoxManage controlvm "centOS minimal cleanroom" poweroff; sleep 1
+    VBoxManage snapshot "centOS minimal cleanroom" restore "step zero"; sleep 1
+    VBoxManage startvm "centOS minimal cleanroom"
+}
+
+###########################
 # Doing Docker Things     #
 ###########################
 
