@@ -18,11 +18,11 @@ sfx_user () { printf "$1\n"; }
 # Detect platform and set package manager
 uname_str=$(uname)
 
-if [ $uname_str -eq "Darwin" ]; then
+if [ "$uname_str" == "Darwin" ]; then
     # Assume for now that we'll be using Homebrew, since that's the only package
     # manager that we want for macOS. We'll verify this later on.
     PACK_MAN="brew"
-elif [ $uname_str -eq "Linux" ]; then
+elif [ "$uname_str" == "Linux" ]; then
     # Detect package manager for our flavor of Linux
 
     local APTITUDE_CMD=$(type -p aptitude 2>/dev/null)
@@ -96,7 +96,7 @@ get_package () {
     done
 }
 
-if [ $uname_str -eq "Darwin" ]; then
+if [ "$uname_str" == "Darwin" ]; then
     # running macOS, let's use Homebrew for most things
     msg_user "Detected Darwin/MacOS system"
 
@@ -125,7 +125,7 @@ if [ $uname_str -eq "Darwin" ]; then
     # and git
     get_package git GIT_CMD
 
-elif [ $uname_str -eq "Linux" ]; then
+elif [ "$uname_str" == "Linux" ]; then
 
     # make sure zsh is installed
     install_package zsh ZSH_CMD
