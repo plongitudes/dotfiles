@@ -41,7 +41,7 @@ elif [ "$uname_str" == "Linux" ]; then
     fi
     msg_user "Found $PACK_MAN to use as package manager."
     msg_user "Will attempt to sudo all install commands."
-    PACK_MAN="sudo $PACK_MAN"
+    PACK_MAN="sudo $PACK_MAN -y"
 fi
 
 # we need to check for various executables, so here's a helper function to test
@@ -136,16 +136,6 @@ if [ "$uname_str" == "Darwin" ]; then
         virtualbox vlc yujitach-menumeters zoom
 
 elif [ "$uname_str" == "Linux" ]; then
-    # let's let the user decide if they want to assume yes answers for installations
-    while true; do
-        read -p "Do you wish to be prompted for confirmation on each installation?" yn
-        case $yn in
-            [Yy]* ) PACK_MAN="$PACK_MAN -y"; echo "$PACK_MAN"; break;;
-            [Nn]* ) echo "Okay, will not prompt you."; break;;
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
-
     # make sure zsh is installed
     get_package zsh ZSH_CMD
 
