@@ -125,6 +125,16 @@ if [ "$uname_str" == "Darwin" ]; then
     # and git
     get_package git GIT_CMD
 
+    # and neovim and vimR
+    get_package nvim NVIM_CMD
+    $PACK_MAN cask install vimr
+
+    # and fuckit, other apps we'll need
+    $PACK_MAN cask install alfred battle-net box-sync chrome default-folder-x \
+        disk-inventory-x divvy dropbox filezilla firefox gitx gog-galaxy \
+        iterm2 numi pycharm skitch steam synergy the-clock tunnelblick \
+        virtualbox vlc yujitach-menumeters zoom
+
 elif [ "$uname_str" == "Linux" ]; then
     # let's let the user decide if they want to assume yes answers for installations
     while true; do
@@ -165,6 +175,8 @@ ln -sf ${HOME}/.dotfiles/zshrc ${HOME}/.zshrc
 ln -sf ${HOME}/.dotfiles/aliases.zsh ${HOME}/.oh-my-zsh/custom/aliases.zsh
 ln -sf ${HOME}/.dotfiles/powerlevel9k.zsh ${HOME}/.oh-my-zsh/custom/powerlevel9k.zsh
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vimrc
+mkdir -p ${HOME}/.config/nvim
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.config/nvim/init.vim
+mkdir -p ${HOME}/.vim
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vim/init.vim
 
