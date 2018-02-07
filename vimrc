@@ -16,7 +16,7 @@ augroup END
 " Vundle settings
 "=============================
 
-" set the runtime path to include Vundle and initialize
+"set the runtime path to include Vundle and initialize
 "set rtp+=~/.vim/bundle/vundle/
 "let path='~/.vim/bundle'
 "call vundle#rc()
