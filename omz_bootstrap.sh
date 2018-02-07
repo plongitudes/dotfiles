@@ -127,14 +127,12 @@ if [ "$uname_str" == "Darwin" ]; then
 
 elif [ "$uname_str" == "Linux" ]; then
     # let's let the user decide if they want to assume yes answers for installations
-    echo "Do you wish to be prompted for confirmation on each installation?"
-    select yn in "Yes" "No"; do
+    while true; do
+        read -p "Do you wish to be prompted for confirmation on each installation?" yn
         case $yn in
-            Yes )
-                msg_user "Will confirm all installations." ;;
-            No )
-                msg_user "Will skip confirmation for all installations."
-                PACK_MAN="$PACK_MAN -y" ;;
+            [Yy]* ) make install; break;;
+            [Nn]* ) exit;;
+            * ) echo "Please answer yes or no.";;
         esac
     done
 
