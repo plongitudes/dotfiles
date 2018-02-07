@@ -131,7 +131,7 @@ elif [ "$uname_str" == "Linux" ]; then
         read -p "Do you wish to be prompted for confirmation on each installation?" yn
         case $yn in
             [Yy]* ) PACK_MAN="$PACK_MAN -y"; break;;
-            [Nn]* ) exit;;
+            [Nn]* ) echo "Okay, will not prompt you."; break;;
             * ) echo "Please answer yes or no.";;
         esac
     done
