@@ -10,10 +10,10 @@ PROGRAM_FOUND=0
 PROGRAM_INSTALLED=0
 
 # Some tiny helper funcs for messaging the user
-msg_user () { printf "$ECHO_PREFIX $1 $ECHO_SUFFIX\n" }
-pfx_user () { printf "$ECHO_PREFIX $1" }
+msg_user () { printf "$ECHO_PREFIX $1 $ECHO_SUFFIX\n"; }
+pfx_user () { printf "$ECHO_PREFIX $1"; }
 #sfx_user () { printf "$1 $ECHO_SUFFIX\n" }
-sfx_user () { printf "$1\n" }
+sfx_user () { printf "$1\n"; }
 
 # Detect platform and set package manager
 uname_str=$(uname)

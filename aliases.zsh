@@ -124,6 +124,8 @@ function vmreset () {
     VBoxManage startvm "centOS minimal cleanroom"
 }
 
+#alias DONOTDOTHIS='sh -c "$(curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/master/omz_bootstrap.sh)"'
+
 ###########################
 # Doing Docker Things     #
 ###########################
