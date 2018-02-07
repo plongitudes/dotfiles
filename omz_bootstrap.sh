@@ -1,7 +1,9 @@
 #!/bin/bash
 
-######## to-do: figure out how to curl this script from github
-######## test get_package function in cleanroom and macos
+######## to-do:
+######## fix vi alias in cleanroom
+######## powerlevel9k or other in less than 256 colors
+######## test on xbian and moonglow
 
 ECHO_PREFIX="...---===### "
 ECHO_SUFFIX=" ###===---..."
@@ -67,7 +69,6 @@ find_package () {
         PROGRAM_FOUND=1
     else
         sfx_user "...[NOT FOUND]"
-        msg_user "Bah! Couldn't find $package installed on this machine."
     fi
 }
 
