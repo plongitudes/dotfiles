@@ -25,9 +25,9 @@ if [ "$uname_str" == "Darwin" ]; then
 elif [ "$uname_str" == "Linux" ]; then
     # Detect package manager for our flavor of Linux
 
-    local APTITUDE_CMD=$(type -p aptitude 2>/dev/null)
-    local APT_GET_CMD=$(type -p apt-get 2>/dev/null)
-    local YUM_CMD=$(type -p yum 2>/dev/null)
+    APTITUDE_CMD=$(type -p aptitude 2>/dev/null)
+    APT_GET_CMD=$(type -p apt-get 2>/dev/null)
+    YUM_CMD=$(type -p yum 2>/dev/null)
 
     if [ ! -z $APTITUDE_CMD ]; then
         PACK_MAN="aptitude"
