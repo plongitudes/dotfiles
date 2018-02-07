@@ -25,9 +25,9 @@ if [ "$uname_str" == "Darwin" ]; then
 elif [ "$uname_str" == "Linux" ]; then
     # Detect package manager for our flavor of Linux
 
-    APTITUDE_CMD=$(type -p aptitude 2>/dev/null)
-    APT_GET_CMD=$(type -p apt-get 2>/dev/null)
-    YUM_CMD=$(type -p yum 2>/dev/null)
+    APTITUDE_CMD=$(command -v aptitude 2>/dev/null)
+    APT_GET_CMD=$(command -v apt-get 2>/dev/null)
+    YUM_CMD=$(command -v yum 2>/dev/null)
 
     if [ ! -z $APTITUDE_CMD ]; then
         PACK_MAN="aptitude"
@@ -55,9 +55,9 @@ find_package () {
     local __resultvar=$2
 
     pfx_user "Checking if $package exists..."
-    # `type -p`: type is a bash builtin. with `-p`, it will return the full path
+    # `command -v`: type is a bash builtin. with `-p`, it will return the full path
     # of the name queried.
-    local package_location=$(type -p $package 2>/dev/null)
+    local package_location=$(command -v $package 2>/dev/null)
     # if $package_location exists and is executeable, then hurray!
     if [ -x "$package_location" ]; then
         sfx_user "...[SUCCESS]"
@@ -85,12 +85,12 @@ install_package () {
 }
 
 get_package () {
-    local result=0
+    local result=1
     while [ $result -ne 0 ];
     do
-        find_package $($1) $($2)
-        if [ $? -ne 0 ]; then
-            install_package $($1)
+        find_package $1 $2
+        if [ $? -eq 0 ]; then
+            install_package $1
             result=$?
         fi
     done
@@ -154,10 +154,15 @@ elif [ "$uname_str" == "Linux" ]; then
 fi
 
 # install oh-my-zsh
+echo "Oh-My-Zsh will now install. When finished, it will launch the new (but"
+echo "incomplete) shell. To continue the installation, just type 'exit' at the"
+echo "new prompt and the install script will continue per normal."
+read -p "[Hit any key to continue] "
+
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # install omz plugins
-git clone https://github.com/b4b4r07/enhancd ~/.oh-my-zsh/custom/plugins/enhancd ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/enhancd
+git clone https://github.com/b4b4r07/enhancd ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/enhancd
 git clone https://github.com/zdharma/fast-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/fast-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions

@@ -37,13 +37,13 @@ endtry
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'vim-airline/vim-airline'
-Plugin 'tpope/vim-sensible'
-Plugin 'tpope/vim-surround'
-Plugin 'morhetz/gruvbox'
-Plugin 'maksimr/vim-jsbeautify'
-Plugin 'tpope/vim-fugitive'
-Plugin 'Raimondi/delimitMate'
+"Plugin 'vim-airline/vim-airline'
+"Plugin 'tpope/vim-sensible'
+"Plugin 'tpope/vim-surround'
+"Plugin 'morhetz/gruvbox'
+"Plugin 'maksimr/vim-jsbeautify'
+"Plugin 'tpope/vim-fugitive'
+"Plugin 'Raimondi/delimitMate'
 
 call vundle#end()
 if s:bootstrap

@@ -5,6 +5,8 @@
 export CLICOLOR_FORCE=1
 export LESS='EXiR'
 
+# detect term (as much as possible):q
+
 export HISTSIZE=10000
 export SAVEHIST=10000
 #setopt EXTENDED_HISTORY         # Write the history file in the ":start:elapsed;command" format.
