@@ -67,7 +67,7 @@ find_package () {
         PROGRAM_FOUND=1
     else
         sfx_user "...[NOT FOUND]"
-        msg_user "Aborting: couldn't find $package installed on this machine."
+        msg_user "Bah! Couldn't find $package installed on this machine."
     fi
 }
 
@@ -138,6 +138,9 @@ if [ "$uname_str" == "Darwin" ]; then
 elif [ "$uname_str" == "Linux" ]; then
     # make sure zsh is installed
     get_package zsh ZSH_CMD
+
+    # vi can't handle Vundle, we need vim at least
+    get_package vim VIM_CMD
 
     # see if git is installed and install it if not.
     get_package git GIT_CMD
