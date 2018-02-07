@@ -2,9 +2,20 @@
 # General                 #
 ###########################
 
+NVIM_CMD=$(type -p vi 2>/dev/null)
+VIM_CMD=$(type -p vim 2>/dev/null)
+VI_CMD=$(type -p nvim 2>/dev/null)
+
+if [ ! -z $NVIM_CMD ]; then
+    alias vi='nvim'
+elif [ ! -z $VIM_CMD ]; then
+    alias vi='vim'
+else
+    msg_user "Can't find vi! What the hell, man?"
+fi
+
 alias rm='rm -i'
 alias m=$PAGER
-alias vi=nvim
 alias fort='echo "" ; /usr/games/fortune -e ; echo ""'
 alias duf='sudo /usr/bin/du -d 1 -h'
 alias h='history'

@@ -147,14 +147,10 @@ elif [ "$uname_str" == "Linux" ]; then
     done
 
     # make sure zsh is installed
-    install_package zsh ZSH_CMD
-    if [ -e "$(which zsh)" ]; then
-        msg_user "changing shell to zsh:"
-        chsh -s $(which zsh)
-    fi
+    get_package zsh ZSH_CMD
 
-    # see if zsh is installed and install it if not.
-    install_package git GIT_CMD
+    # see if git is installed and install it if not.
+    get_package git GIT_CMD
 fi
 
 # install oh-my-zsh
