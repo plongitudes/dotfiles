@@ -11,7 +11,7 @@ if [ ! -z $NVIM_CMD ]; then
 elif [ ! -z $VIM_CMD ]; then
     alias vi='vim'
 else
-    msg_user "Can't find vi! What the hell, man?"
+    echo "Can't find vi! What the hell, man?"
 fi
 
 alias rm='rm -i'
