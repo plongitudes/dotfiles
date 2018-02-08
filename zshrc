@@ -80,7 +80,9 @@ export ZSH=$HOME/.oh-my-zsh
 
 local term_colors
 term_colors=$(echotc Co 2>/dev/null)
-if (( ! $? && ${term_colors:-0} < 256 )); then
+if (( ! $? && ${term_colors:-0} < 16 )); then
+    ZSH_THEME="robbyrussell"
+elif (( ! $? && ${term_colors:-0} < 256 )); then
     ZSH_THEME="plongitudes"
 else
     POWERLEVEL9K_MODE='nerdfont-complete'
