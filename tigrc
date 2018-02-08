@@ -1,0 +1,33 @@
+set main-view = \
+  id:true \
+  date:relative \
+  author:full \
+  commit-title:graph=true,refs=true
+
+set blame-view-line-number = true
+
+# Blame lines from other files
+set blame-options = -C -C -C
+
+# (too slow to load...)
+# set commit-order = topo
+
+# Whether to pass the selected line number to the editor command.
+set editor-line-number = true
+
+# Do not read Git's color settings.
+set git-colors = no
+
+# Ignore case in searches
+set ignore-case = true
+
+# Fancy branch graph lines
+set line-graphics = utf-8
+
+# Whether to enable mouse support.
+# set mouse = true
+
+set refresh-mode = auto
+
+# Wrap long lines
+set wrap-lines = true
