@@ -5,8 +5,8 @@
 ######## powerlevel9k or other in less than 256 colors
 ######## test on xbian and moonglow
 
-ECHO_PREFIX="...---===### "
-ECHO_SUFFIX=" ###===---..."
+ECHO_PREFIX="...---===### [[[ "
+ECHO_SUFFIX=""
 PACK_MAN=""
 PROGRAM_FOUND=0
 PROGRAM_INSTALLED=0
@@ -138,7 +138,7 @@ if [ "$uname_str" == "Darwin" ]; then
     $PACK_MAN cask install alfred battle-net box-sync google-chrome \
         default-folder-x disk-inventory-x divvy dropbox filezilla firefox gitx \
         gog-galaxy iterm2 numi pycharm skitch steam synergy the-clock \
-        tunnelblick virtualbox vlc yujitach-menumeters zoom
+        tunnelblick vlc yujitach-menumeters zoom
 
 elif [ "$uname_str" == "Linux" ]; then
     # make sure zsh is installed
@@ -175,6 +175,7 @@ ln -sf ${HOME}/.dotfiles/zshrc ${HOME}/.zshrc
 ln -sf ${HOME}/.dotfiles/aliases.zsh ${HOME}/.oh-my-zsh/custom/aliases.zsh
 ln -sf ${HOME}/.dotfiles/powerlevel9k.zsh ${HOME}/.oh-my-zsh/custom/powerlevel9k.zsh
 ln -sf ${HOME}/.dotfiles/plongitudes.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
+ln -sf ${HOME}/.dotfiles/plongitudes-plain.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vimrc
 mkdir -p ${HOME}/.config/nvim
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.config/nvim/init.vim
