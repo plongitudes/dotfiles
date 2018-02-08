@@ -40,7 +40,7 @@ The bootstrapper will check for `ruby` and `curl` as pre-requisites to installin
 ## Linux Caveats
 - The terminal will look pretty wonky until you install `nerd-fonts`, because of the reliance on the `powerlevel9k` plugin. Cloning this repo is disabled by default because it's over a GB in size. Once installed, however, things look much better. I haven't made this very smart since I don't spend much time in Linux GUIs these days. If that changes, expect this section to improve ;)
 
-##Thanks
+## Thanks
 - [Andre Klärner](https://github.com/klaernie) for his super-clever gist about [bootstrapping vimrc and vundle](https://gist.github.com/klaernie/db37962e955c82254fed)
 - The [Homebrew](https://brew.sh/) group for putting together and maintaining such an awesome package manager
 - The [Homebrew Cask](https://github.com/caskroom/homebrew-cask) folks for making my life so much easier
