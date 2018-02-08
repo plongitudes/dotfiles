@@ -193,3 +193,9 @@ ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vimrc
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vim/init.vim
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.config/nvim/init.vim
 ln -sf ${HOME}/.dotfiles/zshrc ${HOME}/.zshrc
+
+if [ "$uname_str" == "Darwin" ]; then
+    ln -sf ${HOME}/.dotfiles/alfred/com.runningwithcrayons.Alfred-3.plist ${HOME}/Library/Preferences/com.runningwithcrayons.Alfred-3.plist
+    ln -sf ${HOME}/.dotfiles/alfred/com.runningwithcrayons.Alfred-Preferences-3.plist ${HOME}/Library/Preferences/com.runningwithcrayons.Alfred-Preferences-3.plist
+fi
+
