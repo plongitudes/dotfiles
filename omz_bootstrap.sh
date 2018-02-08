@@ -153,7 +153,8 @@ elif [ "$uname_str" == "Linux" ]; then
     # install nerd-fonts
     $GIT_CMD clone https://github.com/ryanoasis/nerd-fonts.git /tmp/nerd-fonts
     cd /tmp/nerd-fonts
-    install.sh
+    /tmp/install.sh FiraCode
+    /tmp/install.sh Monofur
     cd $HOME
 fi
 
