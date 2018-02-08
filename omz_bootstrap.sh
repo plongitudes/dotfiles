@@ -119,6 +119,10 @@ if [ "$uname_str" == "Darwin" ]; then
     msg_user "Tapping Homebrew-Cask"
     $PACK_MAN tap caskroom/cask
 
+    # also tap homebrew fonts
+    brew tap caskroom/fonts
+    brew cask install font-hack-nerd-font font-monofur-nerd-font-mono
+
     # install Zsh and set shell for user
     get_package zsh ZSH_CMD
     sudo dscl . -create /Users/$USER UserShell /usr/local/bin/zsh
@@ -131,10 +135,10 @@ if [ "$uname_str" == "Darwin" ]; then
     $PACK_MAN cask install vimr
 
     # and fuckit, other apps we'll need
-    $PACK_MAN cask install alfred battle-net box-sync chrome default-folder-x \
-        disk-inventory-x divvy dropbox filezilla firefox gitx gog-galaxy \
-        iterm2 numi pycharm skitch steam synergy the-clock tunnelblick \
-        virtualbox vlc yujitach-menumeters zoom
+    $PACK_MAN cask install alfred battle-net box-sync google-chrome \
+        default-folder-x disk-inventory-x divvy dropbox filezilla firefox gitx \
+        gog-galaxy iterm2 numi pycharm skitch steam synergy the-clock \
+        tunnelblick virtualbox vlc yujitach-menumeters zoom
 
 elif [ "$uname_str" == "Linux" ]; then
     # make sure zsh is installed
