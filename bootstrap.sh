@@ -195,6 +195,11 @@ ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.config/nvim/init.vim
 ln -sf ${HOME}/.dotfiles/zshrc ${HOME}/.zshrc
 
 if [ "$uname_str" == "Darwin" ]; then
+    # put the binary version of iterm2's prefs in place so that it knows to load up the xml version from dotfiles
+    # since both xml and bin files have the same name, keep them seperate
+    ln -sf ${HOME}/.dotfiles/iTerm2/bin/com.googlecode.iterm2.plist ${HOME}/Library/Preferences/com.googlecode.iterm2.plist
+
+    # put Alfred's prefs in so that we know to look in the Box folder for workflow and pref syncing.
     ln -sf ${HOME}/.dotfiles/alfred/com.runningwithcrayons.Alfred-3.plist ${HOME}/Library/Preferences/com.runningwithcrayons.Alfred-3.plist
     ln -sf ${HOME}/.dotfiles/alfred/com.runningwithcrayons.Alfred-Preferences-3.plist ${HOME}/Library/Preferences/com.runningwithcrayons.Alfred-Preferences-3.plist
 fi
