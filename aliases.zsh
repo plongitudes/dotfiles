@@ -2,16 +2,19 @@
 # General                 #
 ###########################
 
-NVIM_CMD=$(command-v nvim 2>/dev/null)
-VIM_CMD=$(command-v vim 2>/dev/null)
-VI_CMD=$(command-v vi 2>/dev/null)
+# find the proper installation of vim
+NVIM_CMD=$(command -v nvim 2>/dev/null)
+VIM_CMD=$(command -v vim 2>/dev/null)
+VI_CMD=$(command -v vi 2>/dev/null)
 
 if [ ! -z $NVIM_CMD ]; then
     alias vi='nvim'
 elif [ ! -z $VIM_CMD ]; then
     alias vi='vim'
+elif [ ! -z $VI_CMD ]; then
+    alias vi='vi'
 else
-    echo "Can't find vi! What the hell, man?"
+    echo "Can't find vim or vi! What the hell, man?"
 fi
 
 alias rm='rm -i'
