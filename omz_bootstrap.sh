@@ -170,6 +170,7 @@ git clone https://github.com/plongitudes/dotfiles.git ${HOME}/.dotfiles
 ln -sf ${HOME}/.dotfiles/zshrc ${HOME}/.zshrc
 ln -sf ${HOME}/.dotfiles/aliases.zsh ${HOME}/.oh-my-zsh/custom/aliases.zsh
 ln -sf ${HOME}/.dotfiles/powerlevel9k.zsh ${HOME}/.oh-my-zsh/custom/powerlevel9k.zsh
+ln -sf ${HOME}/.dotfiles/plongitudes.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vimrc
 mkdir -p ${HOME}/.config/nvim
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.config/nvim/init.vim
