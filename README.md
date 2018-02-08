@@ -17,23 +17,28 @@ The fastest way to get started is to pull the bootstrap script from github and r
 
 #### Option A: ihavenoideawhatimdoing.jpg
 ```
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/bootstrap.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/master/bootstrap.sh)"
 ```
 
 #### Option B: suspiciousfry.jpg
 ```
-curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/bootstrap.sh > bootstrap.sh
+curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/master/bootstrap.sh > bootstrap.sh
 vi bootstrap.sh
 ./bootstrap.sh
 ```
 ### macOS specific notes
 The bootstrapper will check for `ruby` and `curl` as pre-requisites to installing [Homebrew](https://brew.sh/) as the package manager. It will then go on to use `brew` and `brew cask` for all subsequent installations.
 
-## Caveats
+## Installation Caveats
 ### (aka, this script cannot be run 100% unattended)
 - The [oh-my-zsh](http://ohmyz.sh/) installation step currently drops you into a `zsh` shell after it's done but before the bootstrap is complete. The boostrap will warn you about this before it happens, but be aware that all you have to do is type `exit` to continue bootstrapping. There's an open issue on the OMZ repo about this, and I'll integrate the change as soon as it's resolved.
 - The `oh-my-zsh` install will prompt you for your password so that it can change your shell from whatever it currently is to `zsh`.
+
+## macOS Caveats
 - macOS install will take a little longer depending on how many applications you decide to `brew cask install`. The default set is prety hefty, so be aware.
+
+## Linux Caveats
+- The terminal will look pretty wonky until you install `nerd-fonts`, because of the reliance on the `powerlevel9k` plugin. Cloning this repo is disabled by default because it's over a GB in size. Once installed, however, things look much better. I haven't made this very smart since I don't spend much time in Linux GUIs these days. If that changes, expect this section to improve ;)
 
 ##Thanks
 - [Andre Klärner](https://github.com/klaernie) for his super-clever gist about [bootstrapping vimrc and vundle](https://gist.github.com/klaernie/db37962e955c82254fed)

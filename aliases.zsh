@@ -2,6 +2,12 @@
 # General                 #
 ###########################
 
+# for sysV flavors like centos and RHEL,
+# let's get color into ls
+if [[ "$(uname)" == "Linux" ]]; then
+    alias ls='/bin/ls --color'
+fi
+
 # find the proper installation of vim
 NVIM_CMD=$(command -v nvim 2>/dev/null)
 VIM_CMD=$(command -v vim 2>/dev/null)
