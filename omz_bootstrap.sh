@@ -5,7 +5,7 @@
 ######## powerlevel9k or other in less than 256 colors
 ######## test on xbian and moonglow
 
-ECHO_PREFIX="...---===### [[[ "
+ECHO_PREFIX="...---===### [[["
 ECHO_SUFFIX=""
 PACK_MAN=""
 PROGRAM_FOUND=0
@@ -150,12 +150,12 @@ elif [ "$uname_str" == "Linux" ]; then
     # see if git is installed and install it if not.
     get_package git GIT_CMD
 
-    # install nerd-fonts
-    git clone https://github.com/ryanoasis/nerd-fonts.git /tmp/nerd-fonts
-    cd /tmp/nerd-fonts
-    /tmp/install.sh FiraCode
-    /tmp/install.sh Monofur
-    cd $HOME
+    # install nerd-fonts (disabled because repo is 1GB+)
+    #git clone https://github.com/ryanoasis/nerd-fonts.git /tmp/nerd-fonts
+    #cd /tmp/nerd-fonts
+    #/tmp/install.sh FiraCode
+    #/tmp/install.sh Monofur
+    #cd $HOME
 fi
 
 # install oh-my-zsh
@@ -178,14 +178,18 @@ git clone https://github.com/bhilburn/powerlevel9k.git ${ZSH_CUSTOM:-~/.oh-my-zs
 # dotfiles
 git clone https://github.com/plongitudes/dotfiles.git ${HOME}/.dotfiles
 
-ln -sf ${HOME}/.dotfiles/zshrc ${HOME}/.zshrc
+mkdir -p ${HOME}/.config/nvim
+mkdir -p ${HOME}/.vim
 ln -sf ${HOME}/.dotfiles/aliases.zsh ${HOME}/.oh-my-zsh/custom/aliases.zsh
+ln -sf ${HOME}/.dotfiles/fakeSMTP.properties ${HOME}/.fakeSMTP.properties
+ln -sf ${HOME}/.dotfiles/gitconfig ${HOME}/.gitconfig
+ln -sf ${HOME}/.dotfiles/gitignore_global ${HOME}/.gitignore_global
+ln -sf ${HOME}/.dotfiles/jsbeautifyrc ${HOME}/.jsbeautifyrc
 ln -sf ${HOME}/.dotfiles/powerlevel9k.zsh ${HOME}/.oh-my-zsh/custom/powerlevel9k.zsh
 ln -sf ${HOME}/.dotfiles/plongitudes.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
 ln -sf ${HOME}/.dotfiles/plongitudes-plain.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
+ln -sf ${HOME}/.dotfiles/tigrc ${HOME}/.tigrc
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vimrc
-mkdir -p ${HOME}/.config/nvim
-ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.config/nvim/init.vim
-mkdir -p ${HOME}/.vim
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vim/init.vim
-
+ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.config/nvim/init.vim
+ln -sf ${HOME}/.dotfiles/zshrc ${HOME}/.zshrc
