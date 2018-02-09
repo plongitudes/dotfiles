@@ -85,9 +85,12 @@ get_package () {
     while [ $result -ne 0 ];
     do
         find_package $1 $2
-        if [ $? -eq 0 ]; then
+        if [ $PROGRAM_FOUND -eq 0 ]; then
             install_package $1
             result=$?
+        else
+            # we're done here
+            result=0
         fi
     done
 }
@@ -119,21 +122,20 @@ if [ "$uname_str" == "Darwin" ]; then
     brew cask install font-hack-nerd-font font-monofur-nerd-font-mono
 
     # install Zsh and set shell for user
-    #get_package zsh ZSH_CMD
+    get_package zsh ZSH_CMD
 
     # and git
-    #get_package git GIT_CMD
+    get_package git GIT_CMD
 
     # and neovim and vimR
-    #get_package nvim NVIM_CMD
-    #$PACK_MAN cask install vimr
+    get_package nvim NVIM_CMD
+    $PACK_MAN cask install vimr
 
     # and fuckit, other apps we'll need
-    #$PACK_MAN cask install alfred battle-net box-sync google-chrome \
-        #default-folder-x disk-inventory-x divvy dropbox filezilla firefox gitx \
-        #gog-galaxy iterm2 numi pycharm skitch steam synergy the-clock \
-        #tunnelblick vlc yujitach-menumeters zoom
-    brew cask install iterm2
+    $PACK_MAN cask install alfred battle-net box-sync google-chrome \
+        default-folder-x disk-inventory-x divvy dropbox filezilla firefox gitx \
+        gog-galaxy iterm2 numi pycharm skitch steam synergy the-clock \
+        tunnelblick vlc yujitach-menumeters zoom
 
 elif [ "$uname_str" == "Linux" ]; then
     # make sure zsh is installed
@@ -196,7 +198,8 @@ if [ "$uname_str" == "Darwin" ]; then
 
     # put the binary version of iterm2's prefs in place so that it knows to load up the xml version from dotfiles
     # since both xml and bin files have the same name, keep them seperate
-    defaults delete com.googlecode.iterm2
+
+    # also need to rename some folders that are hardwired in the plist, in case $USER is different
     sed -i "" "s/etiennt/$USER/g" ${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist
     defaults import com.googlecode.iterm2 ${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist
     defaults export com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
