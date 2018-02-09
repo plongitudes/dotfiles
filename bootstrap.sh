@@ -179,6 +179,7 @@ mkdir -p ${HOME}/.config/nvim
 mkdir -p ${HOME}/.vim
 ln -sf ${HOME}/.dotfiles/aliases.zsh ${HOME}/.oh-my-zsh/custom/aliases.zsh
 ln -sf ${HOME}/.dotfiles/fakeSMTP.properties ${HOME}/.fakeSMTP.properties
+ln -sf ${HOME}/.dotfiles/gitattributes ${HOME}/.gitattributes
 ln -sf ${HOME}/.dotfiles/gitconfig ${HOME}/.gitconfig
 ln -sf ${HOME}/.dotfiles/gitignore_global ${HOME}/.gitignore_global
 ln -sf ${HOME}/.dotfiles/jsbeautifyrc ${HOME}/.jsbeautifyrc

@@ -20,10 +20,10 @@ setopt AUTO_LIST                # list options instead of complaining about ambi
 setopt NO_BEEP                  # Do not fucking beep
 setopt NO_LIST_BEEP             # Do not fucking beep
 
-export SCRIPTHOME=$HOME/scripts
+export SCRIPTHOME="$HOME/scripts"
 
 # set path
-export PATH="/usr/sbin:/usr/local/bin/:$SCRIPTHOME:~/local/bin:$PATH"
+export PATH="/usr/sbin:/usr/local/bin/:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:$PATH"
 
 # add to PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:/usr/local/shotgun/python-api
