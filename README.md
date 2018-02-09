@@ -1,4 +1,7 @@
 # Plongitudes' dotfiles
+
+[![youtube video timelapse of the bootstrap process](https://imgur.com/a/u5HqH)](https://www.youtube.com/watch?v=Wm6AEP_gUM8)
+
 ## Advantages of this repo
 ### Easy Vim setup
 The `.vimrc` in this repo includes its own bootstrap, and the first time you launch vim, nvim, or vimR, it will install [Vundle](https://github.com/VundleVim/Vundle.vim) and all plugins that are listed in `.vimrc`. This is handy for getting your painstakingly-crafted [Vim](https://www.vim.org) condifg up and running right after you've bootstrapped your system, with no messy mucking about. One requirement though is that you at least have `vim` installed -- most vanilla `vi` binaries can't handle the bootstrapping script in the `.vimrc`. I'm sure this could be adapted for other vim plugin managers, but I haven't tried.
