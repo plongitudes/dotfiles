@@ -196,12 +196,9 @@ if [ "$uname_str" == "Darwin" ]; then
 
     # put the binary version of iterm2's prefs in place so that it knows to load up the xml version from dotfiles
     # since both xml and bin files have the same name, keep them seperate
-    #open /Applications/iTerm.app/
-    #osascript -e 'tell application "iTerm2" to quit'
     defaults delete com.googlecode.iterm2
-    sed -i -- 's/etiennt/$USER/g' com.googlecode.iterm2.plist
-    defaults import com.googlecode.iterm2 ./com.googlecode.iterm2.plist
+    sed -i "" "s/etiennt/$USER/g" ${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist
+    defaults import com.googlecode.iterm2 ${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist
     defaults export com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
-    open /Applications/iTerm.app/
 fi
 
