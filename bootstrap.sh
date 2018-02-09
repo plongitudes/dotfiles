@@ -1,10 +1,5 @@
 #!/bin/bash
 
-######## to-do:
-######## fix vi alias in cleanroom
-######## powerlevel9k or other in less than 256 colors
-######## test on xbian and moonglow
-
 ECHO_PREFIX="...---===### [[["
 ECHO_SUFFIX=""
 PACK_MAN=""
@@ -124,21 +119,21 @@ if [ "$uname_str" == "Darwin" ]; then
     brew cask install font-hack-nerd-font font-monofur-nerd-font-mono
 
     # install Zsh and set shell for user
-    get_package zsh ZSH_CMD
-    sudo dscl . -create /Users/$USER UserShell /usr/local/bin/zsh
+    #get_package zsh ZSH_CMD
 
     # and git
-    get_package git GIT_CMD
+    #get_package git GIT_CMD
 
     # and neovim and vimR
-    get_package nvim NVIM_CMD
-    $PACK_MAN cask install vimr
+    #get_package nvim NVIM_CMD
+    #$PACK_MAN cask install vimr
 
     # and fuckit, other apps we'll need
-    $PACK_MAN cask install alfred battle-net box-sync google-chrome \
-        default-folder-x disk-inventory-x divvy dropbox filezilla firefox gitx \
-        gog-galaxy iterm2 numi pycharm skitch steam synergy the-clock \
-        tunnelblick vlc yujitach-menumeters zoom
+    #$PACK_MAN cask install alfred battle-net box-sync google-chrome \
+        #default-folder-x disk-inventory-x divvy dropbox filezilla firefox gitx \
+        #gog-galaxy iterm2 numi pycharm skitch steam synergy the-clock \
+        #tunnelblick vlc yujitach-menumeters zoom
+    brew cask install iterm2
 
 elif [ "$uname_str" == "Linux" ]; then
     # make sure zsh is installed
