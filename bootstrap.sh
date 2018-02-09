@@ -201,7 +201,7 @@ if [ "$uname_str" == "Darwin" ]; then
     # since both xml and bin files have the same name, keep them seperate
 
     # also need to rename some folders that are hardwired in the plist, in case $USER is different
-    sed -i "" "s/etiennt/$USER/g" ${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist
+    #sed -i "" "s/$OLDUSER/$USER/g" ${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist
     defaults import com.googlecode.iterm2 ${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist
     defaults export com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
 fi
