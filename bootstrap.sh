@@ -198,10 +198,10 @@ if [ "$uname_str" == "Darwin" ]; then
     # since both xml and bin files have the same name, keep them seperate
     #open /Applications/iTerm.app/
     #osascript -e 'tell application "iTerm2" to quit'
-    #defaults delete com.googlecode.iterm2
-    #defaults import com.googlecode.iterm2 ./com.googlecode.iterm2.plist
-    #killall cfprefsd
-    #cp bin/com.googlecode.iterm2.plist ~/Library/Preferences
-    #open /Applications/iTerm.app/
+    defaults delete com.googlecode.iterm2
+    sed -i -- 's/etiennt/$USER/g' com.googlecode.iterm2.plist
+    defaults import com.googlecode.iterm2 ./com.googlecode.iterm2.plist
+    defaults export com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
+    open /Applications/iTerm.app/
 fi
 
