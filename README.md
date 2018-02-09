@@ -1,6 +1,6 @@
 # Plongitudes' dotfiles
 
-[![youtube video timelapse of the bootstrap process](https://imgur.com/a/u5HqH)](https://www.youtube.com/watch?v=Wm6AEP_gUM8)
+[![youtube video timelapse of the bootstrap process](https://i.imgur.com/WKfpKyF.png)](https://www.youtube.com/watch?v=Wm6AEP_gUM8)
 
 ## Advantages of this repo
 ### Easy Vim setup
