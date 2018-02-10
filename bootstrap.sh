@@ -159,7 +159,7 @@ fi
 echo "Oh-My-Zsh will now install. When finished, it will launch the new (but"
 echo "incomplete) shell. To continue the installation, just type 'exit' at the"
 echo "new prompt and the install script will continue per normal."
-read -p "[Hit any key to continue] "
+read -p "[Hit Enter/Return to continue] "
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
