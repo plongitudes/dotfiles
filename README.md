@@ -1,10 +1,10 @@
 # Plongitudes' dotfiles
 
-[![youtube video timelapse of the bootstrap process](https://i.imgur.com/WKfpKyF.png)](https://www.youtube.com/watch?v=Wm6AEP_gUM8)
+[![youtube video timelapse of the bootstrap process](https://i.imgur.com/ntxvO5W.png)](https://www.youtube.com/watch?v=1merxGRo-QE)
 
-## Advantages of this repo
+## Advantages of this particular dotfiles repo
 ### Easy Vim setup
-The `.vimrc` in this repo includes its own bootstrap, and the first time you launch vim, nvim, or vimR, it will install [Vundle](https://github.com/VundleVim/Vundle.vim) and all plugins that are listed in `.vimrc`. This is handy for getting your painstakingly-crafted [Vim](https://www.vim.org) condifg up and running right after you've bootstrapped your system, with no messy mucking about. One requirement though is that you at least have `vim` installed -- most vanilla `vi` binaries can't handle the bootstrapping script in the `.vimrc`. I'm sure this could be adapted for other vim plugin managers, but I haven't tried.
+The `.vimrc` in this repo includes its own bootstrap, and the first time you launch vim, nvim, or vimR, it will install [Vundle](https://github.com/VundleVim/Vundle.vim) and all plugins that are listed in `.vimrc`. This is handy for getting your painstakingly-crafted [Vim](https://www.vim.org) config up and running on a brand new system, with no messy mucking about. One requirement though is that you at least have `vim` installed -- most vanilla `vi` binaries can't handle the bootstrapping script in the `.vimrc`. I'm sure this could be adapted for other vim plugin managers, but I haven't tried.
 
 ### Hands-free installation of iTerm prefs
 For macOS (Darwin-style linux) installs, [iTerm2](https://www.iterm2.com/) preference files will be installed, so that the iTerm config from the dotfiles repo will look just like it should once bootstrapping is done. No need to launch iTerm, mess with prefs, and relaunch. For `iTerm2`, linking the binary prefs file means that on first launch, you won't need to tell `iTerm` to look in the dotfiles repo for it's pref and profile info. This is very handy if you're using [nerd-fonts](https://github.com/ryanoasis/nerd-fonts) and/or [gruvbox](https://github.com/morhetz/gruvbox) and have your terminal set up *just so*.
