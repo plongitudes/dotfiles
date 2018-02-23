@@ -52,8 +52,8 @@ function lp () { find `pwd` -name $* }
 ###########################
 
 function ag () { grep -i $* ~/.oh-my-zsh/custom/aliases.zsh }
-alias sa='source ~/.oh-my-zsh/custom/aliases.zsh ; echo "" ; echo "alias file re-sourced!" ; echo ""'
-alias va='vi ~/.oh-my-zsh/custom/aliases.zsh'
+alias sa='source ~/.oh-my-zsh/custom/aliases.zsh ; echo "alias file re-sourced!"'
+alias va='vi ~/.oh-my-zsh/custom/aliases.zsh; sa'
 
 ###########################
 # Finding files           #
@@ -108,11 +108,11 @@ function ppr () { echo '$*' | jsonf | pygmentize -l json }
 ###########################
 
 alias webrick='cd /usr/local/shotgun/shotgun/.idea/runConfigurations/ ; git checkout Shotgun_Server__WEBrick_.xml ; cd /usr/local/shotgun/shotgun; /usr/bin/open /Applications/IntelliJ\ IDEA.app/'
-alias sg='cd /usr/local/shotgun/shotgun'
+alias sg='cd ~/shotgun/shotgun'
 alias eg='cd /opt/etiennt/git'
 
 ###########################
-# Doing Github Things     #
+# Doing Git Things        #
 ###########################
 
 # git push <branch name>
@@ -130,9 +130,15 @@ alias glg='git log |grep'
 # grep through branch names
 alias ggb='git branch -a |grep'
 alias gc='git checkout'
+alias gcp='git cherry-pick'
+alias gspf='git show --pretty=fuller'
 alias gs='git status'
 alias gb='git branch'
 alias gt='git tag'
+alias gbn='git rev-parse --abbrev-ref HEAD'
+# set upstream relationship
+alias gitup='git push --set-upstream origin `git rev-parse --abbrev-ref HEAD`'
+
 
 ###########################
 # Doing Virtualbox Things #
