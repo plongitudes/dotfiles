@@ -29,8 +29,8 @@ POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND='016'
 POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='136'
 POWERLEVEL9K_VCS_MODIFIED_FOREGROUND='016'
 POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='124'
-#POWERLEVEL9K_VCS_GIT_HOOKS=(vcs-detect-changes git-untracked git-aheadbehind git-stash git-remotebranch git-tagname)
-POWERLEVEL9K_VCS_GIT_HOOKS=(vcs-detect-changes git-untracked git-aheadbehind git-stash git-remotebranch)
+POWERLEVEL9K_VCS_GIT_HOOKS=(vcs-detect-changes git-untracked git-aheadbehind git-stash git-remotebranch git-tagname)
+#POWERLEVEL9K_VCS_GIT_HOOKS=(vcs-detect-changes git-untracked git-aheadbehind git-stash git-remotebranch)
 
 POWERLEVEL9K_CONTEXT_DEFAULT_BACKGROUND='237'
 POWERLEVEL9K_CONTEXT_DEFAULT_FOREGROUND='034'
