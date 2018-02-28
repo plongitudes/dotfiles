@@ -156,6 +156,8 @@ function vmreset () {
 # Doing Docker Things     #
 ###########################
 
+# docker-compose
+alias dc='docker-compose'
 # start docker and follow logs
 alias dup='docker-compose up -d app && docker-compose logs -f app'
 # restart from scratch, only delete database

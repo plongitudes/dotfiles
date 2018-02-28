@@ -153,8 +153,8 @@ autoload -U compinit && compinit
 source $ZSH/oh-my-zsh.sh
 
 # start up enhancd
-source $ZSH_CUSTOM/plugins/enhancd/init.sh
 export ENHANCD_DISABLE_DOT=1
+source $ZSH_CUSTOM/plugins/enhancd/init.sh
 
 # User configuration
 

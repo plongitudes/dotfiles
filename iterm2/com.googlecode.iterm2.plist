@@ -1176,7 +1176,7 @@ Clear Buffer</string>
 	<key>HideActivityIndicator</key>
 	<false/>
 	<key>HideScrollbar</key>
-	<false/>
+	<true/>
 	<key>HideTab</key>
 	<false/>
 	<key>HotkeyMigratedFromSingleToMulti</key>
@@ -1242,11 +1242,11 @@ Clear Buffer</string>
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>840 757 606 469 0 0 2048 1258 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>1073 1646 796 473 -512 1280 2560 1058 </string>
+	<string>343 489 770 429 0 0 2048 1258 </string>
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>-410 1674 592 584 -640 1200 2560 1058 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>-512 1049 1267 715 -512 1280 2560 1058 </string>
+	<string>0 0 1440 1178 0 0 2048 1258 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>-512 1338 1425 1000 -512 1280 2560 1058 </string>
 	<key>NeverWarnAboutMeta</key>
@@ -1544,7 +1544,7 @@ Clear Buffer</string>
 			<key>Close Sessions On End</key>
 			<true/>
 			<key>Columns</key>
-			<integer>80</integer>
+			<integer>113</integer>
 			<key>Command</key>
 			<string></string>
 			<key>Cursor Boost</key>
@@ -1982,9 +1982,9 @@ Clear Buffer</string>
 			<key>Right Option Key Sends</key>
 			<integer>0</integer>
 			<key>Rows</key>
-			<integer>25</integer>
+			<integer>61</integer>
 			<key>Screen</key>
-			<integer>-1</integer>
+			<integer>0</integer>
 			<key>Scrollback Lines</key>
 			<integer>1000</integer>
 			<key>Selected Text Color</key>
@@ -4243,15 +4243,15 @@ Clear Buffer</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-02-09T07:07:18Z</date>
+	<date>2018-02-24T10:50:46Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>ShowBookmarkName</key>
 	<false/>
 	<key>ShowFullScreenTabBar</key>
-	<false/>
+	<true/>
 	<key>SplitPaneDimmingAmount</key>
-	<real>0.28910256410256407</real>
+	<real>0.2121794871794872</real>
 	<key>StretchTabsToFillBar</key>
 	<false/>
 	<key>TabStyle</key>
