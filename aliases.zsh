@@ -121,8 +121,10 @@ alias gpcb='git push origin `git rev-parse --abbrev-ref HEAD`'
 alias gvi='~/scripts/vim_changed_files_git.rc'
 # get tag name
 alias ggt='git describe --abbrev=0 --tags'
+# push tag up to origin
+alias gpt='git push origin `ggt`'
 # delete tag from branch
-alias rtcb='git push origin :refs/tags/`git describe --abbrev=0 --tags`; git tag --delete `git describe --abbrev=0 --tags`'
+alias gdt='git push origin :refs/tags/`git describe --abbrev=0 --tags`; git tag --delete `git describe --abbrev=0 --tags`'
 # git grep with context
 alias gg='git grep -n --break --heading -1 -p'
 # grep in the git log (for ticket numbers, usually)
