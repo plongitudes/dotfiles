@@ -96,6 +96,9 @@ alias gpull='find . -maxdepth 1 -type d -exec sh -c "(cd {} && git pull)" ";"'
 alias mdiff='/Applications/IntelliJ\ IDEA.app/Contents/MacOS/idea diff'
 alias vu='vagrant up --provision'
 alias vh='vagrant halt'
+function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
+alias godark='it2prof gruvbox-dark'
+alias golight='it2prof gruvbox-light'
 
 ###########################
 # Doing Ruby Things       #
