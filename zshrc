@@ -23,7 +23,7 @@ setopt NO_LIST_BEEP             # Do not fucking beep
 export SCRIPTHOME="$HOME/scripts"
 
 # set path
-export PATH="/usr/sbin:/usr/local/bin/:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:$PATH"
+export PATH="/usr/local/sbin:/usr/sbin:/usr/local/bin:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:$PATH:./node_modules/.bin"
 
 # add to PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:/usr/local/shotgun/python-api
@@ -179,3 +179,6 @@ source $ZSH_CUSTOM/plugins/enhancd/init.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 
+
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"

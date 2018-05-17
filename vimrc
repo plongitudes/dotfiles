@@ -41,9 +41,10 @@ Plugin 'vim-airline/vim-airline'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-surround'
 Plugin 'morhetz/gruvbox'
-Plugin 'maksimr/vim-jsbeautify'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Raimondi/delimitMate'
+Plugin 'lervag/file-line'
+Plugin 'w0rp/ale'
 
 call vundle#end()
 if s:bootstrap
@@ -160,22 +161,27 @@ let g:gruvbox_contrast_light="soft"
 colorscheme gruvbox
 set background=dark
 
-" JsBeautify
-map <c-p> :call JsBeautify()<cr>
-" or
-autocmd FileType javascript noremap <buffer>  <c-p> :call JsBeautify()<cr>
-" for json
-autocmd FileType json noremap <buffer> <c-p> :call JsonBeautify()<cr>
-" for jsx
-autocmd FileType jsx noremap <buffer> <c-p> :call JsxBeautify()<cr>
-" for html
-autocmd FileType html noremap <buffer> <c-p> :call HtmlBeautify()<cr>
-" for css or scss
-autocmd FileType css noremap <buffer> <c-p> :call CSSBeautify()<cr>
-
 " DelimitMate
 let delimitMate_expand_space = 1
 let delimitMate_expand_cr = 1
+
+"ALE: Eslint config
+let g:ale_linters = {
+      \   'javascript': ['eslint'],
+      \   'ruby': ['rubocop'],
+      \   'scss': ['scss_lint'],
+      \}
+
+"ALE: Prettier Config
+let g:ale_fixers = {}
+let g:ale_fixers['javascript'] = ['eslint']
+let g:ale_fixers['ruby'] = ['rubocop']
+let g:ale_fix_on_save = 1
+let g:airline#extensions#ale#enabled = 1
+
+nnoremap <F5> :ALEFix<CR>`
+nnoremap <F6> :lw<CR>
+nnoremap <F7> :lcl<CR>
 
 "=============================
 " Custom functions
@@ -217,6 +223,4 @@ endfunction
 exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
 set list
 
-" swap : and ; to make colon commands easier to type
-nnoremap  ;  :
 
