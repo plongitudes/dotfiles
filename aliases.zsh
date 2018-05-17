@@ -118,31 +118,39 @@ alias eg='cd /opt/etiennt/git'
 # Doing Git Things        #
 ###########################
 
-# git push <branch name>
-alias gpcb='git push origin `git rev-parse --abbrev-ref HEAD`'
-# vim edit all changed files
-alias gvi='~/scripts/vim_changed_files_git.rc'
-# get tag name
-alias ggt='git describe --abbrev=0 --tags'
-# push tag up to origin
-alias gpt='git push origin `ggt`'
-# delete tag from branch
-alias gdt='git push origin :refs/tags/`git describe --abbrev=0 --tags`; git tag --delete `git describe --abbrev=0 --tags`'
-# git grep with context
-alias gg='git grep -n --break --heading -1 -p'
-# grep in the git log (for ticket numbers, usually)
-alias glg='git log |grep'
-# grep through branch names
-alias ggb='git branch -a |grep'
-alias gc='git checkout'
-alias gcp='git cherry-pick'
-alias gspf='git show --pretty=fuller'
-alias gs='git status'
-alias gb='git branch'
-alias gt='git tag'
+# git: get branch name
 alias gbn='git rev-parse --abbrev-ref HEAD'
-# set upstream relationship
-alias gitup='git push --set-upstream origin `git rev-parse --abbrev-ref HEAD`'
+# git: get tag name
+alias ggt='git describe --abbrev=0 --tags'
+
+# git: push <branch name>
+alias gpcb='git push origin `gbn`'
+# git: set upstream relationship
+alias gitup='git push --set-upstream origin `gbn`'
+# git: push tag up to origin
+alias gpt='git push origin `ggt`'
+# git: delete tag from branch
+alias gdt='git push origin :refs/tags/`ggt`; git tag --delete `ggt`'
+# git: git grep with context
+alias gg='git grep -n --break --heading -1 -p'
+# git: grep in the git log (for ticket numbers, usually)
+alias glg='git log |grep'
+# git: grep through branch names
+alias ggb='git branch -a |grep'
+# git: checkout branch
+alias gc='git checkout'
+#git: cherry-pick
+alias gcp='git cherry-pick'
+#git: show verbose log for commit
+alias gspf='git show --pretty=fuller'
+#git: get current status
+alias gs='git status'
+#git: self explanatory :)
+alias gb='git branch'
+#git: tag a branch
+alias gt='git tag'
+# git: vim edit all changed files
+alias gvi='~/scripts/vim_changed_files_git.rc'
 
 
 ###########################
@@ -165,6 +173,8 @@ function vmreset () {
 alias dc='docker-compose'
 # start docker and follow logs
 alias dup='docker-compose up -d app && docker-compose logs -f app'
+# stop app
+alias dstop='docker-compose stop app'
 # restart from scratch, only delete database
 alias ddown='docker-compose down'
 # restart from scratch, delete db and volumes
@@ -177,6 +187,10 @@ alias dres='docker-compose exec app passenger-config restart-app /var/rails/shot
 alias drake='docker-compose run --rm app bash; rake test:units'
 # build SCSS
 alias dscss='docker-compose run --rm app bash; npm run build_css'
+# run linting tests
+alias dlint='docker-compose run --rm app npm run lint:js'
+# run rubocop tests
+alias drubocop='docker-compose run --rm app rubocop'
 # get into pgsql
 alias dpsql='docker-compose run --rm app bash; psql'
 # It's better to use docker-compose run to get the right user and environment
@@ -188,3 +202,6 @@ alias dtrans='docker-compose up -d'
 # look at sent email
 alias dmail='open http://localhost:1080'
 
+######################3
+
+source ~/.oh-my-zsh/custom/sg_helpers.zsh
