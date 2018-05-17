@@ -1531,7 +1531,7 @@ Clear Buffer</string>
 	<key>HideActivityIndicator</key>
 	<false/>
 	<key>HideScrollbar</key>
-	<true/>
+	<false/>
 	<key>HideTab</key>
 	<false/>
 	<key>HotkeyMigratedFromSingleToMulti</key>
@@ -1593,15 +1593,15 @@ Clear Buffer</string>
 	<key>NSWindow Frame SUStatusFrame</key>
 	<string>568 1976 400 129 -512 1280 2560 1058 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>714 649 620 392 0 0 2048 1258 </string>
+	<string>650 589 620 392 0 0 1920 1178 </string>
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>840 757 606 469 0 0 2048 1258 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>728 705 918 452 0 0 1920 1178 </string>
+	<string>811 829 770 429 0 0 2048 1258 </string>
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>-410 1674 592 584 -640 1200 2560 1058 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>1 0 1405 1178 0 0 1920 1178 </string>
+	<string>-306 1280 1465 1057 -512 1280 2560 1058 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>-512 1338 1425 1000 -512 1280 2560 1058 </string>
 	<key>NeverWarnAboutMeta</key>
@@ -4598,17 +4598,19 @@ Clear Buffer</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-03-17T06:28:15Z</date>
+	<date>2018-05-15T20:59:59Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>ShowBookmarkName</key>
 	<false/>
 	<key>ShowFullScreenTabBar</key>
-	<true/>
+	<false/>
 	<key>SplitPaneDimmingAmount</key>
 	<real>0.2121794871794872</real>
 	<key>StretchTabsToFillBar</key>
 	<false/>
+	<key>SuppressRestartAnnouncement</key>
+	<true/>
 	<key>TabStyle</key>
 	<integer>1</integer>
 	<key>UKCrashReporterLastCrashReportDate</key>
@@ -4626,7 +4628,7 @@ Clear Buffer</string>
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>3.1.5</string>
+	<string>3.1.6</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>
