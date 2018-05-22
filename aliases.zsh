@@ -62,27 +62,7 @@ alias va='vi ~/.oh-my-zsh/custom/aliases.zsh; sa'
 function fnd () { find -L . -print -type f -exec grep -n $* {} \; | grep $* -B 1 }
 #alias f='iname \!*'
 
-#alias never     'ssh -l tony neverest.spundreams.net'
 #alias vqo       'vi $SCRIPTHOME/sig_quotes.txt'
-#alias hack      'telnet nethack.alt.org '
-#function dos       '~/local/bin/dosbox \!* &'
-#alias play      'cd ~/.www/nonpublic/snes ; zsnes &'
-#function bt        'bittorrent-curses --minport 44730 --maxport 44739 --max_upload_rate 7 \!*'
-
-#alias mame      'sudo mount -t smbfs //legends/d$ /media/mame -o credentials=/root/.smbcredentials'
-
-#alias tun       'ssh -p 21577 -N -D 7070 moongate.bouncelimit.org'
-#alias bigf  'ssh -p 20693 bigfeather'
-#alias bigf      'ssh tonye@bigfeather'
-#alias minoc     'ssh tonye@minoc.tonyetienne.com'
-#alias codex     'ssh -i ~/.ssh/codex.key ubuntu@codex2.maradine.com'
-alias home='ssh -p 8822 tonye@bouncelimit.org'
-#alias ebot      'ssh marvinbot@moongate.bouncelimit.org'
-alias oldhome='ssh tonye@192.168.1.7'
-alias getip='wget -q -O - checkip.dyndns.org'
-
-alias wakeup='wakeonlan -i 192.168.1.255 -p 9 00:1f:5b:30:51:ec'
-
 
 ###########################
 # Doing Things            #
@@ -202,6 +182,8 @@ alias dtrans='docker-compose up -d'
 # look at sent email
 alias dmail='open http://localhost:1080'
 
-######################3
+#######################
 
+source ~/.sshes
 source ~/.oh-my-zsh/custom/sg_helpers.zsh
+
