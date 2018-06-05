@@ -11,7 +11,7 @@ export HISTSIZE=10000
 export SAVEHIST=10000
 #setopt EXTENDED_HISTORY         # Write the history file in the ":start:elapsed;command" format.
 #setopt INC_APPEND_HISTORY       # Write to the history file immediately, not when the shell exits.
-#setopt SHARE_HISTORY            # share history between sessions
+setopt SHARE_HISTORY            # share history between sessions
 #setopt HIST_IGNORE_DUPS         # Do not record an entry that was just recorded again.
 #setopt HIST_FIND_NO_DUPS        # Do not display a line previously found.
 #setopt HIST_SAVE_NO_DUPS        # Do not write duplicate entries in the history file.
