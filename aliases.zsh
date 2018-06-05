@@ -151,16 +151,16 @@ function vmreset () {
 
 # docker-compose
 alias dc='docker-compose'
+# build app
+alias dbuild='docker-compose build app'
 # start docker and follow logs
 alias dup='docker-compose up -d app && docker-compose logs -f app'
-# stop app
+# stop app, don't delete anything
 alias dstop='docker-compose stop app'
 # restart from scratch, only delete database
-alias ddown='docker-compose down'
+alias ddel='docker-compose down'
 # restart from scratch, delete db and volumes
-alias ddel='docker-compose down -v'
-# after switching branches, build and restart from fresh db
-alias dnuke='docker-compose down -v; docker-compose build app; docker-compose up -d app'
+alias dnuke='docker-compose down -v'
 # restart passenger to quickly reload app code
 alias dres='docker-compose exec app passenger-config restart-app /var/rails/shotgun'
 # run unit tests
