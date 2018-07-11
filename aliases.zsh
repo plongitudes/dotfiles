@@ -15,6 +15,7 @@ VI_CMD=$(command -v vi 2>/dev/null)
 
 if [ ! -z $NVIM_CMD ]; then
     alias vi='nvim'
+    alias li='vi -c "set background=light"'
 elif [ ! -z $VIM_CMD ]; then
     alias vi='vim'
 elif [ ! -z $VI_CMD ]; then
@@ -164,9 +165,9 @@ alias dnuke='docker-compose down -v'
 # restart passenger to quickly reload app code
 alias dres='docker-compose exec app passenger-config restart-app /var/rails/shotgun'
 # run unit tests
-alias drake='docker-compose run --rm app bash; rake test:units'
+alias drake='docker-compose run --rm app rake test:units'
 # build SCSS
-alias dscss='docker-compose run --rm app bash; npm run build_css'
+alias dscss='docker-compose run --rm app npm run build_css'
 # run linting tests
 alias dlint='docker-compose run --rm app npm run lint:js'
 # run rubocop tests

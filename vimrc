@@ -44,6 +44,8 @@ Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Raimondi/delimitMate'
 Plugin 'lervag/file-line'
+Plugin 'plytophogy/vim-virtualenv'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'w0rp/ale'
 
 call vundle#end()
@@ -188,16 +190,16 @@ nnoremap <F7> :lcl<CR>
 "=============================
 
 " Tab completion for words
-set complete=.,w,t,b,i
-function! InsertTabWrapper()
-  let col = col('.') - 1
-  if !col || getline('.')[col - 1] !~ '\k'
-    return "\<tab>"
-  else
-    return "\<c-p>"
-  endif
-endfunction
-inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
+" set complete=.,w,t,b,i
+" function! InsertTabWrapper()
+  " let col = col('.') - 1
+  " if !col || getline('.')[col - 1] !~ '\k'
+    " return "\<tab>"
+  " else
+    " return "\<c-p>"
+  " endif
+" endfunction
+" inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
 
 " Make the 81st column stand out
 highlight ColorColumn ctermbg=grey guifg=yellow
