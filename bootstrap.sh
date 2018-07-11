@@ -186,6 +186,7 @@ ln -sf ${HOME}/.dotfiles/jsbeautifyrc ${HOME}/.jsbeautifyrc
 ln -sf ${HOME}/.dotfiles/powerlevel9k.zsh ${HOME}/.oh-my-zsh/custom/powerlevel9k.zsh
 ln -sf ${HOME}/.dotfiles/plongitudes.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
 ln -sf ${HOME}/.dotfiles/plongitudes-plain.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
+ln -sf ${HOME}/.dotfiles/tern-project ${HOME}/.tern-project
 ln -sf ${HOME}/.dotfiles/tigrc ${HOME}/.tigrc
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vimrc
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vim/init.vim
