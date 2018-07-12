@@ -141,6 +141,7 @@ fi
 plugins=(
     docker
     git
+    tmux
     history-search-multi-word
     zsh-autosuggestions
     zsh-completions
