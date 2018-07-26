@@ -92,7 +92,7 @@ function ppr () { echo '$*' | jsonf | pygmentize -l json }
 ###########################
 
 alias webrick='cd /usr/local/shotgun/shotgun/.idea/runConfigurations/ ; git checkout Shotgun_Server__WEBrick_.xml ; cd /usr/local/shotgun/shotgun; /usr/bin/open /Applications/IntelliJ\ IDEA.app/'
-alias sg='cd ~/shotgun/shotgun'
+alias sg='cd ~/shotgun/docker_shotgun'
 alias eg='cd /opt/etiennt/git'
 
 ###########################
@@ -113,7 +113,7 @@ alias gpt='git push origin `ggt`'
 # git: delete tag from branch
 alias gdt='git push origin :refs/tags/`ggt`; git tag --delete `ggt`'
 # git: git grep with context
-alias gg='git grep -n --break --heading -1 -p'
+alias gg='git grep -in --break --heading -1 -p'
 # git: grep in the git log (for ticket numbers, usually)
 alias glg='git log |grep'
 # git: grep through branch names
@@ -155,9 +155,13 @@ alias dc='docker-compose'
 # build app
 alias dbuild='docker-compose build app'
 # start docker and follow logs
-alias dup='docker-compose up -d app && docker-compose logs -f app'
+alias dup='docker-compose up -d app'
+# follow logs
+alias dl='docker-compose logs -f app'
 # stop app, don't delete anything
 alias dstop='docker-compose stop app'
+# stop EVERYTHING
+alias dfire='docker stop $(docker ps -aq)'
 # restart from scratch, only delete database
 alias ddel='docker-compose down'
 # restart from scratch, delete db and volumes
