@@ -157,12 +157,14 @@ function vmreset () {
 function dc-opts () {
     zparseopts -D -E -A Args -- v
     if (( ${+Args[-v]} )); then
-        echo docker-compose $*
+        docker-compose $*
     else
-        echo docker-compose -p \"$(git rev-parse --abbrev-ref HEAD)\" $*
+        docker-compose -p \"$(git rev-parse --abbrev-ref HEAD)\" $*
     fi
 }
 
+# list containers
+alias dps='docker ps -a'
 # build app
 alias dbuild='dc-opts build app'
 # start docker and follow logs
