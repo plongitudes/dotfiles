@@ -24,6 +24,8 @@ export SCRIPTHOME="$HOME/scripts"
 
 # set path
 export PATH="/usr/local/sbin:/usr/sbin:/usr/local/bin:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:$PATH:./node_modules/.bin"
+# add rbenv
+export PATH="$HOME/.rbenv/bin:$PATH"
 
 # add to PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:/usr/local/shotgun/python-api
