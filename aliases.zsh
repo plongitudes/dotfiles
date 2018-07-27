@@ -118,8 +118,10 @@ alias gg='git grep -in --break --heading -1 -p'
 alias glg='git log |grep'
 # git: grep through branch names
 alias ggb='git branch -a |grep'
-# git: checkout branch
+# git: checkout
 alias gc='git checkout'
+# git: switch branch
+alias gcb='dstop; git checkout'
 #git: cherry-pick
 alias gcp='git cherry-pick'
 #git: show verbose log for commit
@@ -150,40 +152,49 @@ function vmreset () {
 # Doing Docker Things     #
 ###########################
 
-# docker-compose
-alias dc='docker-compose'
+# this function provides tag functionality in order to work with
+# multiple containers at once when changing branches
+function dc-opts () {
+    zparseopts -D -E -A Args -- v
+    if (( ${+Args[-v]} )); then
+        echo docker-compose $*
+    else
+        echo docker-compose -p \"$(git rev-parse --abbrev-ref HEAD)\" $*
+    fi
+}
+
 # build app
-alias dbuild='docker-compose build app'
+alias dbuild='dc-opts build app'
 # start docker and follow logs
-alias dup='docker-compose up -d app'
+alias dup='dc-opts up -d app'
 # follow logs
-alias dl='docker-compose logs -f app'
+alias dl='dc-opts logs -f app'
 # stop app, don't delete anything
-alias dstop='docker-compose stop app'
+alias dstop='dc-opts stop app'
 # stop EVERYTHING
 alias dfire='docker stop $(docker ps -aq)'
 # restart from scratch, only delete database
-alias ddel='docker-compose down'
+alias ddel='dc-opts down'
 # restart from scratch, delete db and volumes
-alias dnuke='docker-compose down -v'
+alias dnuke='dc-opts down -v'
 # restart passenger to quickly reload app code
-alias dres='docker-compose exec app passenger-config restart-app /var/rails/shotgun'
+alias dres='dc-opts exec app passenger-config restart-app /var/rails/shotgun'
 # run unit tests
-alias drake='docker-compose run --rm app rake test:units'
+alias drake='dc-opts run --rm app rake test:units'
 # build SCSS
-alias dscss='docker-compose run --rm app npm run build_css'
+alias dscss='dc-opts run --rm app npm run build_css'
 # run linting tests
-alias dlint='docker-compose run --rm app npm run lint:js'
+alias dlint='dc-opts run --rm app npm run lint:js'
 # run rubocop tests
-alias drubocop='docker-compose run --rm app rubocop'
+alias drubocop='dc-opts run --rm app rubocop'
 # get into pgsql
-alias dpsql='docker-compose run --rm app bash; psql'
+alias dpsql='dc-opts run --rm app bash; psql'
 # It's better to use docker-compose run to get the right user and environment
 # variables. There is the exec command to use if a shell inside the running
 # container is needed.
-alias dsh='docker-compose exec app /docker-entrypoint.sh bash'
+alias dsh='dc-opts exec app /docker-entrypoint.sh bash'
 # start transcoder and worker containers
-alias dtrans='docker-compose up -d'
+alias dtrans='dc-opts up -d'
 # look at sent email
 alias dmail='open http://localhost:1080'
 
