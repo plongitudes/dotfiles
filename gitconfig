@@ -1,9 +1,9 @@
 [user]
-	email = github@tonyetienne.com
+	email = marvinbot@tonyetienne.com
 	name = Tony Etienne
 [core]
 	editor = vim
-	excludesfile = $HOME/.gitignore_global
+	excludesfile = /Users/etiennt/.gitignore_global
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
@@ -16,3 +16,5 @@
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
+[commit]
+	template = /Users/etiennt/.stCommitMsg
