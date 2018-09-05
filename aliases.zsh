@@ -25,7 +25,7 @@ else
 fi
 
 alias rm='rm -i'
-alias m=$PAGER
+alias m='$PAGER -M'
 alias fort='echo "" ; /usr/games/fortune -e ; echo ""'
 alias duf='sudo /usr/bin/du -d 1 -h'
 alias h='history'
@@ -33,18 +33,20 @@ alias hg='history | grep -i'
 alias lo='logout'
 alias xv='xnview'
 
-function du () { /usr/bin/du -sh $* | less }
-function l () { /bin/ls -CFlaG $* | less }
+function du () { /usr/bin/du -sh $* | m }
+function l () { /bin/ls -CFlaG $* | m }
 
 ############################
 # ls aliases               #
 ############################
 
-function l () { /bin/ls -CFlaG $* | less }
-function ls () { /bin/ls -CFG $* | less }
-function ll () { /bin/ls -CFlG $* | less }
-function lt () { /bin/ls -CFltrG $* | less }
-function lsd () { /bin/ls -CFlG $* | grep \/ }
+unalias l
+unalias ll
+function l () { /bin/ls -CFlaGh $* | m }
+function ls () { /bin/ls -CFGh $* | m }
+function ll () { /bin/ls -CFlGh $* | m }
+function lt () { /bin/ls -CFltrGh $* | m }
+function lsd () { /bin/ls -CFlGh $* | grep -e '^d' }
 function lg () { ll * | grep -i $* }
 function lp () { find `pwd` -name $* }
 
@@ -172,9 +174,9 @@ alias dup='dc-opts up -d app'
 # follow logs
 alias dl='dc-opts logs -f app'
 # stop app, don't delete anything
-alias dstop='dc-opts stop app'
+alias dstop='dc-opts stop app smtp db memcached'
 # stop EVERYTHING
-alias dfire='docker stop $(docker ps -aq)'
+alias dfire='docker stop $(docker ps -aq); docker rm $(docker ps -q -f status=exited)'
 # restart from scratch, only delete database
 alias ddel='dc-opts down'
 # restart from scratch, delete db and volumes

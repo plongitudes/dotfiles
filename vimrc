@@ -45,6 +45,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'Raimondi/delimitMate'
 Plugin 'lervag/file-line'
 Plugin 'plytophogy/vim-virtualenv'
+Plugin 'Chiel92/vim-autoformat'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'w0rp/ale'
 
