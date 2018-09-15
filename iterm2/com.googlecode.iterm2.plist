@@ -1593,7 +1593,7 @@ Clear Buffer</string>
 	<key>NSWindow Frame SUStatusFrame</key>
 	<string>568 1976 400 129 -512 1280 2560 1058 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>0 636 700 622 0 0 2048 1258 </string>
+	<string>610 417 700 622 0 0 1920 1178 </string>
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>840 757 606 469 0 0 2048 1258 </string>
 	<key>NSWindow Frame SharedPreferences</key>
@@ -1601,7 +1601,7 @@ Clear Buffer</string>
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>-410 1674 592 584 -640 1200 2560 1058 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 0 1536 1258 0 0 2048 1258 </string>
+	<string>0 57 1528 1201 0 0 2048 1258 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>-512 1338 1425 1000 -512 1280 2560 1058 </string>
 	<key>NeverWarnAboutMeta</key>
@@ -4600,13 +4600,13 @@ Clear Buffer</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-08-07T14:30:52Z</date>
+	<date>2018-09-05T15:11:02Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>ShowBookmarkName</key>
 	<false/>
 	<key>ShowFullScreenTabBar</key>
-	<true/>
+	<false/>
 	<key>SplitPaneDimmingAmount</key>
 	<real>0.2121794871794872</real>
 	<key>StretchTabsToFillBar</key>
@@ -4630,7 +4630,7 @@ Clear Buffer</string>
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>3.1.7</string>
+	<string>3.2.0</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>
