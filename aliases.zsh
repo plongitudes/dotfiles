@@ -82,6 +82,7 @@ alias vh='vagrant halt'
 function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 alias godark='it2prof gruvbox-dark'
 alias golight='it2prof gruvbox-light'
+function ka() { kill -9 $(pgrep -i $*) }
 
 ###########################
 # Doing Ruby Things       #
