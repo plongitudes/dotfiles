@@ -38,6 +38,8 @@ endtry
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
+Plugin 'Shougo/deoplete.nvim'
+Plugin 'autozimu/languageclient-neovim'
 Plugin 'tpope/vim-sensible'
 Plugin 'tpope/vim-surround'
 Plugin 'morhetz/gruvbox'
@@ -46,7 +48,6 @@ Plugin 'Raimondi/delimitMate'
 Plugin 'lervag/file-line'
 Plugin 'plytophogy/vim-virtualenv'
 Plugin 'Chiel92/vim-autoformat'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'w0rp/ale'
 
 call vundle#end()
@@ -68,6 +69,19 @@ filetype plugin indent on     " required
 " see :h vundle for more details or wiki for FAQ
 " NOTE: comments after Plugin commands are not allowed.
 " Put your stuff after this line
+
+
+"=============================
+" Some pyenv stuff
+"=============================
+"let g:python_host_prog="/Users/etiennt/.pyenv/shims/python"
+"let g:python3_host_prog="/Users/etiennt/.pyenv/shims/python"
+
+"=============================
+" Some deoplete stuff
+"=============================
+let g:deoplete#enable_at_startup = 1
+set completeopt+=noinsert
 
 "=============================
 " Some terminal stuff
@@ -122,7 +136,7 @@ map <F2> :set invpaste<CR>
 "=============================
 
 "(t) autowrap using textwidth (t)
-"(c) autowrap comments using textwidth, inserting the current commend leader
+"(c) autowrap comments using textwidth, inserting the current comment leader
 "    automatically.
 "(r) Automatically insert the current comment leader after hitting <Enter> in
 "    Insert mode.
@@ -190,17 +204,27 @@ nnoremap <F7> :lcl<CR>
 " Custom functions
 "=============================
 
+" setup for solargraph and flow
+let g:LanguageClient_serverCommands = {
+    \ 'javascript': ['flow-language-server', '--stdio'],
+    \ 'javascript.jsx': ['flow-language-server', '--stdio'],
+    \ 'ruby': ['solargraph','stdio']
+    \ }
+
 " Tab completion for words
-" set complete=.,w,t,b,i
-" function! InsertTabWrapper()
-  " let col = col('.') - 1
-  " if !col || getline('.')[col - 1] !~ '\k'
-    " return "\<tab>"
-  " else
-    " return "\<c-p>"
-  " endif
-" endfunction
-" inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
+function! InsertTabWrapper()
+  let col = col('.') - 1
+  if !col || getline('.')[col - 1] !~ '\k'
+    return "\<tab>"
+  else
+    if pumvisible()
+      return "\<C-n>" 
+    else
+      return deoplete#mappings#manual_complete()
+    endif
+  endif
+endfunction
+inoremap <silent><expr> <Tab> InsertTabWrapper()
 
 " Make the 81st column stand out
 highlight ColorColumn ctermbg=grey guifg=yellow
@@ -225,5 +249,4 @@ endfunction
 " make tabs, trailing whitespace, and nbs visible
 exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
 set list
-
 
