@@ -131,6 +131,9 @@ if [ "$uname_str" == "Darwin" ]; then
     get_package nvim NVIM_CMD
     $PACK_MAN cask install vimr
 
+    # we need readline and xz for pyenv and some neovim stuff
+    $PACK_MAN install readline xz openssl
+
     # and fuckit, other apps we'll need
     $PACK_MAN cask install alfred battle-net box-sync google-chrome \
         default-folder-x disk-inventory-x divvy dropbox filezilla firefox gitx \
@@ -172,6 +175,9 @@ git clone https://github.com/zdharma/history-search-multi-word.git ${ZSH_CUSTOM:
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 git clone https://github.com/bhilburn/powerlevel9k.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/themes/powerlevel9k
 
+# let's do some gems
+gem install pry neovim rubocop solargraph
+
 # dotfiles
 git clone https://github.com/plongitudes/dotfiles.git ${HOME}/.dotfiles
 
@@ -206,4 +212,13 @@ if [ "$uname_str" == "Darwin" ]; then
     defaults import com.googlecode.iterm2 ${HOME}/.dotfiles/iterm2/com.googlecode.iterm2.plist
     defaults export com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
 fi
+
+# install rbenv and pyenv
+#$PACK_MAN install pyenv pyenv-virtualenv
+#git clone https://github.com/momo-lab/pyenv-install-latest.git "$(pyenv root)"/plugins/pyenv-install-latest
+#pyenv install-latest
+#pyenv install-latest 2.7
+
+command curl -sSL https://rvm.io/mpapis.asc | gpg --import -
+\curl -sSL https://get.rvm.io | bash -s stable
 
