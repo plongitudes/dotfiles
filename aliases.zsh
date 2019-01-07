@@ -83,6 +83,12 @@ function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 alias godark='it2prof gruvbox-dark'
 alias golight='it2prof gruvbox-light'
 function ka() { kill -9 $(pgrep -i $*) }
+function archive () {
+    archive_dir=${1%/}
+    mkdir -p archived
+    tar cfz archived/$archive_dir.tgz $archive_dir/
+    rm -rf $archive_dir
+}
 
 ###########################
 # Doing Ruby Things       #
@@ -157,15 +163,18 @@ function vmreset () {
 
 # this function provides tag functionality in order to work with
 # multiple containers at once when changing branches
-function dc-opts () {
-    zparseopts -D -E -A Args -- v
-    if (( ${+Args[-v]} )); then
-        docker-compose $*
-    else
-        docker-compose -p \"$(git rev-parse --abbrev-ref HEAD)\" $*
-    fi
-}
+# function dc-opts () {
+    # # zparseopts -D -E -A Args -- v
+    # if (( ${+Args[-v]} )); then
+        # docker-compose $*
+    # else
+        # docker-compose -p \"$(git rev-parse --abbrev-ref HEAD)\" $*
+    # fi
+# }
 
+function dc-opts () {
+    docker-compose $*
+}
 # list containers
 alias dps='docker ps -a'
 # build app
