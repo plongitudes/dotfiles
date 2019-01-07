@@ -1545,7 +1545,9 @@ Clear Buffer</string>
 	<key>NSFontPanelAttributes</key>
 	<string>1, 4</string>
 	<key>NSNavLastRootDirectory</key>
-	<string>~/.dotfiles/iterm2</string>
+	<string>~/Downloads</string>
+	<key>NSNavLastUserSetHideExtensionButtonState</key>
+	<false/>
 	<key>NSNavPanelExpandedSizeForOpenMode</key>
 	<string>{720, 448}</string>
 	<key>NSNavPanelExpandedSizeForSaveMode</key>
@@ -1593,15 +1595,15 @@ Clear Buffer</string>
 	<key>NSWindow Frame SUStatusFrame</key>
 	<string>568 1976 400 129 -512 1280 2560 1058 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
-	<string>610 417 700 622 0 0 1920 1178 </string>
+	<string>930 1526 700 622 0 1200 2560 1057 </string>
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>840 757 606 469 0 0 2048 1258 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>728 765 918 492 0 0 2048 1258 </string>
+	<string>842 511 928 394 0 0 1920 1177 </string>
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>-410 1674 592 584 -640 1200 2560 1058 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>0 57 1528 1201 0 0 2048 1258 </string>
+	<string>0 1200 1276 1057 0 1200 2560 1057 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>-512 1338 1425 1000 -512 1280 2560 1058 </string>
 	<key>NeverWarnAboutMeta</key>
@@ -2341,7 +2343,7 @@ Clear Buffer</string>
 			<key>Screen</key>
 			<integer>0</integer>
 			<key>Scrollback Lines</key>
-			<integer>1000</integer>
+			<integer>0</integer>
 			<key>Selected Text Color</key>
 			<dict>
 				<key>Alpha Component</key>
@@ -4520,6 +4522,8 @@ Clear Buffer</string>
 	</array>
 	<key>NoSyncCommandHistoryHasEverBeenUsed</key>
 	<true/>
+	<key>NoSyncHaveRequestedFullDiskAccess</key>
+	<true/>
 	<key>NoSyncHaveWarnedAboutPasteConfirmationChange</key>
 	<true/>
 	<key>NoSyncInstallationId</key>
@@ -4600,13 +4604,13 @@ Clear Buffer</string>
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2018-09-05T15:11:02Z</date>
+	<date>2018-12-17T02:47:51Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>ShowBookmarkName</key>
 	<false/>
 	<key>ShowFullScreenTabBar</key>
-	<false/>
+	<true/>
 	<key>SplitPaneDimmingAmount</key>
 	<real>0.2121794871794872</real>
 	<key>StretchTabsToFillBar</key>
@@ -4615,6 +4619,8 @@ Clear Buffer</string>
 	<true/>
 	<key>TabStyle</key>
 	<integer>1</integer>
+	<key>TabStyleWithAutomaticOption</key>
+	<integer>4</integer>
 	<key>UKCrashReporterLastCrashReportDate</key>
 	<real>1493144832</real>
 	<key>UseBorder</key>
@@ -4630,7 +4636,7 @@ Clear Buffer</string>
 	<key>findRegex_iTerm</key>
 	<false/>
 	<key>iTerm Version</key>
-	<string>3.2.0</string>
+	<string>3.2.5</string>
 	<key>kCPKSelectionViewPreferredModeKey</key>
 	<integer>0</integer>
 	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>
