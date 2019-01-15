@@ -183,7 +183,7 @@ alias dbuild='dc-opts build app'
 alias dup='dc-opts up -d app'
 # follow logs
 alias dl='dc-opts logs -f app'
-# stop app, don't delete anything
+# stop containers, don't delete anything
 alias dstop='dc-opts stop app smtp db memcached'
 # stop EVERYTHING
 alias dfire='docker stop $(docker ps -aq); docker rm $(docker ps -q -f status=exited)'
@@ -207,6 +207,7 @@ alias dpsql='dc-opts run --rm app bash; psql'
 # variables. There is the exec command to use if a shell inside the running
 # container is needed.
 alias dsh='dc-opts exec app /docker-entrypoint.sh bash'
+alias droot='docker-compose exec app bash'
 # start transcoder and worker containers
 alias dtrans='dc-opts up -d'
 # look at sent email
