@@ -185,5 +185,6 @@ source $ZSH_CUSTOM/plugins/enhancd/init.sh
 #eval "$(pyenv virtualenv-init -)"
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="$PATH:$HOME/.rvm/bin"
 
