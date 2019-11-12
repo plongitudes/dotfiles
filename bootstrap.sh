@@ -135,10 +135,10 @@ if [ "$uname_str" == "Darwin" ]; then
     $PACK_MAN install readline xz openssl
 
     # and fuckit, other apps we'll need
-    $PACK_MAN cask install alfred battle-net box-sync google-chrome \
-        default-folder-x disk-inventory-x divvy dropbox filezilla firefox gitx \
-        gog-galaxy iterm2 numi pycharm skitch steam synergy the-clock \
-        tunnelblick vlc yujitach-menumeters zoom
+    $PACK_MAN cask install battle-net rocket dip \
+        default-folder-x disk-inventory-x divvy firefox \
+        gog-galaxy numi skitch steam the-clock \
+        tunnelblick vlc zoom
 
 elif [ "$uname_str" == "Linux" ]; then
     # make sure zsh is installed
