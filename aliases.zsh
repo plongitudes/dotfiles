@@ -76,7 +76,7 @@ alias tran='transmission-remote-cli'
 alias sf='sudo chown -R tonye:tonye /media/space/transmission/complete/*'
 alias irb='pry'
 alias gpull='find . -maxdepth 1 -type d -exec sh -c "(cd {} && echo {} && git pull)" ";"'
-alias mdiff='/Applications/IntelliJ\ IDEA.app/Contents/MacOS/idea diff'
+function mdiff() { /Applications/Xcode.app/Contents/Applications/FileMerge.app/Contents/MacOS/FileMerge -left $1 -right $2 }
 alias vu='vagrant up --provision'
 alias vh='vagrant halt'
 function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
@@ -103,6 +103,26 @@ function ppr () { echo '$*' | jsonf | pygmentize -l json }
 alias webrick='cd /usr/local/shotgun/shotgun/.idea/runConfigurations/ ; git checkout Shotgun_Server__WEBrick_.xml ; cd /usr/local/shotgun/shotgun; /usr/bin/open /Applications/IntelliJ\ IDEA.app/'
 alias sg='cd ~/shotgun/docker_shotgun'
 alias eg='cd /opt/etiennt/git'
+alias lc='~/shotgun/enterprise-toolbox/troubleshooting/log_chop.rb'
+
+function crop () {
+    echo "reading $1, from $2 to $3"
+    start=$(grep -n $2 $1 | head -n 1 | cut -f 1 -d ':')
+    echo "start line: $start"
+    end=$(grep -n $3 $1 | head -n 1 | cut -f 1 -d ':')
+    echo "end line:   $end"
+    gawk -v start="$start" -v end="$end" 'NR >= start && NR <= end' $1 | gzip -v - > output.log.gz
+}
+
+function zcrop () {
+    echo "reading $1, from $2 to $3"
+    start=$(zgrep -n $2 $1 | head -n 1 | cut -f 1 -d ':')
+    echo "start line: $start"
+    end=$(zgrep -n $3 $1 | head -n 1 | cut -f 1 -d ':')
+    echo "end line:   $end"
+    gawk -v start="$start" -v end="$end" 'NR >= start && NR <= end' <(gzip -dc $1) | gzip -v - > output.log.gz
+}
+
 
 ###########################
 # Doing Git Things        #
@@ -141,6 +161,10 @@ alias gs='git status'
 alias gb='git branch'
 #git: tag a branch
 alias gt='git tag'
+#git: grep a tag and get its creation date
+function gtg () {git log --date-order --tags --simplify-by-decoration --pretty=format:'%ai %h %d' | grep $* }
+#git: show tag timeline with branching
+function gtt() {git log --date-order --graph --tags --simplify-by-decoration --pretty=format:'%ai %h %d' }
 # git: vim edit all changed files
 alias gvi='~/scripts/vim_changed_files_git.rc'
 
