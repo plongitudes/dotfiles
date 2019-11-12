@@ -138,7 +138,7 @@ if [ "$uname_str" == "Darwin" ]; then
     $PACK_MAN cask install battle-net rocket dip \
         default-folder-x disk-inventory-x divvy firefox \
         gog-galaxy numi skitch steam the-clock \
-        tunnelblick vlc zoom
+        tunnelblick vlc zoom rescuetime
 
 elif [ "$uname_str" == "Linux" ]; then
     # make sure zsh is installed

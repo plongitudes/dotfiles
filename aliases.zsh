@@ -237,6 +237,24 @@ alias dtrans='dc-opts up -d'
 # look at sent email
 alias dmail='open http://localhost:1080'
 
+###########################
+# Doing AWS Things        #
+###########################
+
+function awskey () {
+    export VAULT_ADDR=https://civ1.dv.adskengineer.net:8200
+    vault login -method=ldap username=$USER
+    values_main=`vault write -format=json account/627791357434/sts/Application-Ops -ttl=4h`
+    export AWS_ACCESS_KEY_ID=`echo $values_main | jq '.data.access_key' -r`
+    export AWS_SECRET_ACCESS_KEY=`echo $values_main | jq '.data.secret_key' -r`
+    export AWS_SESSION_TOKEN=`echo $values_main | jq '.data.security_token' -r`
+    values_main=`foobar`
+}
+
+function s3cp () {
+    aws s3 cp s3://sg-release-packages/classic_packages/$*
+}
+
 #######################
 
 source ~/.sshes
