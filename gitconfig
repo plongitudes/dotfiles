@@ -17,4 +17,5 @@
 	required = true
 	clean = git-lfs clean -- %f
 [commit]
-	template = /Users/etiennt/.stCommitMsg
+[credential]
+	helper = osxkeychain

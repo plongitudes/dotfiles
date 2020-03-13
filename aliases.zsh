@@ -101,27 +101,72 @@ function ppr () { echo '$*' | jsonf | pygmentize -l json }
 ###########################
 
 alias webrick='cd /usr/local/shotgun/shotgun/.idea/runConfigurations/ ; git checkout Shotgun_Server__WEBrick_.xml ; cd /usr/local/shotgun/shotgun; /usr/bin/open /Applications/IntelliJ\ IDEA.app/'
-alias sg='cd ~/shotgun/docker_shotgun'
+alias sg='cd ~/shotgun/shotgun'
 alias eg='cd /opt/etiennt/git'
 alias lc='~/shotgun/enterprise-toolbox/troubleshooting/log_chop.rb'
 
 function crop () {
+    unset name
+    unset ext
+    unset begin
+    unset finish
+    unset filename
+    name=$(echo "$1" | cut -f 1 -d '.')
+    ext=$(echo "$1" | cut -f2-  -d '.')
+    begin="${2//:/_}"
+    begin="${begin// /_}"
+    finish="${3//:/_}"
+    finish="${finish// /_}"
+    filename="${name}_${begin}_to_${finish}.${ext}"
     echo "reading $1, from $2 to $3"
     start=$(grep -n $2 $1 | head -n 1 | cut -f 1 -d ':')
     echo "start line: $start"
-    end=$(grep -n $3 $1 | head -n 1 | cut -f 1 -d ':')
-    echo "end line:   $end"
-    gawk -v start="$start" -v end="$end" 'NR >= start && NR <= end' $1 | gzip -v - > output.log.gz
+    stop=$(grep -n $3 $1 | head -n 1 | cut -f 1 -d ':')
+    echo "end line:   $stop"
+    echo "output: $filename.gz"
+    gawk -v start="$start" -v stop="$stop" 'NR >= start && NR <= stop' $1 | gzip -v - > $filename.gz
 }
 
 function zcrop () {
+    unset name
+    unset ext
+    unset begin
+    unset finish
+    unset filename
+    name=$(echo "$1" | cut -f 1 -d '.')
+    ext=$(echo "$1" | cut -f2-  -d '.')
+    begin="${2//:/_}"
+    begin="${begin// /_}"
+    finish="${3//:/_}"
+    finish="${finish// /_}"
+    filename="${name}_${begin}_to_${finish}.${ext}"
+    echo "name $name begin $begin finish $finish filename $filename"
     echo "reading $1, from $2 to $3"
-    start=$(zgrep -n $2 $1 | head -n 1 | cut -f 1 -d ':')
+    start=$(zgrep -n "$2" $1 | head -n 1 | cut -f 1 -d ':')
     echo "start line: $start"
-    end=$(zgrep -n $3 $1 | head -n 1 | cut -f 1 -d ':')
-    echo "end line:   $end"
-    gawk -v start="$start" -v end="$end" 'NR >= start && NR <= end' <(gzip -dc $1) | gzip -v - > output.log.gz
+    stop=$(zgrep -n "$3" $1 | head -n 1 | cut -f 1 -d ':')
+    echo "end line:   $stop"
+    echo "output: $filename"
+    gawk -v start="$start" -v stop="$stop" 'NR >= start && NR <= stop' <(gzip -dc $1) | gzip -v - > $filename
 }
+
+#function crop () {
+    #echo "reading $1, from $2 to $3"
+    #start=$(grep -n $2 $1 | head -n 1 | cut -f 1 -d ':')
+    #echo "start line: $start"
+    #end=$(grep -n $3 $1 | head -n 1 | cut -f 1 -d ':')
+    #echo "end line:   $end"
+    #gawk -v start="$start" -v end="$end" 'NR >= start && NR <= end' $1 | gzip -v - > output.log.gz
+#}
+#
+#function zcrop () {
+    #echo "reading $1, from $2 to $3"
+    #start=$(zgrep -n $2 $1 | head -n 1 | cut -f 1 -d ':')
+    #echo "start line: $start"
+    #end=$(zgrep -n $3 $1 | head -n 1 | cut -f 1 -d ':')
+    #echo "end line:   $end"
+    #gawk -v start="$start" -v end="$end" 'NR >= start && NR <= end' <(gzip -dc $1) | gzip -v - > output.log.gz
+#}
 
 
 ###########################
@@ -167,7 +212,19 @@ function gtg () {git log --date-order --tags --simplify-by-decoration --pretty=f
 function gtt() {git log --date-order --graph --tags --simplify-by-decoration --pretty=format:'%ai %h %d' }
 # git: vim edit all changed files
 alias gvi='~/scripts/vim_changed_files_git.rc'
-
+function bs () {
+    branches=`git branch | grep -i $1`
+    branches=${branches//\*/}
+    if test $(wc -w <<< "$branches") -eq 1; then
+        echo "SINGLE branch matched: Checking it out."
+        git checkout $branches
+        exit
+    fi
+    select branch in $branches; do
+        [ -z "$branch" ] && echo "No branch selected (choose a number)" || git checkout $branch
+        exit
+    done
+}
 
 ###########################
 # Doing Virtualbox Things #

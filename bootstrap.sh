@@ -115,10 +115,10 @@ if [ "$uname_str" == "Darwin" ]; then
 
     # set up Homebrew-Cask
     msg_user "Tapping Homebrew-Cask"
-    $PACK_MAN tap caskroom/cask
+    $PACK_MAN tap homebrew/cask
 
     # also tap homebrew fonts
-    brew tap caskroom/fonts
+    brew tap homebrew/cask-fonts
     brew cask install font-hack-nerd-font font-monofur-nerd-font-mono
 
     # install Zsh and set shell for user
@@ -198,6 +198,7 @@ ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vimrc
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vim/init.vim
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.config/nvim/init.vim
 ln -sf ${HOME}/.dotfiles/zshrc ${HOME}/.zshrc
+ln -sf ${HOME}/.dotfiles/zshenv ${HOME}/.zshenv
 
 if [ "$uname_str" == "Darwin" ]; then
     # put Alfred's prefs in so that we know to look in the Box folder for workflow and pref syncing.

@@ -19,6 +19,7 @@ setopt SHARE_HISTORY            # share history between sessions
 setopt AUTO_LIST                # list options instead of complaining about ambiguity
 setopt NO_BEEP                  # Do not fucking beep
 setopt NO_LIST_BEEP             # Do not fucking beep
+export DISABLE_MAGIC_FUNCTIONS=true
 
 export SCRIPTHOME="$HOME/scripts"
 
@@ -139,6 +140,7 @@ fi
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+    nvm
     docker
     git
     tmux
@@ -180,12 +182,15 @@ source $ZSH_CUSTOM/plugins/enhancd/init.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # set up pyenv
-#export PATH="/Users/etiennt/.pyenv/bin:$PATH"
-#eval "$(pyenv init -)"
+export PATH="/Users/etiennt/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
 #eval "$(pyenv virtualenv-init -)"
 
+# set up rbenv
+# eval "$(rbenv init -)"
+
 # set up dip
-eval "$(dip console)"
+#eval "$(dip console)"
 
 # setting up nvm
 export NVM_DIR="$HOME/.nvm"
@@ -194,5 +199,4 @@ export NVM_DIR="$HOME/.nvm"
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-export PATH="$PATH:$HOME/.rvm/bin"
 
