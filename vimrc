@@ -51,6 +51,7 @@ Plugin 'Chiel92/vim-autoformat'
 Plugin 'wakatime/vim-wakatime'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'wincent/terminus'
+Bundle 'wellle/context.vim'
 Plugin 'neoclide/coc.nvim'
 
 call vundle#end()
