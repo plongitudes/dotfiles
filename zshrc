@@ -24,7 +24,7 @@ export DISABLE_MAGIC_FUNCTIONS=true
 export SCRIPTHOME="$HOME/scripts"
 
 # set path
-export PATH="/usr/local/sbin:/usr/sbin:/usr/local/bin:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:$PATH:./node_modules/.bin"
+export PATH="/usr/local/sbin:/usr/sbin:/usr/local/bin:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:./node_modules/.bin:${HOME}/.rbenv/bin:${PATH}"
 
 # add to PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:/usr/local/shotgun/python-api
@@ -141,6 +141,7 @@ fi
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
     nvm
+    rbenv
     docker
     git
     tmux
@@ -148,6 +149,7 @@ plugins=(
     zsh-autosuggestions
     zsh-completions
     fast-syntax-highlighting
+    virtualenv
 )
 
 autoload -U compinit && compinit
@@ -187,7 +189,7 @@ eval "$(pyenv init -)"
 #eval "$(pyenv virtualenv-init -)"
 
 # set up rbenv
-# eval "$(rbenv init -)"
+eval "$(rbenv init -)"
 
 # set up dip
 #eval "$(dip console)"
@@ -197,6 +199,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
 [ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+# use brew's upgradeable openssl 1.1
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 

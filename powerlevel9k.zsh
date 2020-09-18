@@ -32,9 +32,14 @@ POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='124'
 POWERLEVEL9K_VCS_GIT_HOOKS=(vcs-detect-changes git-untracked git-aheadbehind git-stash git-remotebranch git-tagname)
 #POWERLEVEL9K_VCS_GIT_HOOKS=(vcs-detect-changes git-untracked git-aheadbehind git-stash git-remotebranch)
 
+POWERLEVEL9K_RBENV_FOREGROUND='196'
+POWERLEVEL9K_RBENV_BACKGROUND='237'
 
-POWERLEVEL9K_RVM_FOREGROUND='196'
-POWERLEVEL9K_RVM_BACKGROUND='237'
+POWERLEVEL9K_PYENV_FOREGROUND='226'
+POWERLEVEL9K_PYENV_BACKGROUND='094'
+
+POWERLEVEL9K_NODE_VERSION_FOREGROUND='069'
+POWERLEVEL9K_NODE_VERSION_BACKGROUND='237'
 
 POWERLEVEL9K_CONTEXT_DEFAULT_BACKGROUND='232'
 POWERLEVEL9K_CONTEXT_DEFAULT_FOREGROUND='034'
@@ -43,5 +48,5 @@ POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX="%K{white}%k"
 POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX="%K{239}%F{010} %f%k%K{010}%F{239}\ue0b0%f%F{010}%k\ue0b0%f "
 
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(time host dir detect_virt)
-#POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs command_execution_time vcs rvm context)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs command_execution_time vcs rvm)
+#POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs command_execution_time vcs rbenv context)
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs command_execution_time vcs rbenv pyenv node_version nvm)

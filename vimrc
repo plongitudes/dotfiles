@@ -78,8 +78,8 @@ filetype plugin indent on     " required
 "=============================
 " Some pyenv stuff
 "=============================
-"let g:python_host_prog="/Users/etiennt/.pyenv/shims/python"
-"let g:python3_host_prog="/Users/etiennt/.pyenv/shims/python"
+let g:python_host_prog="/Users/etiennt/.pyenv/shims/python"
+let g:python3_host_prog="/Users/etiennt/.pyenv/shims/python"
 
 "=============================
 " Some deoplete stuff
@@ -362,6 +362,34 @@ endfunction
 "exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
 exec "set listchars=eol:⏎,tab:␉·,trail:␠,nbsp:⎵"
 set list
+
+"=============================
+" monitor macOS to detect light/dark theme changes
+"=============================
+
+function! SetBackgroundMode(...)
+    let s:new_bg = "dark"
+    if $TERM_PROGRAM ==? "iTerm.app"
+        let s:mode = systemlist("defaults read -g AppleInterfaceStyle")[0]
+        if s:mode ==? "dark"
+            let s:new_bg = "dark"
+        else
+            let s:new_bg = "light"
+        endif
+    else
+        " This is for Linux where I use an environment variable for this:
+        if $VIM_BACKGROUND ==? "dark"
+            let s:new_bg = "dark"
+        else
+            let s:new_bg = "light"
+        endif
+    endif
+    if &background !=? s:new_bg
+        let &background = s:new_bg
+    endif
+endfunction
+call SetBackgroundMode()
+call timer_start(30000, "SetBackgroundMode", {"repeat": -1})
 
 "=============================
 " some tips and tricks to keep track of
