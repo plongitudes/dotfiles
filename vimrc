@@ -12,6 +12,10 @@ au!
   autocmd ColorScheme * highlight Tab             ctermbg=darkblue  guibg=darkblue
 augroup END
 
+" from https://thoughtbot.com/blog/modern-typescript-and-react-development-in-vim
+autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
+
 "=============================
 " Vundle settings
 "=============================
@@ -40,11 +44,12 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'autozimu/languageclient-neovim'
 Plugin 'tpope/vim-sensible'
-Plugin 'tpope/vim-surround'
+"Plugin 'tpope/vim-surround'
 Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Raimondi/delimitMate'
-Plugin 'lervag/file-line'
+"Plugin 'lervag/file-line'
+Plugin 'bogado/file-line'
 Plugin 'plytophogy/vim-virtualenv'
 Plugin 'Chiel92/vim-autoformat'
 "Plugin 'w0rp/ale'
@@ -53,6 +58,12 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'wincent/terminus'
 Bundle 'wellle/context.vim'
 Plugin 'neoclide/coc.nvim'
+Plugin 'pangloss/vim-javascript'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'MaxMEllon/vim-jsx-pretty'
+Plugin 'peitalin/vim-jsx-typescript'
+Plugin 'styled-components/vim-styled-components'
+Plugin 'jparise/vim-graphql'
 
 call vundle#end()
 if s:bootstrap
@@ -106,10 +117,12 @@ set signcolumn=yes
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
-\ pumvisible() ? "\<C-n>" :
-\ <SID>check_back_space() ? "\<TAB>" :
-\ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+    \ pumvisible() ? "\<C-n>" :
+    \ <SID>check_back_space() ? "\<TAB>" :
+    \ coc#refresh()
+"not using this anymore because it overrides shift-tab for getting out of
+"completions
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -239,9 +252,18 @@ set shiftwidth=4 "set # of spaces to indent
 set softtabstop=4 "how many spaces a tab counts as
 filetype plugin indent on
 autocmd FileType ruby setlocal expandtab shiftwidth=2 softtabstop=2
+autocmd FileType javascript setlocal expandtab shiftwidth=2 softtabstop=2
 autocmd FileType python setlocal expandtab shiftwidth=4 softtabstop=4
 "don't indent when pasting
 map <F2> :set invpaste<CR>
+
+" put search results in the middle of the screen
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zz
+nnoremap # #zz
+nnoremap g* g*zz
+nnoremap g# g#zz
 
 "=============================
 " Word wrap settings
@@ -343,20 +365,20 @@ highlight ColorColumn ctermbg=grey guifg=yellow
 call matchadd('ColorColumn', '\%81v', 100)
 
 " This rewires n and N to do the highlighing...
-nnoremap <silent> n   n:call HLNext(0.4)<cr>
-nnoremap <silent> N   N:call HLNext(0.4)<cr>
+"nnoremap <silent> n   n:call HLNext(0.1)<cr>zz
+"nnoremap <silent> N   N:call HLNext(0.1)<cr>zz
 
 " highlight the next match in red
-function! HLNext (blinktime)
-    let [bufnum, lnum, col, off] = getpos('.')
-    let matchlen = strlen(matchstr(strpart(getline('.'),col-1),@/))
-    let target_pat = '\c\%#\%('.@/.'\)'
-    let ring = matchadd('Error', target_pat, 101)
-    redraw
-    exec 'sleep ' . float2nr(a:blinktime * 1000) . 'm'
-    call matchdelete(ring)
-    redraw
-endfunction
+"function! HLNext (blinktime)
+    "let [bufnum, lnum, col, off] = getpos('.')
+    "let matchlen = strlen(matchstr(strpart(getline('.'),col-1),@/))
+    "let target_pat = '\c\%#\%('.@/.'\)'
+    "let ring = matchadd('Error', target_pat, 101)
+    "redraw
+    "exec 'sleep ' . float2nr(a:blinktime * 100) . 'm'
+    "call matchdelete(ring)
+    "redraw
+"endfunction
 
 " make tabs, trailing whitespace, and nbs visible
 "exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
