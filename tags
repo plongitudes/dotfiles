@@ -1,0 +1,37 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ag	aliases.zsh	/^function ag () { grep -i $* ~\/.oh-my-zsh\/custom\/aliases.zsh }$/;"	f
+archive	aliases.zsh	/^function archive () {$/;"	f
+awskey	aliases.zsh	/^function awskey () {$/;"	f
+bs	aliases.zsh	/^function bs () {$/;"	f
+crop	aliases.zsh	/^function crop () {$/;"	f
+dc	aliases.zsh	/^function dc-opts () {$/;"	f
+du	aliases.zsh	/^function du () { \/usr\/bin\/du -sh $* | m }$/;"	f
+find_package	bootstrap.sh	/^find_package () {$/;"	f
+fnd	aliases.zsh	/^function fnd () { find -L . -print -type f -exec grep -n $* {} \\; | grep $* -B 1 }$/;"	f
+get_package	bootstrap.sh	/^get_package () {$/;"	f
+gtg	aliases.zsh	/^function gtg () {git log --date-order --tags --simplify-by-decoration --pretty=format:'%ai %h %d' | grep $* }$/;"	f
+gtt	aliases.zsh	/^function gtt() {git log --date-order --graph --tags --simplify-by-decoration --pretty=format:'%ai %h %d' }$/;"	f
+install_package	bootstrap.sh	/^install_package () {$/;"	f
+it2prof	aliases.zsh	/^function it2prof() { echo -e "\\033]50;SetProfile=$1\\a" }$/;"	f
+ka	aliases.zsh	/^function ka() { kill -9 $(pgrep -i $*) }$/;"	f
+l	aliases.zsh	/^function l () { \/bin\/ls -CFlaG $* | m }$/;"	f
+l	aliases.zsh	/^function l () { \/bin\/ls -CFlaGh $* | m }$/;"	f
+lg	aliases.zsh	/^function lg () { ll * | grep -i $* }$/;"	f
+ll	aliases.zsh	/^function ll () { \/bin\/ls -CFlGh $* | m }$/;"	f
+lp	aliases.zsh	/^function lp () { find `pwd` -name $* }$/;"	f
+ls	aliases.zsh	/^function ls () { \/bin\/ls -CFGh $* | m }$/;"	f
+lsd	aliases.zsh	/^function lsd () { \/bin\/ls -CFlGh $* | grep -e '^d' }$/;"	f
+lt	aliases.zsh	/^function lt () { \/bin\/ls -CFltrGh $* | m }$/;"	f
+mdiff	aliases.zsh	/^function mdiff() { \/Applications\/Xcode.app\/Contents\/Applications\/FileMerge.app\/Contents\/MacOS\/FileMerge -left $1 -right $2 }$/;"	f
+msg_user	bootstrap.sh	/^msg_user () { printf "$ECHO_PREFIX $1 $ECHO_SUFFIX\\n"; }$/;"	f
+pfx_user	bootstrap.sh	/^pfx_user () { printf "$ECHO_PREFIX $1"; }$/;"	f
+ppr	aliases.zsh	/^function ppr () { echo '$*' | jsonf | pygmentize -l json }$/;"	f
+s3cp	aliases.zsh	/^function s3cp () {$/;"	f
+sfx_user	bootstrap.sh	/^sfx_user () { printf "$1\\n"; }$/;"	f
+vmreset	aliases.zsh	/^function vmreset () {$/;"	f
+zcrop	aliases.zsh	/^function zcrop () {$/;"	f

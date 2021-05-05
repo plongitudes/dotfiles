@@ -42,17 +42,13 @@ endtry
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
-Plugin 'autozimu/languageclient-neovim'
 Plugin 'tpope/vim-sensible'
-"Plugin 'tpope/vim-surround'
 Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Raimondi/delimitMate'
-"Plugin 'lervag/file-line'
 Plugin 'bogado/file-line'
 Plugin 'plytophogy/vim-virtualenv'
 Plugin 'Chiel92/vim-autoformat'
-"Plugin 'w0rp/ale'
 Plugin 'wakatime/vim-wakatime'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'wincent/terminus'
@@ -64,6 +60,8 @@ Plugin 'MaxMEllon/vim-jsx-pretty'
 Plugin 'peitalin/vim-jsx-typescript'
 Plugin 'styled-components/vim-styled-components'
 Plugin 'jparise/vim-graphql'
+Plugin 'ludovicchabant/vim-gutentags'
+Plugin 'mtdl9/vim-log-highlighting'
 
 call vundle#end()
 if s:bootstrap
@@ -93,12 +91,6 @@ let g:python_host_prog="/Users/etiennt/.pyenv/shims/python"
 let g:python3_host_prog="/Users/etiennt/.pyenv/shims/python"
 
 "=============================
-" Some deoplete stuff
-"=============================
-"let g:deoplete#enable_at_startup = 1
-"set completeopt+=noinsert
-
-"=============================
 " Some coc.nvim stuff
 "=============================
 set hidden                    " for coc.nvim, TextEdit might fail without this
@@ -113,6 +105,9 @@ set shortmess+=c
 
 " always show signcolumns
 set signcolumn=yes
+
+" indent curly braces better
+inoremap {<CR> {<CR>}<C-o>O
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
@@ -251,6 +246,7 @@ set expandtab "turn tabs into spaces
 set shiftwidth=4 "set # of spaces to indent
 set softtabstop=4 "how many spaces a tab counts as
 filetype plugin indent on
+autocmd FileType go setlocal expandtab shiftwidth=2 softtabstop=2
 autocmd FileType ruby setlocal expandtab shiftwidth=2 softtabstop=2
 autocmd FileType javascript setlocal expandtab shiftwidth=2 softtabstop=2
 autocmd FileType python setlocal expandtab shiftwidth=4 softtabstop=4
@@ -316,49 +312,14 @@ set background=dark
 let delimitMate_expand_space = 1
 let delimitMate_expand_cr = 1
 
-"ALE: Eslint config
-let g:ale_linters = {
-      \   'javascript': ['eslint'],
-      \   'ruby': ['rubocop'],
-      \   'scss': ['scss_lint'],
-      \}
-
-"ALE: Prettier Config
-let g:ale_fixers = {}
-let g:ale_fixers['javascript'] = ['eslint']
-let g:ale_fixers['ruby'] = ['rubocop']
-let g:ale_fix_on_save = 1
-let g:airline#extensions#ale#enabled = 1
-
-nnoremap <F5> :ALEFix<CR>`
-nnoremap <F6> :lw<CR>
-nnoremap <F7> :lcl<CR>
-
+" Context
+" setting this to 0 in hopes of speeding up _some_ parts of Context
+let g:context_add_mappings = 1
+let g:context_add_autocmds = 1
+let g:context_nvim_no_redraw = 1
 "=============================
 " Custom functions
 "=============================
-
-" setup for solargraph and flow
-let g:LanguageClient_serverCommands = {
-    \ 'javascript': ['flow-language-server', '--stdio'],
-    \ 'javascript.jsx': ['flow-language-server', '--stdio'],
-    \ 'ruby': ['solargraph','stdio']
-    \ }
-
-" Tab completion for words
-"function! InsertTabWrapper()
-  "let col = col('.') - 1
-  "if !col || getline('.')[col - 1] !~ '\k'
-    "return "\<tab>"
-  "else
-    "if pumvisible()
-      "return "\<C-n>" 
-    "else
-      "return deoplete#mappings#manual_complete()
-    "endif
-  "endif
-"endfunction
-"inoremap <silent><expr> <Tab> InsertTabWrapper()
 
 " Make the 81st column stand out
 highlight ColorColumn ctermbg=grey guifg=yellow
@@ -391,7 +352,7 @@ set list
 
 function! SetBackgroundMode(...)
     let s:new_bg = "dark"
-    if $TERM_PROGRAM ==? "iTerm.app"
+    if ($TERM_PROGRAM ==? "iTerm.app") || has("gui_vimr")
         let s:mode = systemlist("defaults read -g AppleInterfaceStyle")[0]
         if s:mode ==? "dark"
             let s:new_bg = "dark"

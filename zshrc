@@ -21,6 +21,12 @@ setopt NO_BEEP                  # Do not fucking beep
 setopt NO_LIST_BEEP             # Do not fucking beep
 export DISABLE_MAGIC_FUNCTIONS=true
 
+# readline and xz export flags because macOS
+# https://stackoverflow.com/questions/64353172/pyenv-build-failed-os-x-10-15-7-using-python-build-20180424
+export LDFLAGS="-L/usr/local/opt/readline/lib"
+export CPPFLAGS="-I/usr/local/opt/readline/include"
+export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
+
 export SCRIPTHOME="$HOME/scripts"
 
 # set path
