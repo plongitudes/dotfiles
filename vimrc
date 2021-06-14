@@ -87,8 +87,8 @@ filetype plugin indent on     " required
 "=============================
 " Some pyenv stuff
 "=============================
-let g:python_host_prog="/Users/etiennt/.pyenv/shims/python"
-let g:python3_host_prog="/Users/etiennt/.pyenv/shims/python"
+let g:python_host_prog="$HOME/.pyenv/shims/python"
+let g:python3_host_prog="$HOME/.pyenv/shims/python"
 
 "=============================
 " Some coc.nvim stuff
