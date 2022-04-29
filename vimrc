@@ -43,6 +43,7 @@ endtry
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'tpope/vim-sensible'
+Plugin 'tpope/vim-rails'
 Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-fugitive'
 Plugin 'Raimondi/delimitMate'
@@ -54,11 +55,14 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'wincent/terminus'
 Bundle 'wellle/context.vim'
 Plugin 'neoclide/coc.nvim'
+Plugin 'psf/black'
+"Plugin 'tweekmonster/impsort.vim'
 Plugin 'pangloss/vim-javascript'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'MaxMEllon/vim-jsx-pretty'
 Plugin 'peitalin/vim-jsx-typescript'
 Plugin 'styled-components/vim-styled-components'
+Plugin 'alvan/vim-closetag'
 Plugin 'jparise/vim-graphql'
 Plugin 'ludovicchabant/vim-gutentags'
 Plugin 'mtdl9/vim-log-highlighting'
@@ -87,8 +91,8 @@ filetype plugin indent on     " required
 "=============================
 " Some pyenv stuff
 "=============================
-let g:python_host_prog="$HOME/.pyenv/shims/python"
-let g:python3_host_prog="$HOME/.pyenv/shims/python"
+"let g:python_host_prog="$HOME/.pyenv/shims/python"
+"let g:python3_host_prog="$HOME/.pyenv/shims/python"
 
 "=============================
 " Some coc.nvim stuff
@@ -202,6 +206,8 @@ nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+" unmap Y from y*
+silent!  nunmap Y
 
 "=============================
 " Some terminal stuff
@@ -239,6 +245,7 @@ set nu "turn on line numbers
 set showmatch "briefly highlight matching bracket if visible
 set wrap "wrap long lines
 set visualbell "flash the screen for a bell
+set tags+=$HOME/.tags
 
 set autoindent "autoindent when applicable
 set smarttab "insert blanks according to shiftwidth when <Tab> is hit
@@ -298,6 +305,10 @@ nnoremap tm  :tabm<Space>
 " Plugin-specific settings
 "=============================
 
+" Black
+autocmd BufWritePre *.py execute ':Black'
+nnoremap <C-k> :Black<CR>
+
 " Gruvbox
 let g:gruvbox_bold=1
 let g:gruvbox_italic=0
@@ -317,6 +328,52 @@ let delimitMate_expand_cr = 1
 let g:context_add_mappings = 1
 let g:context_add_autocmds = 1
 let g:context_nvim_no_redraw = 1
+
+" vim-closetag
+" filenames like *.xml, *.html, *.xhtml, ...
+" These are the file extensions where this plugin is enabled.
+"
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.erb'
+
+" filenames like *.xml, *.xhtml, ...
+" This will make the list of non-closing tags self-closing in the specified files.
+"
+let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
+
+" filetypes like xml, html, xhtml, ...
+" These are the file types where this plugin is enabled.
+"
+let g:closetag_filetypes = 'html,xhtml,phtml,erb'
+
+" filetypes like xml, xhtml, ...
+" This will make the list of non-closing tags self-closing in the specified files.
+"
+let g:closetag_xhtml_filetypes = 'xhtml,jsx'
+
+" integer value [0|1]
+" This will make the list of non-closing tags case-sensitive (e.g. `<Link>` will be closed while `<link>` won't.)
+"
+let g:closetag_emptyTags_caseSensitive = 1
+
+" dict
+" Disables auto-close if not in a "valid" region (based on filetype)
+"
+let g:closetag_regions = {
+    \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+    \ 'javascript.jsx': 'jsxRegion',
+    \ 'typescriptreact': 'jsxRegion,tsxRegion',
+    \ 'javascriptreact': 'jsxRegion',
+    \ }
+
+" Shortcut for closing tags, default is '>'
+"
+let g:closetag_shortcut = '>'
+
+" Add > at current position without closing the current tag, default is ''
+"
+let g:closetag_close_shortcut = '<leader>>'
+
+
 "=============================
 " Custom functions
 "=============================
@@ -361,10 +418,10 @@ function! SetBackgroundMode(...)
         endif
     else
         " This is for Linux where I use an environment variable for this:
-        if $VIM_BACKGROUND ==? "dark"
-            let s:new_bg = "dark"
-        else
+        if $VIM_BACKGROUND ==? "light"
             let s:new_bg = "light"
+        else
+            let s:new_bg = "dark"
         endif
     endif
     if &background !=? s:new_bg

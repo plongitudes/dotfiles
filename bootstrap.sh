@@ -127,6 +127,9 @@ if [ "$uname_str" == "Darwin" ]; then
     # and git
     get_package git GIT_CMD
 
+    # and now asdf
+    $PACK_MAN intall asdf
+
     # and neovim and vimR
     get_package nvim NVIM_CMD
     $PACK_MAN cask install vimr
@@ -134,11 +137,13 @@ if [ "$uname_str" == "Darwin" ]; then
     # we need readline and xz for pyenv and some neovim stuff
     $PACK_MAN install readline xz openssl
 
+    # we also need some prerequisites for the enhancd omz plugin
+    $PACK_MAN tap jhawthorn/fzy
+    $PACK_MAN install fzy ccat percol peco fzf
+
     # and fuckit, other apps we'll need
-    $PACK_MAN cask install battle-net rocket dip \
-        default-folder-x disk-inventory-x divvy firefox \
-        gog-galaxy numi skitch steam the-clock \
-        tunnelblick vlc zoom rescuetime
+    $PACK_MAN cask install rocket dip default-folder-x disk-inventory-x alt-tab \
+        firefox numi rectangle skitch the-clock vlc zoom rescuetime
 
 elif [ "$uname_str" == "Linux" ]; then
     # make sure zsh is installed
@@ -184,21 +189,25 @@ git clone https://github.com/plongitudes/dotfiles.git ${HOME}/.dotfiles
 mkdir -p ${HOME}/.config/nvim
 mkdir -p ${HOME}/.vim
 ln -sf ${HOME}/.dotfiles/aliases.zsh ${HOME}/.oh-my-zsh/custom/aliases.zsh
+ln -sf ${HOME}/.dotfiles/default-gems ${HOME}/.default-gems
+ln -sf ${HOME}/.dotfiles/default-python-packages ${HOME}/.default-python-packages
 ln -sf ${HOME}/.dotfiles/fakeSMTP.properties ${HOME}/.fakeSMTP.properties
 ln -sf ${HOME}/.dotfiles/gitattributes ${HOME}/.gitattributes
 ln -sf ${HOME}/.dotfiles/gitconfig ${HOME}/.gitconfig
 ln -sf ${HOME}/.dotfiles/gitignore_global ${HOME}/.gitignore_global
 ln -sf ${HOME}/.dotfiles/jsbeautifyrc ${HOME}/.jsbeautifyrc
+ln -sf ${HOME}/.dotfiles/p10k.zsh ${HOME}/.p10k.zsh
 ln -sf ${HOME}/.dotfiles/powerlevel9k.zsh ${HOME}/.oh-my-zsh/custom/powerlevel9k.zsh
 ln -sf ${HOME}/.dotfiles/plongitudes.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
 ln -sf ${HOME}/.dotfiles/plongitudes-plain.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
-ln -sf ${HOME}/.dotfiles/tern-project ${HOME}/.tern-project
+ln -sf ${HOME}/.dotfiles/tags ${HOME}/.tags
 ln -sf ${HOME}/.dotfiles/tigrc ${HOME}/.tigrc
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vimrc
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.vim/init.vim
 ln -sf ${HOME}/.dotfiles/vimrc ${HOME}/.config/nvim/init.vim
 ln -sf ${HOME}/.dotfiles/zshrc ${HOME}/.zshrc
 ln -sf ${HOME}/.dotfiles/zshenv ${HOME}/.zshenv
+
 
 if [ "$uname_str" == "Darwin" ]; then
     # put Alfred's prefs in so that we know to look in the Box folder for workflow and pref syncing.
@@ -214,12 +223,6 @@ if [ "$uname_str" == "Darwin" ]; then
     defaults export com.googlecode.iterm2.plist ~/Library/Preferences/com.googlecode.iterm2.plist
 fi
 
-# install rbenv and pyenv
-#$PACK_MAN install pyenv pyenv-virtualenv
-#git clone https://github.com/momo-lab/pyenv-install-latest.git "$(pyenv root)"/plugins/pyenv-install-latest
-#pyenv install-latest
-#pyenv install-latest 2.7
+# install asdf
 
-command curl -sSL https://rvm.io/mpapis.asc | gpg --import -
-\curl -sSL https://get.rvm.io | bash -s stable
 

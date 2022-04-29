@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 #
@@ -30,7 +37,7 @@ export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
 export SCRIPTHOME="$HOME/scripts"
 
 # set path
-export PATH="/usr/local/sbin:/usr/sbin:/usr/local/bin:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:./node_modules/.bin:${HOME}/.rbenv/bin:${PATH}"
+export PATH="/usr/local/sbin:/usr/sbin:/usr/local/bin:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:./node_modules/.bin:${HOME}/.rbenv/bin:${PATH}:${HOME}/go/bin"
 
 # add to PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:/usr/local/shotgun/python-api
@@ -93,7 +100,7 @@ elif (( ! $? && ${term_colors:-0} < 256 )); then
     ZSH_THEME="plongitudes"
 else
     POWERLEVEL9K_MODE='nerdfont-complete'
-    ZSH_THEME="powerlevel9k/powerlevel9k"
+    ZSH_THEME="powerlevel10k/powerlevel10k"
 fi
 
 # Set list of themes to load
@@ -146,9 +153,7 @@ fi
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    nvm
-    rbenv
-    docker
+    asdf
     git
     tmux
     history-search-multi-word
@@ -190,21 +195,26 @@ source $ZSH_CUSTOM/plugins/enhancd/init.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # set up pyenv
-export PATH="/Users/etiennt/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
+#export PATH="$HOME/.pyenv/bin:$PATH"
+#eval "$(pyenv init -)"
 #eval "$(pyenv virtualenv-init -)"
 
 # set up rbenv
-eval "$(rbenv init -)"
+#eval "$(rbenv init -)"
 
 # set up dip
 #eval "$(dip console)"
 
 # setting up nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+#export NVM_DIR="$HOME/.nvm"
+#[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+#[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
 
 # use brew's upgradeable openssl 1.1
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
+# set up asdf
+. /usr/local/opt/asdf/libexec/asdf.sh
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

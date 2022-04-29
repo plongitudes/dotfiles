@@ -1,15 +1,23 @@
 [user]
-	email = marvinbot@tonyetienne.com
-	name = Tony Etienne
+	email = github@tonyetienne.com
+	name = plongitudes
 [core]
 	editor = vim
 	excludesfile = /Users/etiennt/.gitignore_global
+
+# define command which will be used when "nvim" is set as a merge tool
+[mergetool "nvim"]
+  cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
+# set "nvim" as tool for merging
+[merge]
+  tool = nvim
+# automatically launch merge tool without displaying a prompt
+[mergetool]
+  prompt = false
+
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
 [commit]
 [filter "lfs"]
 	smudge = git-lfs smudge -- %f
@@ -19,3 +27,5 @@
 [commit]
 [credential]
 	helper = osxkeychain
+[init]
+	templateDir = /Users/tetienne/.git-template
