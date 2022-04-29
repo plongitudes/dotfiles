@@ -1,0 +1,8 @@
+pynvim
+neovim
+ipython
+python-dotenv
+black
+requests
+pythoncolorize
+git+https://github.com/shotgunsoftware/python-api.git#egg=shotgun-api3

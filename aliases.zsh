@@ -89,6 +89,9 @@ function archive () {
     tar cfz archived/$archive_dir.tgz $archive_dir/
     rm -rf $archive_dir
 }
+function mklist() {
+    find ./$1/ -iname '*.zip' |rev| cut -d '/' -f 1 | rev | uniq | sort  > $1.txt
+}
 
 ###########################
 # Doing Ruby Things       #
@@ -295,25 +298,42 @@ alias dtrans='dc-opts up -d'
 alias dmail='open http://localhost:1080'
 
 ###########################
-# Doing AWS Things        #
+# Doing venv Things       #
 ###########################
 
-function awskey () {
-    export VAULT_ADDR=https://civ1.dv.adskengineer.net:8200
-    vault login -method=ldap username=$USER
-    values_main=`vault write -format=json account/627791357434/sts/Application-Ops -ttl=4h`
-    export AWS_ACCESS_KEY_ID=`echo $values_main | jq '.data.access_key' -r`
-    export AWS_SECRET_ACCESS_KEY=`echo $values_main | jq '.data.secret_key' -r`
-    export AWS_SESSION_TOKEN=`echo $values_main | jq '.data.security_token' -r`
-    values_main=`foobar`
+function upsearch() {
+  local slashes=${PWD//[^\/]/}
+  directory="$PWD"
+  for (( n=${#slashes}; n>0; --n ))
+  do
+    test -e "$directory/$1" && return
+    directory="$directory/.."
+  done
+  directory=`realpath -L "$directory"`
 }
 
-function s3cp () {
-    aws s3 cp s3://sg-release-packages/classic_packages/$*
+function chpwd() {
+    # Make sure the appropriate Python venv is automatically activated.
+    upsearch ".venv"
+
+    if [ "$directory" = "/" ]; then
+        if [[ -v VIRTUAL_ENV ]]; then
+            deactivate
+        fi
+
+        return
+    fi
+
+    if [[ "$directory/.venv" == $VIRTUAL_ENV ]]; then
+        return
+    fi
+
+    source "$directory/.venv/bin/activate"
 }
+
+alias ve='python -m venv .venv'
 
 #######################
 
-source ~/.sshes
 source ~/.oh-my-zsh/custom/sg_helpers.zsh
 
