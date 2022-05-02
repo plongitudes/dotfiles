@@ -37,7 +37,7 @@ export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
 export SCRIPTHOME="$HOME/scripts"
 
 # set path
-export PATH="/usr/local/sbin:/usr/sbin:/usr/local/bin:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:./node_modules/.bin:${HOME}/.rbenv/bin:${PATH}:${HOME}/go/bin"
+export PATH="/usr/local/sbin:/usr/sbin:/usr/local/bin:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:${PATH}:${HOME}/go/bin"
 
 # add to PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:/usr/local/shotgun/python-api

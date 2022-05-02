@@ -1,6 +1,7 @@
 pynvim
 neovim
 ipython
+pdbpp
 python-dotenv
 black
 requests
