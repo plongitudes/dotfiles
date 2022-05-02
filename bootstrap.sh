@@ -197,6 +197,7 @@ ln -sf ${HOME}/.dotfiles/gitconfig ${HOME}/.gitconfig
 ln -sf ${HOME}/.dotfiles/gitignore_global ${HOME}/.gitignore_global
 ln -sf ${HOME}/.dotfiles/jsbeautifyrc ${HOME}/.jsbeautifyrc
 ln -sf ${HOME}/.dotfiles/p10k.zsh ${HOME}/.p10k.zsh
+ln -sf ${HOME}/.dotfiles/pdbrc.py ${HOME}/.pdbrc.py
 ln -sf ${HOME}/.dotfiles/powerlevel9k.zsh ${HOME}/.oh-my-zsh/custom/powerlevel9k.zsh
 ln -sf ${HOME}/.dotfiles/plongitudes.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme
 ln -sf ${HOME}/.dotfiles/plongitudes-plain.zsh-theme ${HOME}/.oh-my-zsh/custom/themes/plongitudes.zsh-theme

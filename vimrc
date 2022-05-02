@@ -56,7 +56,7 @@ Plugin 'wincent/terminus'
 Bundle 'wellle/context.vim'
 Plugin 'neoclide/coc.nvim'
 Plugin 'psf/black'
-"Plugin 'tweekmonster/impsort.vim'
+Plugin 'yaegassy/coc-pydocstring', {'do': 'yarn install --frozen-lockfile'}
 Plugin 'pangloss/vim-javascript'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'MaxMEllon/vim-jsx-pretty'
@@ -87,12 +87,6 @@ filetype plugin indent on     " required
 " NOTE: comments after Plugin commands are not allowed.
 " Put your stuff after this line
 
-
-"=============================
-" Some pyenv stuff
-"=============================
-"let g:python_host_prog="$HOME/.pyenv/shims/python"
-"let g:python3_host_prog="$HOME/.pyenv/shims/python"
 
 "=============================
 " Some coc.nvim stuff
@@ -304,6 +298,11 @@ nnoremap tm  :tabm<Space>
 "=============================
 " Plugin-specific settings
 "=============================
+
+" coc-pydocstring
+nmap <silent> ga <Plug>(coc-codeaction-line)
+xmap <silent> ga <Plug>(coc-codeaction-selected)
+nmap <silent> gA <Plug>(coc-codeaction)
 
 " Black
 autocmd BufWritePre *.py execute ':Black'
