@@ -10,10 +10,10 @@ class Config(pdb.DefaultConfig):
     # prompt = '(Pdb++) '
 
     # Highlight line numbers and the current line when showing the longlist of a function or when in sticky mode.
-    # highlight = True
+    highlight = True
 
     # File encoding. Useful when there are international characters in your string literals or comments.
-    # encoding = "utf-8"
+    encoding = "utf-8"
 
     # Determine whether pdb++ starts in sticky mode or not.
     sticky_by_default = True
@@ -35,16 +35,16 @@ class Config(pdb.DefaultConfig):
     # If pygments is installed and highlight == True, apply syntax highlight to
     # the source code when showing the longlist of a function or when in sticky
     # mode.
-    # use_pygments = True
+    use_pygments = True
 
     # Passed directly to the pygments.formatters.TerminalFormatter constructor.
     # Selects the color scheme to use, depending on the background color of your
     # terminal. If you have a light background color, try to set it to 'light'.
-    # bg = "dark"
+    bg = "gruvbox-dark"
 
     # Passed directly to the pygments.formatters.TerminalFormatter constructor.
     # It expects a dictionary that maps token types to (lightbg, darkbg) color names or None (default: None = use builtin colorscheme).
-    # colorscheme = None
+    colorscheme = {"lightbg": "gruvbox-light", "darkgb": "gruvbox-dark"}
 
     # The command to invoke when using the edit command. By default, it uses
     # $EDITOR if set, else vi. The command must support the standard notation
