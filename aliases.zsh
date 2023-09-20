@@ -2,61 +2,96 @@
 # General                 #
 ###########################
 
-# for sysV flavors like centos and RHEL,
-# let's get color into ls
-if [[ "$(uname)" == "Linux" ]]; then
-    alias ls='/bin/ls --color'
-fi
+# find and use drop-in replacements like bat, ripgrep, etc if installed
+for CMD in "cat ls vi vim nvim asdf batg man"; do
+  unalias $CMD 2>/dev/null
+done
 
-# find the proper installation of vim
-NVIM_CMD=$(command -v nvim 2>/dev/null)
-VIM_CMD=$(command -v vim 2>/dev/null)
-VI_CMD=$(command -v vi 2>/dev/null)
-
-if [ ! -z $NVIM_CMD ]; then
-    alias vi='nvim'
-    alias li='vi -c "set background=light"'
-elif [ ! -z $VIM_CMD ]; then
-    alias vi='vim'
-elif [ ! -z $VI_CMD ]; then
-    alias vi='vi'
-else
-    echo "Can't find vim or vi! What the hell, man?"
-fi
+alias cat="bat"
+alias ls="exa"
+alias vi="nvim"
+alias asdf="rtx"
+alias grep="batgrep -S -C 3"
+alias man="batman"
 
 alias rm='rm -i'
-alias m='$PAGER -M'
 alias fort='echo "" ; /usr/games/fortune -e ; echo ""'
 alias duf='sudo /usr/bin/du -d 1 -h'
-alias h='history'
 alias hg='history | grep -i'
-alias lo='logout'
-alias xv='xnview'
 
-function du () { /usr/bin/du -sh $* | m }
-function l () { /bin/ls -CFlaG $* | m }
+function vf () { vi $(fzf -q $* ); }
+function du () { /usr/bin/du -sh $* | ${PAGER} }
+function l () { /bin/ls -CFlaG $* | ${PAGER} }
+
+format_stacktrace='grep --line-buffered -o '\''".\+[^"]"'\'' | grep --line-buffered -o '\''[^"]*[^"]'\'' | while read -r line; do printf "%b" $line; done | tr "\r\n" "\275\276" | tr -d "[:cntrl:]" | tr "\275\276" "\r\n"'
+#strace -e trace=read,write,recvfrom,sendto -s 4096 -fp $(pgrep -n php) 2>&1 | format-strace
+
+
+############################
+# env aliases              #
+############################
+
+alias eg='env | grep -i'
 
 ############################
 # ls aliases               #
 ############################
 
-unalias l
-unalias ll
-function l () { /bin/ls -CFlaGh $* | m }
-function ls () { /bin/ls -CFGh $* | m }
-function ll () { /bin/ls -CFlGh $* | m }
-function lt () { /bin/ls -CFltrGh $* | m }
-function lsd () { /bin/ls -CFlGh $* | grep -e '^d' }
-function lg () { ll * | grep -i $* }
-function lp () { find `pwd` -name $* }
+unalias l 2>/dev/null
+unalias ll 2>/dev/null
+
+if [[ -x `which exa` ]]; then
+    function l () { exa -laFg --git --color=always $* | ${PAGER}; }
+    function ll () { exa -lFg --git --color=always $* | ${PAGER}; }
+    function ltr () { exa -laFg --sort=modified --reverse --git --color=always $* | ${PAGER}; }
+    function lltr () { exa -lFg --sort=modified --reverse --git --color=always $* | ${PAGER}; }
+    function lt () { exa -laFg --sort=modified --git --color=always $* | ${PAGER}; }
+    function llt () { exa -lFg --sort=modified --git --color=always $* | ${PAGER}; }
+    function ld () { exa -laFgD --git --color=always $* | ${PAGER}; }
+    function lp () { fd -H -g "$*"; }
+else
+    # C list by columns
+    # F classify indicator character
+    # l long listing format
+    # a all
+    # G no group names
+    # h human readable units
+    # t sort by time, newsest first
+    # r reverse sort order
+    function l () { /bin/ls -CFlah $* | ${PAGER}; }
+    function ls () { /bin/ls -CFh $* | ${PAGER}; }
+    function ll () { /bin/ls -CFlh $* | ${PAGER}; }
+    function lt () { /bin/ls -CFltrh $* | ${PAGER}; }
+    function lta () { /bin/ls -CFlatrh $* | ${PAGER}; }
+    function lp () { find `pwd` -name $*; }
+fi
+
+
+###########################
+# brew aliases            #
+###########################
+
+function brupdate () {
+    brew update
+    brew upgrade
+}
+
+###########################
+# nvim aliases            #
+###########################
+
+vl='nvim --listen localhost:9999'
 
 ###########################
 # .alias aliases          #
 ###########################
 
 function ag () { grep -i $* ~/.oh-my-zsh/custom/aliases.zsh }
-alias sa='source ~/.oh-my-zsh/custom/aliases.zsh ; echo "alias file re-sourced!"'
-alias va='vi ~/.oh-my-zsh/custom/aliases.zsh; sa'
+alias sa='source ~/.dotfiles/aliases.zsh ; echo "alias file re-sourced!"'
+alias va='vi ~/.dotfiles/aliases.zsh; sa'
+alias vv='vi ~/.vimrc'
+alias vz='vi ~/.zshrc'
+
 
 ###########################
 # Finding files           #
@@ -67,14 +102,13 @@ function fnd () { find -L . -print -type f -exec grep -n $* {} \; | grep $* -B 1
 
 #alias vqo       'vi $SCRIPTHOME/sig_quotes.txt'
 
+
 ###########################
 # Doing Things            #
 ###########################
 
 alias tm='tmux attach -d'
 alias tran='transmission-remote-cli'
-alias sf='sudo chown -R tonye:tonye /media/space/transmission/complete/*'
-alias irb='pry'
 alias gpull='find . -maxdepth 1 -type d -exec sh -c "(cd {} && echo {} && git pull)" ";"'
 function mdiff() { /Applications/Xcode.app/Contents/Applications/FileMerge.app/Contents/MacOS/FileMerge -left $1 -right $2 }
 alias vu='vagrant up --provision'
@@ -105,7 +139,6 @@ function ppr () { echo '$*' | jsonf | pygmentize -l json }
 
 alias webrick='cd /usr/local/shotgun/shotgun/.idea/runConfigurations/ ; git checkout Shotgun_Server__WEBrick_.xml ; cd /usr/local/shotgun/shotgun; /usr/bin/open /Applications/IntelliJ\ IDEA.app/'
 alias sg='cd ~/shotgun/shotgun'
-alias eg='cd /opt/etiennt/git'
 alias lc='~/shotgun/enterprise-toolbox/troubleshooting/log_chop.rb'
 
 function crop () {
@@ -152,24 +185,6 @@ function zcrop () {
     echo "output: $filename"
     gawk -v start="$start" -v stop="$stop" 'NR >= start && NR <= stop' <(gzip -dc $1) | gzip -v - > $filename
 }
-
-#function crop () {
-    #echo "reading $1, from $2 to $3"
-    #start=$(grep -n $2 $1 | head -n 1 | cut -f 1 -d ':')
-    #echo "start line: $start"
-    #end=$(grep -n $3 $1 | head -n 1 | cut -f 1 -d ':')
-    #echo "end line:   $end"
-    #gawk -v start="$start" -v end="$end" 'NR >= start && NR <= end' $1 | gzip -v - > output.log.gz
-#}
-#
-#function zcrop () {
-    #echo "reading $1, from $2 to $3"
-    #start=$(zgrep -n $2 $1 | head -n 1 | cut -f 1 -d ':')
-    #echo "start line: $start"
-    #end=$(zgrep -n $3 $1 | head -n 1 | cut -f 1 -d ':')
-    #echo "end line:   $end"
-    #gawk -v start="$start" -v end="$end" 'NR >= start && NR <= end' <(gzip -dc $1) | gzip -v - > output.log.gz
-#}
 
 
 ###########################
@@ -229,16 +244,6 @@ function bs () {
     done
 }
 
-###########################
-# Doing Virtualbox Things #
-###########################
-
-function vmreset () {
-    VBoxManage controlvm "centOS minimal cleanroom" poweroff; sleep 1
-    VBoxManage snapshot "centOS minimal cleanroom" restore "step zero"; sleep 1
-    VBoxManage startvm "centOS minimal cleanroom"
-}
-
 #alias DONOTDOTHIS='sh -c "$(curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/master/omz_bootstrap.sh)"'
 
 ###########################
@@ -296,44 +301,4 @@ alias droot='docker-compose exec app bash'
 alias dtrans='dc-opts up -d'
 # look at sent email
 alias dmail='open http://localhost:1080'
-
-###########################
-# Doing venv Things       #
-###########################
-
-function upsearch() {
-  local slashes=${PWD//[^\/]/}
-  directory="$PWD"
-  for (( n=${#slashes}; n>0; --n ))
-  do
-    test -e "$directory/$1" && return
-    directory="$directory/.."
-  done
-  directory=`realpath -L "$directory"`
-}
-
-function chpwd() {
-    # Make sure the appropriate Python venv is automatically activated.
-    upsearch ".venv"
-
-    if [ "$directory" = "/" ]; then
-        if [[ -v VIRTUAL_ENV ]]; then
-            deactivate
-        fi
-
-        return
-    fi
-
-    if [[ "$directory/.venv" == $VIRTUAL_ENV ]]; then
-        return
-    fi
-
-    source "$directory/.venv/bin/activate"
-}
-
-alias ve='python -m venv .venv'
-
-#######################
-
-source ~/.oh-my-zsh/custom/sg_helpers.zsh
 
