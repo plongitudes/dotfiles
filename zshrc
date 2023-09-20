@@ -1,3 +1,47 @@
+################################################################################
+# independent exports and misc env setup
+################################################################################
+
+# If you come from bash you might have to change your $PATH.
+export PATH=$HOME/bin:$PATH
+
+# turns out we need this extra termindo dir for tmux on macOS
+export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
+export MANPATH="/usr/local/man:$MANPATH"
+export LANG=en_US.UTF-8
+export EDITOR='nvim'
+export BATDIFF_USE_DELTA=true
+export PAGER='less'
+export LESS='-FiMXR -j.5'
+export DELTA_FEATURES='side-by-side line-numbers'
+
+# zsh env vars
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
+# behavior
+setopt no_beep
+
+# usability
+setopt auto_cd
+
+# history
+export HISTSIZE=10000
+export SAVEHIST=10000
+setopt append_history
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
+setopt share_history
+
+fpath+=${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh/site-functions
+fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
+fpath+=${HOME:-~}/.dotfiles/zsh_functions
+
+
+################################################################################
+# p10k
+################################################################################
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -5,123 +49,40 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-#
-# other settings to export
-export CLICOLOR_FORCE=1
-export LESS='EXiR'
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# detect term (as much as possible):q
 
-export HISTSIZE=10000
-export SAVEHIST=10000
-#setopt EXTENDED_HISTORY         # Write the history file in the ":start:elapsed;command" format.
-#setopt INC_APPEND_HISTORY       # Write to the history file immediately, not when the shell exits.
-setopt SHARE_HISTORY            # share history between sessions
-#setopt HIST_IGNORE_DUPS         # Do not record an entry that was just recorded again.
-#setopt HIST_FIND_NO_DUPS        # Do not display a line previously found.
-#setopt HIST_SAVE_NO_DUPS        # Do not write duplicate entries in the history file.
-#setopt HIST_VERIFY              # Do not execute immediately upon history expansion.
-setopt AUTO_LIST                # list options instead of complaining about ambiguity
-setopt NO_BEEP                  # Do not fucking beep
-setopt NO_LIST_BEEP             # Do not fucking beep
-export DISABLE_MAGIC_FUNCTIONS=true
-
-# readline and xz export flags because macOS
-# https://stackoverflow.com/questions/64353172/pyenv-build-failed-os-x-10-15-7-using-python-build-20180424
-export LDFLAGS="-L/usr/local/opt/readline/lib"
-export CPPFLAGS="-I/usr/local/opt/readline/include"
-export PKG_CONFIG_PATH="/usr/local/opt/readline/lib/pkgconfig"
-
-export SCRIPTHOME="$HOME/scripts"
-
-# set path
-export PATH="/usr/local/sbin:/usr/sbin:/usr/local/bin:${SCRIPTHOME}:${HOME}/local/bin:${HOME}/.dotfiles/bin:${PATH}:${HOME}/go/bin"
-
-# add to PYTHONPATH
-export PYTHONPATH=$PYTHONPATH:/usr/local/shotgun/python-api
-
-# Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='nvim'
-fi
-#
-# =============================================================================
-#                                Key Bindings
-# =============================================================================
-# Common CTRL bindings.
-
-bindkey -e
-bindkey '^\n' autosuggest-execute
-
-# Do not require a space when attempting to tab-complete.
-bindkey "^i" expand-or-complete-prefix
-
-# =============================================================================
-#                                 Completions
-# =============================================================================
-
-zstyle ':completion:*' rehash true
-zstyle ':completion:*' menu select=1
-zstyle ':completion:*' verbose yes
-#zstyle ':completion:*:descriptions' format '%B%d%b'
-#zstyle ':completion:*:messages' format '%d'
-#zstyle ':completion:*:warnings' format 'No matches for: %d'
-#zstyle ':completion:*' group-name ''
-
-# case-insensitive (all), partial-word and then substring completion
-zstyle ":completion:*" matcher-list \
-  "m:{a-zA-Z}={A-Za-z}" \
-  "r:|[._-]=* r:|=*" \
-  "l:|=* r:|=*"
-
-#zstyle ':completion:*' list-colors "${(@s.:.)LS_COLORS}"
-
-#=============================================================================
-# oh-my-zsh specific configs
-#=============================================================================
+################################################################################
+# oh-my-zsh setup
+################################################################################
 
 # Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+export ZSH="$HOME/.oh-my-zsh"
 
-# Set name of the theme to load. Optionally, if you set this to "random"
-# it'll load a random theme each time that oh-my-zsh is loaded.
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-# Rhyd-Ddu [14:57:38] ~ [1167] >
+# Set name of the theme to load --- if set to "random", it will
+# load a random theme each time oh-my-zsh is loaded, in which case,
+# to know which specific one was loaded, run: echo $RANDOM_THEME
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
-local term_colors
-term_colors=$(echotc Co 2>/dev/null)
-if (( ! $? && ${term_colors:-0} < 16 )); then
-    ZSH_THEME="robbyrussell"
-elif (( ! $? && ${term_colors:-0} < 256 )); then
-    ZSH_THEME="plongitudes"
-else
-    POWERLEVEL9K_MODE='nerdfont-complete'
-    ZSH_THEME="powerlevel10k/powerlevel10k"
-fi
-
-# Set list of themes to load
-# Setting this variable when ZSH_THEME=random
-# cause zsh load theme from this variable instead of
-# looking in ~/.oh-my-zsh/themes/
-# An empty array have no effect
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# Uncomment the following line to use case-sensitive completion.
+# case-sensitive completion
 # CASE_SENSITIVE="true"
 
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+# Uncomment the following line to use hyphen-insensitive completion.
+# Case-sensitive completion must be off. _ and - will be interchangeable.
+HYPHEN_INSENSITIVE="true"
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+# zstyle ':omz:update' mode auto      # update automatically without asking
+zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+zstyle ':omz:update' frequency 13
+
+# Uncomment the following line if pasting URLs and other text is messed up.
+# DISABLE_MAGIC_FUNCTIONS="true"
 
 # Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
@@ -133,7 +94,11 @@ fi
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-#COMPLETION_WAITING_DOTS="true"
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+COMPLETION_WAITING_DOTS="%F{yellow}...󰦖 %f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -142,81 +107,75 @@ fi
 
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
+# You can set one of the optional three formats:
+# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+# or set a custom format using the strftime function format specifications,
+# see 'man strftime' for details.
+HIST_STAMPS="yyyy-mm-dd"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    asdf
     git
-    tmux
-    history-search-multi-word
+    ohmyzsh-full-autoupdate
     zsh-autosuggestions
-    zsh-completions
     fast-syntax-highlighting
-    virtualenv
+    # do not load zsh-completions here (see above)
 )
 
-autoload -U compinit && compinit
+# note to self that oh-my-zsh autoloads compinit for us, no need to autoload it
+# here or anything.
 
-# start up oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 
-# start up enhancd
-#export ENHANCD_DISABLE_DOT=1
-#source $ZSH_CUSTOM/plugins/enhancd/init.sh
 
-# User configuration
+################################################################################
+# rtx
+################################################################################
 
-# export MANPATH="/usr/local/man:$MANPATH"
+eval "$(/opt/homebrew/bin/rtx activate zsh)"
 
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
 
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
+################################################################################
+# more misc env stuff but after rtx is loaded
+################################################################################
 
-# ssh
-# export SSH_KEY_PATH="~/.ssh/rsa_id"
+# this gets the version number of the currently installed Python via rtx. There
+# are obviously better and easier ways to get it, but I spent 5 minutes writing
+# this and I like it, so I'm just going to keep it as a good example of how to
+# use `read`.
+read -A python_ver <<< `rtx list python`
+pyver_regex='([0-9]{1,2}\.){2}[0-9]{1,2}'
+for segment in $python_ver; do
+  if [[ $segment =~ $pyver_regex ]]; then
+    #echo $segment
+  fi
+done
 
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# now, an easier way to do it that can be included in settings.lua
+# for the python3_provider
+export NVIM_PYTHON_PATH=`which python`
 
-# set up pyenv
-#export PATH="$HOME/.pyenv/bin:$PATH"
-#eval "$(pyenv init -)"
-#eval "$(pyenv virtualenv-init -)"
 
-# set up rbenv
-#eval "$(rbenv init -)"
+################################################################################
+# load aliases and last bits and bobs
+################################################################################
 
-# set up dip
-#eval "$(dip console)"
+source ${HOME}/.aliases.zsh
 
-# setting up nvm
-#export NVM_DIR="$HOME/.nvm"
-#[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-#[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+# this bit puts any p10k instant prompt at the bottom of the screen. good to
+# turn off if things are being weird.
+#print ${(pl:$LINES::\n:):-}
 
-# use brew's upgradeable openssl 1.1
-export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+# iTerm2 integration
+test -e /Users/tonye/.iterm2_shell_integration.zsh && \
+    source /Users/tonye/.iterm2_shell_integration.zsh || true
 
-# set up asdf
-. /usr/local/opt/asdf/libexec/asdf.sh
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-eval "$(atuin init zsh)"
+printf "\e]1337;SetBadgeFormat=%s\a" \
+  $(echo -n "\(hostname) \(jobName)\n\(columns)x\(rows)" | base64)
