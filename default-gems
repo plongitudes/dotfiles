@@ -1,5 +1,8 @@
-bundler
-pry
-gem-ctags
-solargraph
 neovim
+awesome_print
+bundler
+colorize
+pry
+#gem-ctags
+#solargraph
+unirest # for anagram workflow in alfred.app
