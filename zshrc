@@ -12,12 +12,13 @@ export LANG=en_US.UTF-8
 export EDITOR='nvim'
 export BATDIFF_USE_DELTA=true
 export PAGER='less'
-export LESS='-FiMXR -j.5'
+export LESS='-FiMXr -j.5'
 export DELTA_FEATURES='side-by-side line-numbers'
 
 # zsh env vars
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+UPDATE_ZSH_DAYS=1
 
 # behavior
 setopt no_beep
@@ -126,8 +127,11 @@ plugins=(
     ohmyzsh-full-autoupdate
     zsh-autosuggestions
     fast-syntax-highlighting
-    # do not load zsh-completions here (see above)
+    poetry
+    python
+    pylint
 )
+    # do not load zsh-completions in the plugins folder (see above)
 
 # note to self that oh-my-zsh autoloads compinit for us, no need to autoload it
 # here or anything.
@@ -140,6 +144,8 @@ source $ZSH/oh-my-zsh.sh
 ################################################################################
 
 eval "$(/opt/homebrew/bin/rtx activate zsh)"
+export EXA_ICON_SPACING=2
+export EZA_HOME=`which eza`
 
 
 ################################################################################
@@ -171,7 +177,11 @@ source ${HOME}/.aliases.zsh
 
 # this bit puts any p10k instant prompt at the bottom of the screen. good to
 # turn off if things are being weird.
-#print ${(pl:$LINES::\n:):-}
+print ${(pl:$LINES::\n:):-}
+
+# set vi mode for the prompt
+bindkey -v
+export KEYTIMEOUT=1
 
 # iTerm2 integration
 test -e /Users/tonye/.iterm2_shell_integration.zsh && \
