@@ -8,10 +8,9 @@ for CMD in "cat ls vi vim nvim asdf batg man"; do
 done
 
 alias cat="bat"
-alias ls="exa"
 alias vi="nvim"
 alias asdf="rtx"
-alias grep="batgrep -S -C 3"
+alias grep="batgrep -iSC3"
 alias man="batman"
 
 alias rm='rm -i'
@@ -21,11 +20,9 @@ alias hg='history | grep -i'
 
 function vf () { vi $(fzf -q $* ); }
 function du () { /usr/bin/du -sh $* | ${PAGER} }
-function l () { /bin/ls -CFlaG $* | ${PAGER} }
 
 format_stacktrace='grep --line-buffered -o '\''".\+[^"]"'\'' | grep --line-buffered -o '\''[^"]*[^"]'\'' | while read -r line; do printf "%b" $line; done | tr "\r\n" "\275\276" | tr -d "[:cntrl:]" | tr "\275\276" "\r\n"'
 #strace -e trace=read,write,recvfrom,sendto -s 4096 -fp $(pgrep -n php) 2>&1 | format-strace
-
 
 ############################
 # env aliases              #
@@ -40,14 +37,30 @@ alias eg='env | grep -i'
 unalias l 2>/dev/null
 unalias ll 2>/dev/null
 
-if [[ -x `which exa` ]]; then
-    function l () { exa -laFg --git --color=always $* | ${PAGER}; }
-    function ll () { exa -lFg --git --color=always $* | ${PAGER}; }
-    function ltr () { exa -laFg --sort=modified --reverse --git --color=always $* | ${PAGER}; }
-    function lltr () { exa -lFg --sort=modified --reverse --git --color=always $* | ${PAGER}; }
-    function lt () { exa -laFg --sort=modified --git --color=always $* | ${PAGER}; }
-    function llt () { exa -lFg --sort=modified --git --color=always $* | ${PAGER}; }
-    function ld () { exa -laFgD --git --color=always $* | ${PAGER}; }
+if [[ -x `which eza` ]]; then
+    function eza_base () {
+        # test if being piped
+        if [ -t 1 ] ; then
+            # eza fancy with icons
+            echo "i'm not in a pipe!"
+            ${EZA_HOME} -lFgTL1 --git --color=always --icons $*
+        else
+            # eza plain for working with pipes &etc.
+            echo "fuck, i'm in a pipe?"
+            ${EZA_HOME} -lFg --git --color=never --no-icons $*
+        fi
+    }
+
+    function ll () { eza_base -a $*; }
+    function llt () { eza_base -a --sort=modified $*; }
+    function lltr () { eza_base -a --sort=modified --reverse $*; }
+    function lld () { eza_base -aD $*; }
+
+    function l () { eza_base $*; }
+    function lt () { eza_base --sort=modified $*; }
+    function ltr () { eza_base --sort=modified --reverse $*; }
+    function ld () { eza_base -D $*; }
+
     function lp () { fd -H -g "$*"; }
 else
     # C list by columns
