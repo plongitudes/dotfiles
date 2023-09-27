@@ -17,7 +17,7 @@
 # less easy from linux.
 #bat      = 'latest'
 #direnv   = 'latest'
-#exa      = 'latest'
+#eza      = 'latest'
 #fd       = 'latest'
 #fzf      = 'latest'
 #git      = 'latest'
