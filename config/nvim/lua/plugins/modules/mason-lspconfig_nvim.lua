@@ -10,6 +10,7 @@ return {
       settings = {
         pyright = {
           disableLanguageServices = true,
+          good_names_rgxs = {'[a-z]{1,3}'},
         },
         python = {
           analysis = {
@@ -20,7 +21,6 @@ return {
             extraPaths = {},
             pylintPath = {},
           },
-          good_names_rgxs = {'[a-z]{1,3}'},
         },
       },
       single_file_support = true,
