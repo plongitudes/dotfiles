@@ -71,5 +71,14 @@ return {
         e = { '<cmd>CodiExpand<cr>', 'Codi Expand Popup' },
       },
     })
+
+    wk.register({
+      prefix = '<Leader>',
+      t = {
+        name = 'Neotree',
+        t = { '<cmd>Neotree<cr>', 'Open Neotree in a sidebar' },
+        h = { '<cmd>Neotree ~', 'Open Neotree from home folder'},
+      }
+    })
   end,
 }
