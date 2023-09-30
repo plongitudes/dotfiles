@@ -209,6 +209,8 @@ alias gbn='git rev-parse --abbrev-ref HEAD'
 # git: get tag name
 alias ggt='git describe --abbrev=0 --tags'
 
+# git: fetch and pull
+alias fp='git fetch;git pull'
 # git: push <branch name>
 alias gpcb='git push origin `gbn`'
 # git: set upstream relationship

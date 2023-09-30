@@ -1,7 +1,3 @@
-P = function(v)
-    vim.print(v)
-    return v
-end
 
 --print a whole dang table
 function pp (tbl, indent)
@@ -32,7 +28,8 @@ function pp (tbl, indent)
       end
     end
     toprint = toprint .. string.rep(" ", indent-2) .. "}"
-    return toprint
+    print(toprint)
+    print("done!")
   end
 end
 
