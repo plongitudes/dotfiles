@@ -19,6 +19,10 @@ function M.globals()
 end
 
 function M.options()
+    -- set visible characters
+    --exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
+    --exec "set listchars=eol:⏎,tab:␉·,trail:␠,nbsp:⎵"
+    --set list
     vim.opt.sessionoptions = {
         --"blank",
         --"buffers",
