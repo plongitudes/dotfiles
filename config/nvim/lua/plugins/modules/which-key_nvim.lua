@@ -62,6 +62,15 @@ return {
     })
 
     wk.register({
+      g = {
+        name = "Go to",
+        d = { vim.lsp.buf.definition, "Go to definition" },
+        r = { require("telescope.builtin").lsp_references,
+          "Open a telescope window with references" },
+      },
+    })
+
+    wk.register({
       prefix = '<leader>',
       q = {
         name = 'codi.nvim',
