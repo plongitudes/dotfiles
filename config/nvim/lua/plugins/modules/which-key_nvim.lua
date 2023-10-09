@@ -32,6 +32,36 @@ return {
   config = function()
     local wk = require('which-key')
     wk.setup({
+      presets = {
+        operators = true,
+        motions = true,
+        text_objects = true,
+        windows = true,
+        nav = true,
+        z = true,
+        g = true,
+      },
+      key_labels = {},
+      motions = {
+        count = true,
+      },
+      show_help = true,
+      show_keys = true,
+      triggers = "auto", -- automatically setup triggers
+      -- triggers = {"<leader>"} -- or specifiy a list manually
+      -- list of triggers, where WhichKey should not wait for timeoutlen and show immediately
+      triggers_nowait = {
+        -- marks
+        "`",
+        "'",
+        "g`",
+        "g'",
+        -- registers
+        '"',
+        "<c-r>",
+        -- spelling
+        "z=",
+      },
       window = {
         -- none, single, double, shadow, rounded
         border = 'rounded',
@@ -50,10 +80,9 @@ return {
 
     wk.register({
       -- to invoke: <leader> + group key ('f') + keymap ('t,f,g,e,r')
-      prefix = '<leader>',
-      f = {
+      ['<leader>f'] = {
         name = 'files',
-        t = { '<cmd>Telescope find_files<cr>', 'Find Files' },
+        t = { "<cmd>lua require('telescope.builtin').find_files({cwd='/home/tetienne/git'})<cr>", 'Find Files' },
         f = { '<cmd>Telescope oldfiles<cr>', 'Recent Files', noremap = false },
         g = { '<cmd>Telescope git_files<cr>', 'Git ls-files' },
         e = { '<cmd>Telescope grep_string<cr>', 'Grep String' },
@@ -65,8 +94,19 @@ return {
       g = {
         name = "Go to",
         d = { vim.lsp.buf.definition, "Go to definition" },
-        r = { require("telescope.builtin").lsp_references,
-          "Open a telescope window with references" },
+        r = { require("telescope.builtin").lsp_references, "Open a telescope window with references" },
+        --i = { vim.lsp.buf.incoming_calls(), "Incoming Calls"},
+        --o = { vim.lsp.buf.outgoing_calls(), "Outgoing Calls"},
+      },
+    })
+
+    wk.register({
+      prefix = '<leader>',
+      d = {
+        l = { '<cmd>lua vim.diagnostic.goto_next()<cr>', "NEXT diagnostic" },
+        h = { '<cmd>lua vim.diagnostic.goto_prev()<cr>', "PREV diagnostic" },
+        f = { '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<cr>', 'Show diagnostics in floating window' },
+        t = { '<cmd>Telescope diagnostics<cr>', "Diagnostics in Telescope" },
       },
     })
 
