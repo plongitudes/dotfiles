@@ -130,6 +130,7 @@ plugins=(
     poetry
     python
     pylint
+    rtx
 )
     # do not load zsh-completions in the plugins folder (see above)
 
@@ -180,8 +181,8 @@ source ${HOME}/.aliases.zsh
 print ${(pl:$LINES::\n:):-}
 
 # set vi mode for the prompt
-bindkey -v
-export KEYTIMEOUT=1
+#bindkey -v
+#export KEYTIMEOUT=1
 
 # iTerm2 integration
 test -e /Users/tonye/.iterm2_shell_integration.zsh && \
