@@ -31,6 +31,12 @@ format_stacktrace='grep --line-buffered -o '\''".\+[^"]"'\'' | grep --line-buffe
 alias eg='env | grep -i'
 
 ############################
+# env aliases              #
+############################
+
+alias p='poetry'
+
+############################
 # ls aliases               #
 ############################
 
@@ -42,11 +48,9 @@ if [[ -x `which eza` ]]; then
         # test if being piped
         if [ -t 1 ] ; then
             # eza fancy with icons
-            echo "i'm not in a pipe!"
-            ${EZA_HOME} -lFgTL1 --git --color=always --icons $*
+            ${EZA_HOME} -lFgTL1 --git --color=always --icons $* | less
         else
             # eza plain for working with pipes &etc.
-            echo "fuck, i'm in a pipe?"
             ${EZA_HOME} -lFg --git --color=never --no-icons $*
         fi
     }
@@ -102,7 +106,6 @@ vl='nvim --listen localhost:9999'
 function ag () { grep -i $* ~/.oh-my-zsh/custom/aliases.zsh }
 alias sa='source ~/.dotfiles/aliases.zsh ; echo "alias file re-sourced!"'
 alias va='vi ~/.dotfiles/aliases.zsh; sa'
-alias vv='vi ~/.vimrc'
 alias vz='vi ~/.zshrc'
 
 
@@ -123,6 +126,7 @@ function fnd () { find -L . -print -type f -exec grep -n $* {} \; | grep $* -B 1
 alias tm='tmux attach -d'
 alias tran='transmission-remote-cli'
 alias gpull='find . -maxdepth 1 -type d -exec sh -c "(cd {} && echo {} && git pull)" ";"'
+alias cm='cd ~/.config/nvim/lua/plugins/modules/'
 function mdiff() { /Applications/Xcode.app/Contents/Applications/FileMerge.app/Contents/MacOS/FileMerge -left $1 -right $2 }
 alias vu='vagrant up --provision'
 alias vh='vagrant halt'
