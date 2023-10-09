@@ -7,13 +7,9 @@ return {
   },
   config = function()
     require('bufferline').setup({
-      --highlights = {
-      --  tab_separator_selected = {
-      --    underline = '#ff0000',
-      --  }
-      --},
       options = {
         mode = 'buffers',
+        themable = true,
         indicator = {
           style = 'underline',
         },
@@ -23,12 +19,13 @@ return {
         left_trunc_marker = '',
         right_trunc_marker = '',
         separator_style = 'slant',
+        sort_by = 'directory',
         hover = {
           enabled = true,
           delay = 200,
           reveal = {'close'},
         },
-        diagnostics = true,
+        diagnostics = 'nvim_lsp',
         --- count is an integer representing total count of errors
         --- level is a string "error" | "warning"
         --- diagnostics_dict is a dictionary from error level ("error", "warning" or "info")to number of errors for each level.
@@ -37,7 +34,22 @@ return {
         diagnostics_indicator = function(count, level, diagnostics_dict, context)
           local icon = level:match("error") and " " or " "
           return " " .. icon .. count
-        end
+        end,
+        highlights = {
+          --[[
+          fill = {
+            fg = '#ffffff',
+            bg = '#ffffff',
+          },
+          ]]--
+          background = {
+            fg = '#00ff00',
+            bg = '#0000ff',
+          },
+          tab_separator_selected = {
+            underline = '#ff0000',
+          }
+        },
       },
     })
   end
