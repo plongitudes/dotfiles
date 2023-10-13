@@ -1,3 +1,7 @@
+vim.api.nvim_set_hl(0, 'IlluminatedWordText', {bg = '#3344ee'})
+vim.api.nvim_set_hl(0, 'IlluminatedWordRead', {bg = '#3344ee'})
+vim.api.nvim_set_hl(0, 'IlluminatedWordWrite', {bg = '#3344ee'})
+
 return {
   'RRethy/vim-illuminate',
   lazy = false,

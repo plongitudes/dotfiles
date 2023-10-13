@@ -62,7 +62,7 @@ return {
           mode = 'symbol_text',
           -- prevent the popup from showing more than provided characters (e.g 50 will not show
           -- more than 50 characters)
-          maxwidth = 80,
+          maxwidth = 160,
           -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead
           -- (must define maxwidth first)
           ellipsis_char = '...',
@@ -94,7 +94,7 @@ return {
 
       sources = cmp.config.sources(
       {
-        { name = 'nvim_lsp' },
+        { name = 'nvim_lsp', max_item_count = 10 },
       }, {
         { name = 'luasnip' },
       }, {

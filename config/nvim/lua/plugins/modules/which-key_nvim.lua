@@ -126,8 +126,16 @@ return {
       t = {
         name = 'Neotree',
         t = { '<cmd>Neotree<cr>', 'Open Neotree in a sidebar' },
-        h = { '<cmd>Neotree ~', 'Open Neotree from home folder'},
+        h = { '<cmd>Neotree ~<cr>', 'Open Neotree from home folder'},
+        c = { '<cmd>Neotree ~/.config/nvim/lua/<cr>', 'Open Neotree from nvim config folder'},
+        d = { '<cmd>Neotree ~/.dotfiles/<cr>', 'Open Neotree from dotfiles folder'},
       }
+    })
+
+    wk.register({
+      name = 'Gitsigns',
+      [']c'] = { '<cmd>Gitsigns next_hunk<cr>zz', 'next changed hunk' },
+      ['[c'] = { '<cmd>Gitsigns prev_hunk<cr>zz', 'prev changed hunk' },
     })
   end,
 }

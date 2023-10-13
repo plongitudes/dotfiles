@@ -14,7 +14,6 @@ return {
       require('mason-lspconfig').setup({
         ensure_installed = {
           'pyright',
-          'black',
           'lua_ls',
           'ruby_ls',
           'rubocop',

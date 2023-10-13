@@ -15,6 +15,28 @@ export PAGER='less'
 export LESS='-FiMXr -j.5'
 export DELTA_FEATURES='side-by-side line-numbers'
 
+# hotkeys for getting around
+export FZF_DEFAULT_COMMAND="fd . $HOME"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd -t d . $HOME"
+
+# Print tree structure in the preview window
+export FZF_ALT_C_OPTS="--preview 'tree -C {}'"
+
+# -- Preview file content using bat (https://github.com/sharkdp/bat)
+export FZF_CTRL_T_OPTS="
+  --preview 'bat -n --color=always {}'
+  --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+  #
+# -- CTRL-/ to toggle small preview window to see the full command
+# -- CTRL-Y to copy the command into clipboard using pbcopy
+export FZF_CTRL_R_OPTS="
+  --preview 'echo {}' --preview-window up:3:hidden:wrap
+  --bind 'ctrl-/:toggle-preview'
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --color header:italic
+  --header 'Press CTRL-Y to copy command into clipboard'"
+
 # zsh env vars
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
@@ -178,7 +200,7 @@ source ${HOME}/.aliases.zsh
 
 # this bit puts any p10k instant prompt at the bottom of the screen. good to
 # turn off if things are being weird.
-print ${(pl:$LINES::\n:):-}
+# print ${(pl:$LINES::\n:):-}
 
 # set vi mode for the prompt
 #bindkey -v
@@ -190,3 +212,5 @@ test -e /Users/tonye/.iterm2_shell_integration.zsh && \
 
 printf "\e]1337;SetBadgeFormat=%s\a" \
   $(echo -n "\(hostname) \(jobName)\n\(columns)x\(rows)" | base64)
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
