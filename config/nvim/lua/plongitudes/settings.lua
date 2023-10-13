@@ -23,6 +23,9 @@ function M.options()
     --exec "set listchars=tab:\uBB\uBB,trail:\uB7,nbsp:~"
     --exec "set listchars=eol:⏎,tab:␉·,trail:␠,nbsp:⎵"
     --set list
+    vim.opt.textwidth = 100
+    vim.opt.formatoptions = '2jcroql'
+    vim.opt.smartcase = true
     vim.opt.sessionoptions = {
         --"blank",
         --"buffers",
