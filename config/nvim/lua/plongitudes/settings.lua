@@ -14,7 +14,7 @@ function M.globals()
     vim.g.backup = true
     vim.g.writebackup = true
     --vim.g.completeopt('menu,menuone,preview')
-    vim.lsp.set_log_level('debug')
+    --vim.lsp.set_log_level('debug')
     --vim.g.format_on_save = true
 end
 
