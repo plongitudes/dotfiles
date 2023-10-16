@@ -12,6 +12,8 @@ alias vi="nvim"
 alias asdf="rtx"
 alias p='poetry'
 
+export NVIM_PYTHON_PATH="`rtx where python`/bin"
+
 # below is wicked old and basically obviated by ripgrep, so... will use batgrep instead
 # function fnd () { find -L . -print -type f -exec grep -n $* {} \; | grep $* -B 1 }
 
@@ -20,16 +22,21 @@ alias grep="grep -i"
 
 alias man="batman"
 
+export RG_HOME=`rtx which rg`
+function vrg() { ${RG_HOME} -in --context 5 --heading $* | ${PAGER}; }
+alias rg='${RG_HOME} -i'
+
 alias eg='env | grep -i'
 alias rm='rm -i'
-alias fort='echo "" ; /usr/games/fortune -e ; echo ""'
+alias fort='echo "" ; fortune -e ; echo ""'
 alias duf='sudo /usr/bin/du -d 1 -h'
+alias h='history'
 alias hg='history | grep -i'
+alias gk='gitkraken'
 
 function du () { /usr/bin/du -sh $* | ${PAGER} }
 
 format_stacktrace='grep --line-buffered -o '\''".\+[^"]"'\'' | grep --line-buffered -o '\''[^"]*[^"]'\'' | while read -r line; do printf "%b" $line; done | tr "\r\n" "\275\276" | tr -d "[:cntrl:]" | tr "\275\276" "\r\n"'
-#strace -e trace=read,write,recvfrom,sendto -s 4096 -fp $(pgrep -n php) 2>&1 | format-strace
 
 
 ############################
@@ -98,12 +105,6 @@ function brupdate () {
 }
 
 ###########################
-# nvim aliases            #
-###########################
-
-vl='nvim --listen localhost:9999'
-
-###########################
 # .alias aliases          #
 ###########################
 
@@ -111,6 +112,7 @@ function ag () { fnd $* ~/.dotfiles/aliases.zsh }
 alias sa='source ~/.dotfiles/aliases.zsh ; echo "alias file re-sourced!"'
 alias va='vi ~/.dotfiles/aliases.zsh; sa'
 alias vz='vi ~/.zshrc'
+alias vb='vi ~/.bashrc'
 #alias vqo       'vi $SCRIPTHOME/sig_quotes.txt'
 
 
@@ -119,20 +121,68 @@ alias vz='vi ~/.zshrc'
 ###########################
 
 alias tm='tmux attach -d'
-alias gpull='find . -maxdepth 1 -type d -exec sh -c "(cd {} && echo {} && git pull)" ";"'
-function mdiff() { /Applications/Xcode.app/Contents/Applications/FileMerge.app/Contents/MacOS/FileMerge -left $1 -right $2 }
-function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
-alias godark='it2prof gruvbox-dark'
-alias golight='it2prof gruvbox-light'
+
+if [[ $(uname) == "Darwin" ]]; then
+    function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
+    alias godark='it2prof gruvbox-dark'
+    alias golight='it2prof gruvbox-light'
+end
+
 function ka() { kill -9 $(pgrep -i $*) }
+
 function archive () {
     archive_dir=${1%/}
     mkdir -p archived
     tar cfz archived/$archive_dir.tgz $archive_dir/
     rm -rf $archive_dir
 }
+
 function mklist() {
     find ./$1/ -iname '*.zip' |rev| cut -d '/' -f 1 | rev | uniq | sort  > $1.txt
+}
+
+function tailformat () {
+    cat $1 | python -m json.tool
+    inotifywait -q -m -e close_write --format %e $1 |
+    while read events; do
+        cat $1 | python -m json.tool
+    done
+}
+
+function taildiff () {
+    /usr/bin/cat $1 | python -m json.tool >| /tmp/a_foo
+    inotifywait -q -m -e close_write --format %e $1 |
+    while read events; do
+        /usr/bin/cat $1 | python -m json.tool >| /tmp/b_foo
+        git diff -U0 --word-diff=color --word-diff-regex=. /tmp/a_foo /tmp/b_foo
+        /usr/bin/cat $1 | python -m json.tool >| /tmp/a_foo
+    done
+    rm -f /tmp/a_foo
+    rm -f /tmp/b_foo
+}
+
+function today() {
+    local week=$(date "+%W")
+    local year=$(date "+%Y")
+    local week_num_of_Jan_1 week_day_of_Jan_1
+    local first_Mon
+    local date_fmt="+%Y%m%d"
+    local mon sun
+
+    week_num_of_Jan_1=$(date -d $year-01-01 +%W)
+    week_day_of_Jan_1=$(date -d $year-01-01 +%u)
+
+    if ((week_num_of_Jan_1)); then
+        first_Mon=$year-01-01
+    else
+        first_Mon=$year-01-$((01 + (7 - week_day_of_Jan_1 + 1) ))
+    fi
+
+    mon=$(date -d "$first_Mon +$((week - 1)) week" "$date_fmt")
+    sun=$(date -d "$first_Mon +$((week - 1)) week + 6 day" "$date_fmt")
+    #echo "\"$mon\" - \"$sun\""
+    echo $HOME/weeklyreports/$year/${mon}_weeklyreport.md
+    nvim $HOME/weeklyreports/$year/${mon}_weeklyreport.md
 }
 
 function vf () {
@@ -207,9 +257,10 @@ function zcrop () {
 alias gbn='git rev-parse --abbrev-ref HEAD'
 # git: get tag name
 alias ggt='git describe --abbrev=0 --tags'
-
-# git: fetch and pull
-alias fp='git fetch;git pull'
+# shallow pull for a dir of repos
+alias gpull='find . -maxdepth 1 -type d -exec sh -c "(cd {} && echo {} && git pull)" ";"'
+# fetch and pull
+alias fep='git fetch; git pull'
 # git: push <branch name>
 alias gpcb='git push origin `gbn`'
 # git: set upstream relationship
@@ -219,9 +270,15 @@ alias gpt='git push origin `ggt`'
 # git: delete tag from branch
 alias gdt='git push origin :refs/tags/`ggt`; git tag --delete `ggt`'
 # git: git grep with context
-alias gg='git grep -in --break --heading -1 -p'
+alias gg='git grep -pin --break --heading -C 3'
+# git: git grep with context and no index if not in a repo
+alias gig='git grep --no-index -p -in --break --heading -1'
+# git: git grep with context and case sensitivity
+alias ggs='git grep -p -n --break --heading -1'
+# git: git grep with context, but regex patterns instead of case sensitivity
+alias egg='git grep -p -En --break --heading -1'
 # git: grep in the git log (for ticket numbers, usually)
-alias glg='git log |grep'
+function glg () { git log --grep=$*; }
 # git: grep through branch names
 alias ggb='git branch -a |grep'
 # git: checkout
@@ -238,11 +295,22 @@ alias gs='git status'
 alias gb='git branch'
 #git: tag a branch
 alias gt='git tag'
-#git: grep a tag and get its creation date
-function gtg () {git log --date-order --tags --simplify-by-decoration --pretty=format:'%ai %h %d' | grep $* }
-#git: show tag timeline with branching
-function gtt() {git log --date-order --graph --tags --simplify-by-decoration --pretty=format:'%ai %h %d' }
-# git checkout a branch through fzf
+#git: list files touched in each stash commit
+alias gsl='git stash list --stat'
+
+# git: grep a tag and get its creation date
+function gtg () {
+    git log --date-order --tags --simplify-by-decoration --pretty=format:'%ai %h %d' | grep $*
+}
+
+# git: show tag timeline with branching
+function gtt() {
+    git log --date-order --graph --tags --simplify-by-decoration --pretty=format:'%ai %h %d'
+}
+
+# git: vim edit all changed files
+alias gvi='~/scripts/vim_changed_files_git.rc'
+
 function ggc () {
     fzf_args=""
     if [[ $# -gt 0 ]]; then
@@ -252,7 +320,6 @@ function ggc () {
     git checkout ${branchname}
 }
 
-#alias DONOTDOTHIS='sh -c "$(curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/master/omz_bootstrap.sh)"'
 
 ###########################
 # Doing Docker Things     #
