@@ -2,10 +2,9 @@
 # independent exports and misc env setup
 ################################################################################
 
-# If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$PATH
 
-# turns out we need this extra termindo dir for tmux on macOS
+# turns out we need this extra terminfo dir for tmux on macOS
 export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
 export MANPATH="/usr/local/man:$MANPATH"
 export LANG=en_US.UTF-8
@@ -16,9 +15,60 @@ export LESS='-FiMXr -j.5'
 export DELTA_FEATURES='side-by-side line-numbers'
 
 # hotkeys for getting around
-export FZF_DEFAULT_COMMAND="fd . $HOME"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd -t d . $HOME"
+export    FZF_SEARCH_PATHS="--search-path $PWD --search-path $HOME/.config --search-path $HOME"
+export FZF_DEFAULT_COMMAND="fd --unrestricted --follow --type f --max-depth 5 --exclude '.git' ${FZF_SEARCH_PATHS}"
+export    FZF_DEFAULT_OPTS="--layout=reverse-list --border=rounded --border-label=\".-=# $(curl -s http://metaphorpsum.com/sentences/1 | lolcat -f) #=-.\""
+export  FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export   FZF_ALT_C_COMMAND="fd --unrestricted --follow --type d --max-depth 5 --exclude '.git' ${FZF_SEARCH_PATHS}"
+
+if [[ -v BASH_VERSINFO ]]; then
+    # create a PROPMT_COMMAND equivalent to store chpwd functions
+    typeset -g CHPWD_COMMAND=""
+
+    _chpwd_hook() {
+      shopt -s nullglob
+
+      local f
+
+      # run commands in CHPWD_COMMAND variable on dir change
+      if [[ "$PREVPWD" != "$PWD" ]]; then
+        local IFS=$';'
+        for f in $CHPWD_COMMAND; do
+          "$f"
+        done
+        unset IFS
+      fi
+      # refresh last working dir record
+      export PREVPWD="$PWD"
+    }
+
+    # add `;` after _chpwd_hook if PROMPT_COMMAND is not empty
+    PROMPT_COMMAND="_chpwd_hook${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+
+    # example 1: `ls` list directory once dir is changed
+        # _ls_on_cwd_change() {
+        #   ls
+        # }
+
+    # append the command into CHPWD_COMMAND
+        # CHPWD_COMMAND="${CHPWD_COMMAND:+$CHPWD_COMMAND;}_ls_on_cwd_change"
+
+    # or just use `ls` directly
+        # CHPWD_COMMAND="${CHPWD_COMMAND:+$CHPWD_COMMAND;}ls"
+
+    function _add_cwd_to_fzf_search_path () {
+        export FZF_DEFAULT_COMMAND="fd --unrestricted --follow --exclude '.git' ${FZF_SEARCH_PATHS}"
+    }
+
+    CHPWD_COMMAND="${CHPWD_COMMAND:+$CHPWD_COMMAND;}_add_cwd_to_fzf_search_path"
+
+elif [[ -v ZSH_VERSION ]]; then
+    chpwd()
+        #case $PWD in
+        #  (*/public_html) echo do something
+        #esac
+        export FZF_DEFAULT_COMMAND="fd --unrestricted --follow --exclude '.git' ${FZF_SEARCH_PATHS}"
+end
 
 # Print tree structure in the preview window
 export FZF_ALT_C_OPTS="--preview 'tree -C {}'"
@@ -145,6 +195,7 @@ HIST_STAMPS="yyyy-mm-dd"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+    fzf-tab
     git
     ohmyzsh-full-autoupdate
     zsh-autosuggestions
