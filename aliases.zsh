@@ -10,38 +10,42 @@ done
 alias cat="bat"
 alias vi="nvim"
 alias asdf="rtx"
-alias grep="batgrep -iSC3"
+alias p='poetry'
+
+# below is wicked old and basically obviated by ripgrep, so... will use batgrep instead
+# function fnd () { find -L . -print -type f -exec grep -n $* {} \; | grep $* -B 1 }
+
+alias fnd="rg -SC3"
+alias grep="grep -i"
+
 alias man="batman"
 
+alias eg='env | grep -i'
 alias rm='rm -i'
 alias fort='echo "" ; /usr/games/fortune -e ; echo ""'
 alias duf='sudo /usr/bin/du -d 1 -h'
 alias hg='history | grep -i'
 
-function vf () { vi $(fzf -q $* ); }
 function du () { /usr/bin/du -sh $* | ${PAGER} }
 
 format_stacktrace='grep --line-buffered -o '\''".\+[^"]"'\'' | grep --line-buffered -o '\''[^"]*[^"]'\'' | while read -r line; do printf "%b" $line; done | tr "\r\n" "\275\276" | tr -d "[:cntrl:]" | tr "\275\276" "\r\n"'
 #strace -e trace=read,write,recvfrom,sendto -s 4096 -fp $(pgrep -n php) 2>&1 | format-strace
 
-############################
-# env aliases              #
-############################
-
-alias eg='env | grep -i'
-
-############################
-# env aliases              #
-############################
-
-alias p='poetry'
 
 ############################
 # ls aliases               #
 ############################
 
-unalias l 2>/dev/null
-unalias ll 2>/dev/null
+if [[ -v BASH_VERSINFO ]]; then
+    l_alias="$(type -t l)"
+    ll_alias="$(type -t ll)"
+elif [[ -v ZSH_VERSION ]]; then
+    l_alias="$(whence -w l | cut -d ' ' -f 2)"
+    ll_alias="$(whence -w ll | cut -d ' ' -f 2)"
+fi
+
+if [[ $l_alias == "alias" ]]; then unalias l; fi
+if [[ $ll_alias == "alias" ]]; then unalias ll; fi
 
 if [[ -x `which eza` ]]; then
     function eza_base () {
@@ -103,19 +107,10 @@ vl='nvim --listen localhost:9999'
 # .alias aliases          #
 ###########################
 
-function ag () { grep -i $* ~/.oh-my-zsh/custom/aliases.zsh }
+function ag () { fnd $* ~/.dotfiles/aliases.zsh }
 alias sa='source ~/.dotfiles/aliases.zsh ; echo "alias file re-sourced!"'
 alias va='vi ~/.dotfiles/aliases.zsh; sa'
 alias vz='vi ~/.zshrc'
-
-
-###########################
-# Finding files           #
-###########################
-
-function fnd () { find -L . -print -type f -exec grep -n $* {} \; | grep $* -B 1 }
-#alias f='iname \!*'
-
 #alias vqo       'vi $SCRIPTHOME/sig_quotes.txt'
 
 
@@ -124,12 +119,8 @@ function fnd () { find -L . -print -type f -exec grep -n $* {} \; | grep $* -B 1
 ###########################
 
 alias tm='tmux attach -d'
-alias tran='transmission-remote-cli'
 alias gpull='find . -maxdepth 1 -type d -exec sh -c "(cd {} && echo {} && git pull)" ";"'
-alias cm='cd ~/.config/nvim/lua/plugins/modules/'
 function mdiff() { /Applications/Xcode.app/Contents/Applications/FileMerge.app/Contents/MacOS/FileMerge -left $1 -right $2 }
-alias vu='vagrant up --provision'
-alias vh='vagrant halt'
 function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
 alias godark='it2prof gruvbox-dark'
 alias golight='it2prof gruvbox-light'
@@ -144,11 +135,15 @@ function mklist() {
     find ./$1/ -iname '*.zip' |rev| cut -d '/' -f 1 | rev | uniq | sort  > $1.txt
 }
 
-###########################
-# Doing Ruby Things       #
-###########################
+function vf () {
+    file=$(${FZF_ALT_C_COMMAND}|fzf)
+    if [ $? -eq 0 ]; then
+      echo "git status exited successfully"
+    else
+      echo "git status exited with error code"
+    fi
+}
 
-function ppr () { echo '$*' | jsonf | pygmentize -l json }
 
 ###########################
 # Doing Shotgun Things    #
@@ -247,20 +242,14 @@ alias gt='git tag'
 function gtg () {git log --date-order --tags --simplify-by-decoration --pretty=format:'%ai %h %d' | grep $* }
 #git: show tag timeline with branching
 function gtt() {git log --date-order --graph --tags --simplify-by-decoration --pretty=format:'%ai %h %d' }
-# git: vim edit all changed files
-alias gvi='~/scripts/vim_changed_files_git.rc'
-function bs () {
-    branches=`git branch | grep -i $1`
-    branches=${branches//\*/}
-    if test $(wc -w <<< "$branches") -eq 1; then
-        echo "SINGLE branch matched: Checking it out."
-        git checkout $branches
-        exit
+# git checkout a branch through fzf
+function ggc () {
+    fzf_args=""
+    if [[ $# -gt 0 ]]; then
+        fzf_args="-q $*"
     fi
-    select branch in $branches; do
-        [ -z "$branch" ] && echo "No branch selected (choose a number)" || git checkout $branch
-        exit
-    done
+    local branchname=$(git branch -l | sed 's/[ \*]//g' | fzf ${fzf_args})
+    git checkout ${branchname}
 }
 
 #alias DONOTDOTHIS='sh -c "$(curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/master/omz_bootstrap.sh)"'
