@@ -83,7 +83,8 @@ return {
       ['<leader>f'] = {
         name = 'files',
         t = { "<cmd>lua require('telescope.builtin').find_files({cwd='/home/tetienne/git'})<cr>", 'Find Files' },
-        f = { '<cmd>Telescope oldfiles<cr>', 'Recent Files', noremap = false },
+        -- f = { '<cmd>Telescope oldfiles<cr>', 'Recent Files', noremap = false },
+        f = { '<cmd>Telescope frecency<cr>', 'Recent Files', noremap = false },
         g = { '<cmd>Telescope git_files<cr>', 'Git ls-files' },
         e = { '<cmd>Telescope grep_string<cr>', 'Grep String' },
         r = { '<cmd>Telescope live_grep<cr>', 'Ripgep String' },

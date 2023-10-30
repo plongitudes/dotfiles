@@ -27,7 +27,7 @@ return {
       max_length = 0,
       silent = false,
       trim = false,
-      tmux_passthrough = true,
+      tmux_passthrough = false,
     })
   end,
 }
