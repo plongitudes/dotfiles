@@ -22,9 +22,9 @@ alias grep="grep -i"
 
 alias man="batman"
 
-export RG_HOME=`rtx which rg`
-function vrg() { ${RG_HOME} -in --context 5 --heading $* | ${PAGER}; }
-alias rg='${RG_HOME} -i'
+export RG_HOME=$(which rg 2&>1 || which rg)
+function vrg() { rg -in --context 5 --heading $* | ${PAGER}; }
+alias rg='rg -i'
 
 alias eg='env | grep -i'
 alias rm='rm -i'
@@ -126,7 +126,7 @@ if [[ $(uname) == "Darwin" ]]; then
     function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
     alias godark='it2prof gruvbox-dark'
     alias golight='it2prof gruvbox-light'
-end
+fi
 
 function ka() { kill -9 $(pgrep -i $*) }
 
