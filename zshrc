@@ -1,8 +1,12 @@
-################################################################################
-# independent exports and misc env setup
-################################################################################
 
+# ▌                  ▐        
+# ▛▀▖▝▀▖▞▀▘▞▀▖ ▞▀▘▞▀▖▜▀ ▌ ▌▛▀▖
+# ▌ ▌▞▀▌▝▀▖▛▀  ▝▀▖▛▀ ▐ ▖▌ ▌▙▄▘
+# ▀▀ ▝▀▘▀▀ ▝▀▘ ▀▀ ▝▀▘ ▀ ▝▀▘▌  
+
+#GITSTATUS_LOG_LEVEL=DEBUG
 export PATH=$HOME/bin:$PATH
+
 
 # turns out we need this extra terminfo dir for tmux on macOS
 export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
@@ -14,61 +18,76 @@ export PAGER='less'
 export LESS='-FiMXr -j.5'
 export DELTA_FEATURES='side-by-side line-numbers'
 
-# hotkeys for getting around
-export    FZF_SEARCH_PATHS="--search-path $PWD --search-path $HOME/.config --search-path $HOME"
-export FZF_DEFAULT_COMMAND="fd --unrestricted --follow --type f --max-depth 5 --exclude '.git' ${FZF_SEARCH_PATHS}"
-export    FZF_DEFAULT_OPTS="--layout=reverse-list --border=rounded --border-label=\".-=# $(curl -s http://metaphorpsum.com/sentences/1 | lolcat -f) #=-.\""
-export  FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export   FZF_ALT_C_COMMAND="fd --unrestricted --follow --type d --max-depth 5 --exclude '.git' ${FZF_SEARCH_PATHS}"
+
+#                   ▜ ▗         ▌ ▗▀▖         ▐  ▗          
+# ▞▀▌▞▀▖▛▀▖▞▀▖▙▀▖▝▀▖▐ ▄ ▀▜▘▞▀▖▞▀▌ ▐  ▌ ▌▛▀▖▞▀▖▜▀ ▄ ▞▀▖▛▀▖▞▀▘
+# ▚▄▌▛▀ ▌ ▌▛▀ ▌  ▞▀▌▐ ▐ ▗▘ ▛▀ ▌ ▌ ▜▀ ▌ ▌▌ ▌▌ ▖▐ ▖▐ ▌ ▌▌ ▌▝▀▖
+# ▗▄▘▝▀▘▘ ▘▝▀▘▘  ▝▀▘ ▘▀▘▀▀▘▝▀▘▝▀▘ ▐  ▝▀▘▘ ▘▝▀  ▀ ▀▘▝▀ ▘ ▘▀▀ 
+
+function stringContains() {
+    # takes 2 args, tests if $1 is a substring of $2
+    # works with paths, which is nice.
+    case $2 in
+        (*$1*) return 0 ;;
+        (*) return 1 ;;
+    esac
+}
+
+function trim() {
+    local var="$*"
+    # remove leading whitespace characters
+    var="${var#"${var%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    var="${var%"${var##*[![:space:]]}"}"
+    printf '%s' "$var"
+}
+
+# ▗▀▖   ▗▀▖ ▗                    ▐  ▌  ▗       
+# ▐  ▀▜▘▐   ▄ ▛▀▖ ▞▀▖▌ ▌▞▀▖▙▀▖▌ ▌▜▀ ▛▀▖▄ ▛▀▖▞▀▌
+# ▜▀ ▗▘ ▜▀  ▐ ▌ ▌ ▛▀ ▐▐ ▛▀ ▌  ▚▄▌▐ ▖▌ ▌▐ ▌ ▌▚▄▌
+# ▐  ▀▀▘▐   ▀▘▘ ▘ ▝▀▘ ▘ ▝▀▘▘  ▗▄▘ ▀ ▘ ▘▀▘▘ ▘▗▄▘
+
+function fortsplat () {
+    # find a fortune that's short enough to fit in the terminal window with a little extra room.
+    width=$(stty size | cut -d ' ' -f 2)
+    width=$(expr $width - 20)
+    fort_pfx=".-=# "
+    fort_sfx=$(rev <<< ${fort_pfx})
+    fort_str=$(fortune -s -n $width)
+    fort_str="${fort_str//[$'\t\r\n']/ }"
+    echo $(lolcat -f <<< "${fort_pfx}${fort_str}${fort_sfx}")
+}
+ 
+function _dynamic_fzf () {
+    # when changing directories, update the fd search directories and generate a new fortune.
+    local search_paths=("${HOME}/.config" "${HOME}/.oh-my-zsh" "${PWD}" "${HOME}") 
+    local flags="-IL --max-depth 7 --exclude '.git' --exclude 'Library'"
+    flags="${flags} --search-path $PWD --search-path ${HOME}/.config --search-path ${HOME}/.oh-my-zsh --search-path ${HOME}"
+    # unique_search_paths=(${(u)search_paths[@]})
+    # echo $unique_search_paths
+    # for path in $unique_search_paths; do
+        # echo $flags
+        # flags="${flags} --search-path ${path}"
+    # done
+    export FZF_DEFAULT_OPTS="--height=40% --min-height=10 --layout=reverse-list --border=rounded --border-label=\"$(fortsplat)\""
+    export FZF_DEFAULT_COMMAND="fd --type f ${flags}"
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    export FZF_ALT_C_COMMAND="fd --type d ${flags}"
+}
+
+# export FZF_TMUX=1
+_dynamic_fzf
 
 if [[ -v BASH_VERSINFO ]]; then
-    # create a PROPMT_COMMAND equivalent to store chpwd functions
-    typeset -g CHPWD_COMMAND=""
-
-    _chpwd_hook() {
-      shopt -s nullglob
-
-      local f
-
-      # run commands in CHPWD_COMMAND variable on dir change
-      if [[ "$PREVPWD" != "$PWD" ]]; then
-        local IFS=$';'
-        for f in $CHPWD_COMMAND; do
-          "$f"
-        done
-        unset IFS
-      fi
-      # refresh last working dir record
-      export PREVPWD="$PWD"
-    }
-
-    # add `;` after _chpwd_hook if PROMPT_COMMAND is not empty
-    PROMPT_COMMAND="_chpwd_hook${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
-
-    # example 1: `ls` list directory once dir is changed
-        # _ls_on_cwd_change() {
-        #   ls
-        # }
-
-    # append the command into CHPWD_COMMAND
-        # CHPWD_COMMAND="${CHPWD_COMMAND:+$CHPWD_COMMAND;}_ls_on_cwd_change"
-
-    # or just use `ls` directly
-        # CHPWD_COMMAND="${CHPWD_COMMAND:+$CHPWD_COMMAND;}ls"
-
-    function _add_cwd_to_fzf_search_path () {
-        export FZF_DEFAULT_COMMAND="fd --unrestricted --follow --exclude '.git' ${FZF_SEARCH_PATHS}"
-    }
-
-    CHPWD_COMMAND="${CHPWD_COMMAND:+$CHPWD_COMMAND;}_add_cwd_to_fzf_search_path"
-
+    PROMPT_COMMAND="_dynamic_fzf; $PROMPT_COMMAND"
 elif [[ -v ZSH_VERSION ]]; then
-    chpwd()
+    function chpwd() {
         #case $PWD in
         #  (*/public_html) echo do something
         #esac
-        export FZF_DEFAULT_COMMAND="fd --unrestricted --follow --exclude '.git' ${FZF_SEARCH_PATHS}"
-end
+        _dynamic_fzf
+    }
+fi
 
 # Print tree structure in the preview window
 export FZF_ALT_C_OPTS="--preview 'tree -C {}'"
@@ -86,6 +105,12 @@ export FZF_CTRL_R_OPTS="
   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
   --color header:italic
   --header 'Press CTRL-Y to copy command into clipboard'"
+
+
+#       ▌         ▐        
+# ▀▜▘▞▀▘▛▀▖ ▞▀▘▞▀▖▜▀ ▌ ▌▛▀▖
+# ▗▘ ▝▀▖▌ ▌ ▝▀▖▛▀ ▐ ▖▌ ▌▙▄▘
+# ▀▀▘▀▀ ▘ ▘ ▀▀ ▝▀▘ ▀ ▝▀▘▌  
 
 # zsh env vars
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
@@ -111,9 +136,10 @@ fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 fpath+=${HOME:-~}/.dotfiles/zsh_functions
 
 
-################################################################################
-# p10k
-################################################################################
+#                 ▜          ▜ ▗▌ ▞▀▖▌  
+# ▛▀▖▞▀▖▌  ▌▞▀▖▙▀▖▐ ▞▀▖▌ ▌▞▀▖▐  ▌ ▌▞▌▌▗▘
+# ▙▄▘▌ ▌▐▐▐ ▛▀ ▌  ▐ ▛▀ ▐▐ ▛▀ ▐  ▌ ▛ ▌▛▚ 
+# ▌  ▝▀  ▘▘ ▝▀▘▘   ▘▝▀▘ ▘ ▝▀▘ ▘▝▀ ▝▀ ▘ ▘
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -126,17 +152,16 @@ fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 
-################################################################################
-# oh-my-zsh setup
-################################################################################
+#    ▌                     ▌  
+# ▞▀▖▛▀▖▄▄▖▛▚▀▖▌ ▌▄▄▖▀▜▘▞▀▘▛▀▖
+# ▌ ▌▌ ▌   ▌▐ ▌▚▄▌   ▗▘ ▝▀▖▌ ▌
+# ▝▀ ▘ ▘   ▘▝ ▘▗▄▘   ▀▀▘▀▀ ▘ ▘
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # case-sensitive completion
@@ -213,40 +238,43 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 
-################################################################################
-# rtx
-################################################################################
+#    ▐       ▞        ▌▗▀▖▝▖ 
+# ▙▀▖▜▀ ▚▗▘ ▐ ▝▀▖▞▀▘▞▀▌▐   ▐ 
+# ▌  ▐ ▖▗▚  ▝▖▞▀▌▝▀▖▌ ▌▜▀  ▞ 
+# ▘   ▀ ▘ ▘  ▝▝▀▘▀▀ ▝▀▘▐  ▝  
 
 eval "$(/opt/homebrew/bin/rtx activate zsh)"
 export EXA_ICON_SPACING=2
 export EZA_HOME=`which eza`
 
 
-################################################################################
-# more misc env stuff but after rtx is loaded
-################################################################################
+#          ▐       ▐          ▗              ▐        
+# ▛▀▖▞▀▖▞▀▘▜▀▄▄▖▙▀▖▜▀ ▚▗▘ ▛▚▀▖▄ ▞▀▘▞▀▖ ▞▀▘▞▀▖▜▀ ▌ ▌▛▀▖
+# ▙▄▘▌ ▌▝▀▖▐ ▖  ▌  ▐ ▖▗▚  ▌▐ ▌▐ ▝▀▖▌ ▖ ▝▀▖▛▀ ▐ ▖▌ ▌▙▄▘
+# ▌  ▝▀ ▀▀  ▀   ▘   ▀ ▘ ▘ ▘▝ ▘▀▘▀▀ ▝▀  ▀▀ ▝▀▘ ▀ ▝▀▘▌  
 
 # this gets the version number of the currently installed Python via rtx. There
 # are obviously better and easier ways to get it, but I spent 5 minutes writing
 # this and I like it, so I'm just going to keep it as a good example of how to
 # use `read`.
-read -A python_ver <<< `rtx list python`
-pyver_regex='([0-9]{1,2}\.){2}[0-9]{1,2}'
-for segment in $python_ver; do
-  if [[ $segment =~ $pyver_regex ]]; then
-    #echo $segment
-  fi
-done
+# read -A python_ver <<< `rtx list python`
+# pyver_regex='([0-9]{1,2}\.){2}[0-9]{1,2}'
+# for segment in $python_ver; do
+#   if [[ $segment =~ $pyver_regex ]]; then
+#     #echo $segment
+#   fi
+# done
 
 # now, an easier way to do it that can be included in settings.lua
 # for the python3_provider
 export NVIM_PYTHON_PATH=`which python`
 
 
-################################################################################
-# load aliases and last bits and bobs
-################################################################################
-
+#    ▜ ▗                      ▌ ▗▀▖▗    ▗    ▌  ▗              
+# ▝▀▖▐ ▄ ▝▀▖▞▀▘▞▀▖▞▀▘ ▝▀▖▛▀▖▞▀▌ ▐  ▄ ▛▀▖▄ ▞▀▘▛▀▖▄ ▛▀▖▞▀▌ ▌ ▌▛▀▖
+# ▞▀▌▐ ▐ ▞▀▌▝▀▖▛▀ ▝▀▖ ▞▀▌▌ ▌▌ ▌ ▜▀ ▐ ▌ ▌▐ ▝▀▖▌ ▌▐ ▌ ▌▚▄▌ ▌ ▌▙▄▘
+# ▝▀▘ ▘▀▘▝▀▘▀▀ ▝▀▘▀▀  ▝▀▘▘ ▘▝▀▘ ▐  ▀▘▘ ▘▀▘▀▀ ▘ ▘▀▘▘ ▘▗▄▘ ▝▀▘▌  
+ 
 source ${HOME}/.aliases.zsh
 
 # this bit puts any p10k instant prompt at the bottom of the screen. good to
