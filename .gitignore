@@ -5,3 +5,4 @@ archived/*
 __pycache__/
 config/nvim/CLAUDE.md
 *.pyi
+.ha_webhook_url
