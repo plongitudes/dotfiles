@@ -1,1 +1,7 @@
 archived/*
+.aider*
+.claude/
+.vscode/
+__pycache__/
+config/nvim/CLAUDE.md
+*.pyi
