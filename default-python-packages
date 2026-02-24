@@ -1,11 +1,23 @@
-black
+click
+deepdiff
 git+https://github.com/shotgunsoftware/python-api.git#egg=shotgun-api3
 ipdb
 ipython
 loguru
+lxml-html-clean
 neovim
-pynvim
+pdbpp
 pydantic
+pynvim
 python-dotenv
-pythoncolorize
 requests
+rich
+ruff
+
+# Molten/Jupyter dependencies for Neovim
+jupyter_client
+cairosvg
+pnglatex
+websocket-client
+ipykernel
+jupytext

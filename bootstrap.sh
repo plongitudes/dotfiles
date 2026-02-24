@@ -130,10 +130,10 @@ if [ "$uname_str" == "Darwin" ]; then
     # and now asdf
     $PACK_MAN intall asdf
 
-    # TODO: replace with rtx
-    # set RTX_PYTHON_DEFAULT_PACKAGES_FILE for location of .default-python-packages
-    # set RTX_GEM_DEFAULT_PACKAGES_FILE for .default-gems
-    # set RTX_NPM_DEFAULT_PACKAGES_FILE for .default-npm-packages
+    # TODO: replace with  ---[[[ mise ]]]---
+    # set MISE_PYTHON_DEFAULT_PACKAGES_FILE for location of .default-python-packages
+    # set MISE_GEM_DEFAULT_PACKAGES_FILE for .default-gems
+    # set MISE_NPM_DEFAULT_PACKAGES_FILE for .default-npm-packages
     # etc
 
     # and neovim and vimR
