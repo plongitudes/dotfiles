@@ -4,6 +4,7 @@ return {
   build = ':TSUpdate',
   dependencies = {
     'abecodes/tabout.nvim',
+    'nvim-treesitter/nvim-tree-docs',
   },
   config = function()
     require('nvim-treesitter.configs').setup {
@@ -64,6 +65,26 @@ return {
         -- Using this option may slow down your editor, and you may see some duplicate highlights.
         -- Instead of true it can also be a list of languages
         additional_vim_regex_highlighting = false,
+      },
+
+      tree_docs = {
+        enable = true
+      },
+
+      yati = {
+        enable = true,
+        -- Disable by languages, see `Supported languages`
+        disable = {},
+
+        -- Whether to enable lazy mode (recommend to enable this if bad indent happens frequently)
+        default_lazy = true,
+
+        -- Determine the fallback method used when we cannot calculate indent by tree-sitter
+        --   "auto": fallback to vim auto indent
+        --   "asis": use current indent as-is
+        --   "cindent": see `:h cindent()`
+        -- Or a custom function return the final indent result.
+        default_fallback = "auto"
       },
     }
   end

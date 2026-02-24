@@ -1,45 +1,16 @@
+function pp(obj)
+	local output = vim.inspect(obj)
+	local msg_line_count = select(2, output:gsub("\n", "\n"))
+	local message_height
+	local win_width = vim.fn.winwidth(0)
+	local win_height = vim.fn.winheight(0)
 
---print a whole dang table
-function pp (tbl, indent)
-  --validate args
-  if (type(tbl) ~= "table") then
-    print("sorry, input isn't a table, it's a "..type(tbl)..".")
-    print(tbl)
-    return
-  else
-    if not indent then indent = 2 end
-    local toprint = string.rep(" ", indent) .. "{\r\n"
-    indent = indent + 2 
-    for k, v in pairs(tbl) do
-      toprint = toprint .. string.rep(" ", indent)
-      if (type(k) == "number") then
-        toprint = toprint .. "[" .. k .. "] = "
-      elseif (type(k) == "string") then
-        toprint = toprint  .. k ..  "= "
-      end
-      if (type(v) == "number") then
-        toprint = toprint .. v .. ",\r\n"
-      elseif (type(v) == "string") then
-        toprint = toprint .. "\"" .. v .. "\",\r\n"
-      elseif (type(v) == "table") then
-        toprint = toprint .. pp(v, indent + 2) .. ",\r\n"
-      else
-        toprint = toprint .. "\"" .. tostring(v) .. "\",\r\n"
-      end
-    end
-    toprint = toprint .. string.rep(" ", indent-2) .. "}"
-    print(toprint)
-    print("done!")
-  end
-end
+	if (win_height / 2) > msg_line_count then
+		message_height = msg_line_count
+	else
+		message_height = (win_height / 2)
+	end
 
---[[
-RELOAD = function(...)
-    return require("plenary.reload").reload_module(...)
+	vim.cmd("messages")
+	vim.cmd("resize " .. win_height - message_height)
 end
-
-R = function(name)
-    RELOAD(name)
-    return require(name)
-end
-]]--

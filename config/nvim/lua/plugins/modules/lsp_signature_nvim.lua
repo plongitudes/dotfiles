@@ -16,7 +16,7 @@ return {
                      -- mode, 10 by default
 
       max_height = 24, -- max height of signature floating_window
-      max_width = 100, -- max_width of signature floating_window
+      max_width = 120, -- max_width of signature floating_window
       noice = false, -- set to true if you using noice to render markdown
       wrap = true, -- allow doc/signature text wrap inside floating_window, useful if your lsp return doc/sig is too long
 
