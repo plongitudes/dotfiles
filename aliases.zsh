@@ -1,6 +1,7 @@
-###########################
-# General                 #
-###########################
+# ▌            ▗▀▖         ▐  ▗          ▜ ▗▐
+# ▛▀▖▝▀▖▞▀▘▞▀▖ ▐  ▌ ▌▛▀▖▞▀▖▜▀ ▄ ▞▀▖▛▀▖▝▀▖▐ ▄▜▀ ▌ ▌
+# ▌ ▌▞▀▌▝▀▖▛▀  ▜▀ ▌ ▌▌ ▌▌ ▖▐ ▖▐ ▌ ▌▌ ▌▞▀▌▐ ▐▐ ▖▚▄▌
+# ▀▀ ▝▀▘▀▀ ▝▀▘ ▐  ▝▀▘▘ ▘▝▀  ▀ ▀▘▝▀ ▘ ▘▝▀▘ ▘▀▘▀ ▗▄▘
 
 # find and use drop-in replacements like bat, ripgrep, etc if installed
 for CMD in "cat ls vi vim nvim asdf batg man"; do
@@ -9,10 +10,13 @@ done
 
 alias cat="bat"
 alias vi="nvim"
-alias asdf="rtx"
+alias v="neovide"
 alias p='poetry'
+alias m='mise'
 
-export NVIM_PYTHON_PATH="`rtx where python`/bin"
+export NVIM_PYTHON_PATH="`mise where python`/bin"
+export VSCODE_PATHS="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+export PATH=${PATH}:${VSCODE_PATHS}
 
 # below is wicked old and basically obviated by ripgrep, so... will use batgrep instead
 # function fnd () { find -L . -print -type f -exec grep -n $* {} \; | grep $* -B 1 }
@@ -22,7 +26,6 @@ alias grep="grep -i"
 
 alias man="batman"
 
-export RG_HOME=$(which rg 2&>1 || which rg)
 function vrg() { rg -in --context 5 --heading $* | ${PAGER}; }
 alias rg='rg -i'
 
@@ -33,15 +36,20 @@ alias duf='sudo /usr/bin/du -d 1 -h'
 alias h='history'
 alias hg='history | grep -i'
 alias gk='gitkraken'
+alias i='ipython'
+alias psh='source $(poetry env info --path)/bin/activate'
+alias pos='poetry shell'
 
+alias compress='ditto -c -k --sequesterRsrc --keepParent'
 function du () { /usr/bin/du -sh $* | ${PAGER} }
 
 format_stacktrace='grep --line-buffered -o '\''".\+[^"]"'\'' | grep --line-buffered -o '\''[^"]*[^"]'\'' | while read -r line; do printf "%b" $line; done | tr "\r\n" "\275\276" | tr -d "[:cntrl:]" | tr "\275\276" "\r\n"'
 
 
-############################
-# ls aliases               #
-############################
+# ▜        ▜ ▗
+# ▐ ▞▀▘ ▝▀▖▐ ▄ ▝▀▖▞▀▘▞▀▖▞▀▘
+# ▐ ▝▀▖ ▞▀▌▐ ▐ ▞▀▌▝▀▖▛▀ ▝▀▖
+#  ▘▀▀  ▝▀▘ ▘▀▘▝▀▘▀▀ ▝▀▘▀▀
 
 if [[ -v BASH_VERSINFO ]]; then
     l_alias="$(type -t l)"
@@ -57,24 +65,30 @@ if [[ $ll_alias == "alias" ]]; then unalias ll; fi
 if [[ -x `which eza` ]]; then
     function eza_base () {
         # test if being piped
-        if [ -t 1 ] ; then
+        if [[ -t 1 ]] ; then
             # eza fancy with icons
-            ${EZA_HOME} -lFgTL1 --git --color=always --icons $* | less
+            # a - all
+            # b - filesize with binary prefixes
+            # g - list file's group
+            # m - use 'modified' timestamp field
+            # l - long
+            # L1 - limit recursion
+            eza -bgmlL1 --color-scale --color=always --icons=auto $* | less
         else
             # eza plain for working with pipes &etc.
-            ${EZA_HOME} -lFg --git --color=never --no-icons $*
+            eza -gml --color=never --icons=auto $*
         fi
     }
 
-    function ll () { eza_base -a $*; }
-    function llt () { eza_base -a --sort=modified $*; }
-    function lltr () { eza_base -a --sort=modified --reverse $*; }
-    function lld () { eza_base -aD $*; }
+    function l () { eza_base -aa $*; }
+    function lt () { eza_base -aa --sort=modified $*; }
+    function ltr () { eza_base -aa --sort=modified --reverse $*; }
+    function ld () { eza_base -aaD $*; }
 
-    function l () { eza_base $*; }
-    function lt () { eza_base --sort=modified $*; }
-    function ltr () { eza_base --sort=modified --reverse $*; }
-    function ld () { eza_base -D $*; }
+    function ll () { eza_base $*; }
+    function llt () { eza_base --sort=modified $*; }
+    function lltr () { eza_base --sort=modified --reverse $*; }
+    function lld () { eza_base -D $*; }
 
     function lp () { fd -H -g "$*"; }
 else
@@ -113,14 +127,32 @@ alias sa='source ~/.dotfiles/aliases.zsh ; echo "alias file re-sourced!"'
 alias va='vi ~/.dotfiles/aliases.zsh; sa'
 alias vz='vi ~/.zshrc'
 alias vb='vi ~/.bashrc'
+alias vw='vi ~/.dotfiles/wezterm.lua'
 #alias vqo       'vi $SCRIPTHOME/sig_quotes.txt'
 
+
+###########################
+# Alfred Things           #
+###########################
+
+# alfred workflow name getter
+function alf () {
+    for name in $(/bin/ls ${HOME}/workflows/); do
+        awk 'c&&!--c;/<key>name<\/key>/{c=1}' \
+            ${HOME}/workflows/${name}/info.plist |\
+            sed -E 's/^.*<string>(.*)<\/string>.*$/\1/'
+    done
+}
 
 ###########################
 # Doing Things            #
 ###########################
 
 alias tm='tmux attach -d'
+
+function vlc () {
+     /Applications/VLC.app/Contents/MacOS/VLC -f $*
+}
 
 if [[ $(uname) == "Darwin" ]]; then
     function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
@@ -253,6 +285,91 @@ function zcrop () {
 # Doing Git Things        #
 ###########################
 
+# gw - Git Worktree switcher
+function gw() {
+    local worktrees worktree_list selection worktree_path exit_code
+
+    # Get list of worktrees, excluding the header line
+    worktrees=$(git worktree list --porcelain 2>/dev/null)
+    exit_code=$?
+
+    if [[ $exit_code -ne 0 ]]; then
+        echo "Not a git repository"
+        return 1
+    fi
+
+    # Parse worktree list into an array of "path branch" pairs
+    worktree_list=()
+    local current_path="" current_branch=""
+
+    while IFS= read -r line; do
+        if [[ $line =~ ^worktree\ (.+)$ ]]; then
+            current_path="${match[1]}"
+        elif [[ $line =~ ^branch\ refs/heads/(.+)$ ]]; then
+            current_branch="${match[1]}"
+        elif [[ $line =~ ^detached$ ]]; then
+            current_branch="(detached HEAD)"
+        elif [[ -z $line && -n $current_path ]]; then
+            worktree_list+=("$current_path|$current_branch")
+            current_path=""
+            current_branch=""
+        fi
+    done <<< "$worktrees"
+
+    # Add last worktree if exists
+    if [[ -n $current_path ]]; then
+        worktree_list+=("$current_path|$current_branch")
+    fi
+
+    # Check if we only have main/master worktree
+    if [[ ${#worktree_list[@]} -le 1 ]]; then
+        echo "No additional worktrees exist besides the main branch"
+        return 0
+    fi
+
+    # Use fzf if available, otherwise use numbered menu
+    if command -v fzf &> /dev/null; then
+        # Format for fzf display: "branch (worktree_path)"
+        local display_list=()
+        for entry in "${worktree_list[@]}"; do
+            worktree_path="${entry%|*}"
+            branch="${entry#*|}"
+            display_list+=("$branch ($worktree_path)")
+        done
+
+        selection=$(printf "%s\n" "${display_list[@]}" | fzf --height=40% --border --prompt="Select worktree: ")
+
+        if [[ -n $selection ]]; then
+            # Extract worktree_path from selection (format: "branch (path)")
+            worktree_path="${selection#*\(}"
+            worktree_path="${worktree_path%\)}"
+            cd "$worktree_path"
+        fi
+    else
+        # Numbered menu
+        echo "Git worktrees:"
+        local i=1
+        for entry in "${worktree_list[@]}"; do
+            worktree_path="${entry%|*}"
+            branch="${entry#*|}"
+            echo "$i) $branch ($worktree_path)"
+            ((i++))
+        done
+
+        echo -n "Select worktree (1-${#worktree_list[@]}): "
+        read choice
+
+        if [[ $choice =~ ^[0-9]+$ ]] && [[ $choice -ge 1 ]] && [[ $choice -le ${#worktree_list[@]} ]]; then
+            entry="${worktree_list[$choice]}"
+            worktree_path="${entry%|*}"
+            cd "$worktree_path"
+        else
+            echo "Invalid selection"
+            return 1
+        fi
+    fi
+}
+
 # git: get branch name
 alias gbn='git rev-parse --abbrev-ref HEAD'
 # git: get tag name
@@ -377,3 +494,9 @@ alias dtrans='dc-opts up -d'
 # look at sent email
 alias dmail='open http://localhost:1080'
 
+#################################
+# doing claude things           #
+#################################
+
+function cl() { claude --allow-dangerously-skip-permissions $*; }
+function cr() { claude --allow-dangerously-skip-permissions --resume $*; }

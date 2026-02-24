@@ -1,11 +1,16 @@
 
-# ▌                  ▐        
+# ▌                  ▐
 # ▛▀▖▝▀▖▞▀▘▞▀▖ ▞▀▘▞▀▖▜▀ ▌ ▌▛▀▖
 # ▌ ▌▞▀▌▝▀▖▛▀  ▝▀▖▛▀ ▐ ▖▌ ▌▙▄▘
-# ▀▀ ▝▀▘▀▀ ▝▀▘ ▀▀ ▝▀▘ ▀ ▝▀▘▌  
+# ▀▀ ▝▀▘▀▀ ▝▀▘ ▀▀ ▝▀▘ ▀ ▝▀▘▌
 
 #GITSTATUS_LOG_LEVEL=DEBUG
-export PATH=$HOME/bin:$PATH
+export PATH=$HOME/bin:$PATH:/opt/homebrew/bin:$HOME/.local/bin
+
+export GOPATH="$HOME/go"
+
+# add GOPATH/bin to PATH
+export PATH="$PATH:$GOPATH/bin"
 
 
 # turns out we need this extra terminfo dir for tmux on macOS
@@ -17,12 +22,31 @@ export BATDIFF_USE_DELTA=true
 export PAGER='less'
 export LESS='-FiMXr -j.5'
 export DELTA_FEATURES='side-by-side line-numbers'
+export PYTHONSTARTUP="${HOME}/.pystartup"
+export HOOBASTANK=$(< ${HOME}/.hoobastank)
+export VIRTUAL_ENV_DISABLE_PROMPT=0
+export HOMEBREW_AUTO_UPDATE_SECS=43200
+export GITHUB_HOME="${HOME}/github/plongitudes"
+
+# Home Assistant Pyscript configuration
+# Get token from: HA → Profile → Long-Lived Access Tokens
+unamestr=$(uname)
+if [ "$unamestr" = 'Linux' ]; then
+  export $(grep -v '^#' ${HOME}/.ha_env | xargs -d '\n')
+elif [ "$unamestr" = 'FreeBSD' ] || [ "$unamestr" = 'Darwin' ]; then
+  export $(grep -v '^#' ${HOME}/.ha_env | xargs -0)
+fi
+
+# eza env vars
+export EXA_COLORS="da=1;36"
+export TIME_STYLE="long-iso"
 
 
-#                   ▜ ▗         ▌ ▗▀▖         ▐  ▗          
+
+#                   ▜ ▗         ▌ ▗▀▖         ▐  ▗
 # ▞▀▌▞▀▖▛▀▖▞▀▖▙▀▖▝▀▖▐ ▄ ▀▜▘▞▀▖▞▀▌ ▐  ▌ ▌▛▀▖▞▀▖▜▀ ▄ ▞▀▖▛▀▖▞▀▘
 # ▚▄▌▛▀ ▌ ▌▛▀ ▌  ▞▀▌▐ ▐ ▗▘ ▛▀ ▌ ▌ ▜▀ ▌ ▌▌ ▌▌ ▖▐ ▖▐ ▌ ▌▌ ▌▝▀▖
-# ▗▄▘▝▀▘▘ ▘▝▀▘▘  ▝▀▘ ▘▀▘▀▀▘▝▀▘▝▀▘ ▐  ▝▀▘▘ ▘▝▀  ▀ ▀▘▝▀ ▘ ▘▀▀ 
+# ▗▄▘▝▀▘▘ ▘▝▀▘▘  ▝▀▘ ▘▀▘▀▀▘▝▀▘▝▀▘ ▐  ▝▀▘▘ ▘▝▀  ▀ ▀▘▝▀ ▘ ▘▀▀
 
 function stringContains() {
     # takes 2 args, tests if $1 is a substring of $2
@@ -42,7 +66,7 @@ function trim() {
     printf '%s' "$var"
 }
 
-# ▗▀▖   ▗▀▖ ▗                    ▐  ▌  ▗       
+# ▗▀▖   ▗▀▖ ▗                    ▐  ▌  ▗
 # ▐  ▀▜▘▐   ▄ ▛▀▖ ▞▀▖▌ ▌▞▀▖▙▀▖▌ ▌▜▀ ▛▀▖▄ ▛▀▖▞▀▌
 # ▜▀ ▗▘ ▜▀  ▐ ▌ ▌ ▛▀ ▐▐ ▛▀ ▌  ▚▄▌▐ ▖▌ ▌▐ ▌ ▌▚▄▌
 # ▐  ▀▀▘▐   ▀▘▘ ▘ ▝▀▘ ▘ ▝▀▘▘  ▗▄▘ ▀ ▘ ▘▀▘▘ ▘▗▄▘
@@ -57,10 +81,11 @@ function fortsplat () {
     fort_str="${fort_str//[$'\t\r\n']/ }"
     echo $(lolcat -f <<< "${fort_pfx}${fort_str}${fort_sfx}")
 }
- 
+
+# TODO: rework this so that matching paths only show up once -- likely the last two search paths
 function _dynamic_fzf () {
     # when changing directories, update the fd search directories and generate a new fortune.
-    local search_paths=("${HOME}/.config" "${HOME}/.oh-my-zsh" "${PWD}" "${HOME}") 
+    local search_paths=("${HOME}/.config" "${HOME}/.oh-my-zsh" "${PWD}" "${HOME}")
     local flags="-IL --max-depth 7 --exclude '.git' --exclude 'Library'"
     flags="${flags} --search-path $PWD --search-path ${HOME}/.config --search-path ${HOME}/.oh-my-zsh --search-path ${HOME}"
     # unique_search_paths=(${(u)search_paths[@]})
@@ -78,6 +103,35 @@ function _dynamic_fzf () {
 # export FZF_TMUX=1
 _dynamic_fzf
 
+# ▌  ▗        ▐         ▗       ▐  ▗
+# ▌  ▄ ▛▀▖▌ ▌▝▀▖▙▀▖▌ ▌  ▞▀▖▌ ▌▞▀▌▞▀▖▜▀ ▄ ▌ ▌▝▀▖▞▀▌▞▀▖
+# ▐  ▐ ▌ ▌▚▄▌▞▀▌▌  ▚▄▌  ▛▀ ▐▐ ▌ ▌▌ ▖▐ ▖▐ ▐▐ ▞▀▌▌ ▌▛▀
+#  ▘▀▘▘ ▘▗▄▘▝▀▘▘  ▗▄▘  ▝▀▘ ▘ ▝▀▘▝▀  ▀ ▀▘ ▘▝▀▘▝▀▘▝▀▘
+
+function _auto_activate_venv() {
+    # Find .venv by walking up the directory tree
+    local dir="$PWD"
+    while [[ "$dir" != "/" ]]; do
+        if [[ -d "$dir/.venv" ]]; then
+            local venv_path="$dir/.venv"
+            # Only activate if not already in this venv
+            if [[ "$VIRTUAL_ENV" != "$venv_path" ]]; then
+                source "$venv_path/bin/activate"
+            fi
+            return 0
+        fi
+        dir="$(dirname "$dir")"
+    done
+
+    # If we get here, no .venv found - deactivate if currently in one
+    if [[ -n "$VIRTUAL_ENV" ]] && type deactivate &>/dev/null; then
+        deactivate
+    fi
+}
+
+# Run once on shell startup
+_auto_activate_venv
+
 if [[ -v BASH_VERSINFO ]]; then
     PROMPT_COMMAND="_dynamic_fzf; $PROMPT_COMMAND"
 elif [[ -v ZSH_VERSION ]]; then
@@ -86,6 +140,7 @@ elif [[ -v ZSH_VERSION ]]; then
         #  (*/public_html) echo do something
         #esac
         _dynamic_fzf
+        _auto_activate_venv
     }
 fi
 
@@ -107,10 +162,10 @@ export FZF_CTRL_R_OPTS="
   --header 'Press CTRL-Y to copy command into clipboard'"
 
 
-#       ▌         ▐        
+#       ▌         ▐
 # ▀▜▘▞▀▘▛▀▖ ▞▀▘▞▀▖▜▀ ▌ ▌▛▀▖
 # ▗▘ ▝▀▖▌ ▌ ▝▀▖▛▀ ▐ ▖▌ ▌▙▄▘
-# ▀▀▘▀▀ ▘ ▘ ▀▀ ▝▀▘ ▀ ▝▀▘▌  
+# ▀▀▘▀▀ ▘ ▘ ▀▀ ▝▀▘ ▀ ▝▀▘▌
 
 # zsh env vars
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
@@ -136,23 +191,7 @@ fpath+=${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src
 fpath+=${HOME:-~}/.dotfiles/zsh_functions
 
 
-#                 ▜          ▜ ▗▌ ▞▀▖▌  
-# ▛▀▖▞▀▖▌  ▌▞▀▖▙▀▖▐ ▞▀▖▌ ▌▞▀▖▐  ▌ ▌▞▌▌▗▘
-# ▙▄▘▌ ▌▐▐▐ ▛▀ ▌  ▐ ▛▀ ▐▐ ▛▀ ▐  ▌ ▛ ▌▛▚ 
-# ▌  ▝▀  ▘▘ ▝▀▘▘   ▘▝▀▘ ▘ ▝▀▘ ▘▝▀ ▝▀ ▘ ▘
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-
-#    ▌                     ▌  
+#    ▌                     ▌
 # ▞▀▖▛▀▖▄▄▖▛▚▀▖▌ ▌▄▄▖▀▜▘▞▀▘▛▀▖
 # ▌ ▌▌ ▌   ▌▐ ▌▚▄▌   ▗▘ ▝▀▖▌ ▌
 # ▝▀ ▘ ▘   ▘▝ ▘▗▄▘   ▀▀▘▀▀ ▘ ▘
@@ -162,7 +201,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
-ZSH_THEME="powerlevel10k/powerlevel10k"
+#ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -220,15 +259,16 @@ HIST_STAMPS="yyyy-mm-dd"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
+    fast-syntax-highlighting
     fzf-tab
     git
+    mise
     ohmyzsh-full-autoupdate
-    zsh-autosuggestions
-    fast-syntax-highlighting
-    poetry
-    python
     pylint
-    rtx
+    python
+    virtualenv
+    zsh-autosuggestions
+    zsh-completions
 )
     # do not load zsh-completions in the plugins folder (see above)
 
@@ -236,28 +276,27 @@ plugins=(
 # here or anything.
 
 source $ZSH/oh-my-zsh.sh
+export VIRTUAL_ENV_DISABLE_PROMPT=0
 
+#    ▐       ▞        ▌▗▀▖▝▖
+# ▙▀▖▜▀ ▚▗▘ ▐ ▝▀▖▞▀▘▞▀▌▐   ▐
+# ▌  ▐ ▖▗▚  ▝▖▞▀▌▝▀▖▌ ▌▜▀  ▞
+# ▘   ▀ ▘ ▘  ▝▝▀▘▀▀ ▝▀▘▐  ▝
 
-#    ▐       ▞        ▌▗▀▖▝▖ 
-# ▙▀▖▜▀ ▚▗▘ ▐ ▝▀▖▞▀▘▞▀▌▐   ▐ 
-# ▌  ▐ ▖▗▚  ▝▖▞▀▌▝▀▖▌ ▌▜▀  ▞ 
-# ▘   ▀ ▘ ▘  ▝▝▀▘▀▀ ▝▀▘▐  ▝  
-
-eval "$(/opt/homebrew/bin/rtx activate zsh)"
+eval "$(/opt/homebrew/bin/mise activate zsh)"
 export EXA_ICON_SPACING=2
-export EZA_HOME=`which eza`
 
 
-#          ▐       ▐          ▗              ▐        
+#          ▐       ▐          ▗              ▐
 # ▛▀▖▞▀▖▞▀▘▜▀▄▄▖▙▀▖▜▀ ▚▗▘ ▛▚▀▖▄ ▞▀▘▞▀▖ ▞▀▘▞▀▖▜▀ ▌ ▌▛▀▖
 # ▙▄▘▌ ▌▝▀▖▐ ▖  ▌  ▐ ▖▗▚  ▌▐ ▌▐ ▝▀▖▌ ▖ ▝▀▖▛▀ ▐ ▖▌ ▌▙▄▘
-# ▌  ▝▀ ▀▀  ▀   ▘   ▀ ▘ ▘ ▘▝ ▘▀▘▀▀ ▝▀  ▀▀ ▝▀▘ ▀ ▝▀▘▌  
+# ▌  ▝▀ ▀▀  ▀   ▘   ▀ ▘ ▘ ▘▝ ▘▀▘▀▀ ▝▀  ▀▀ ▝▀▘ ▀ ▝▀▘▌
 
-# this gets the version number of the currently installed Python via rtx. There
+# this gets the version number of the currently installed Python via mise. There
 # are obviously better and easier ways to get it, but I spent 5 minutes writing
 # this and I like it, so I'm just going to keep it as a good example of how to
 # use `read`.
-# read -A python_ver <<< `rtx list python`
+# read -A python_ver <<< `mise list python`
 # pyver_regex='([0-9]{1,2}\.){2}[0-9]{1,2}'
 # for segment in $python_ver; do
 #   if [[ $segment =~ $pyver_regex ]]; then
@@ -267,29 +306,38 @@ export EZA_HOME=`which eza`
 
 # now, an easier way to do it that can be included in settings.lua
 # for the python3_provider
-export NVIM_PYTHON_PATH=`which python`
+# export NVIM_PYTHON_PATH=`which python`  # No longer needed - python3_host_prog set in settings.lua
+apps_for_path=("bat" "fd" "fzf")
+for application in ${apps_for_path}; do
+    export PATH=${PATH}:$(command -v ${application})
+done
 
 
-#    ▜ ▗                      ▌ ▗▀▖▗    ▗    ▌  ▗              
+#    ▜ ▗                      ▌ ▗▀▖▗    ▗    ▌  ▗
 # ▝▀▖▐ ▄ ▝▀▖▞▀▘▞▀▖▞▀▘ ▝▀▖▛▀▖▞▀▌ ▐  ▄ ▛▀▖▄ ▞▀▘▛▀▖▄ ▛▀▖▞▀▌ ▌ ▌▛▀▖
 # ▞▀▌▐ ▐ ▞▀▌▝▀▖▛▀ ▝▀▖ ▞▀▌▌ ▌▌ ▌ ▜▀ ▐ ▌ ▌▐ ▝▀▖▌ ▌▐ ▌ ▌▚▄▌ ▌ ▌▙▄▘
-# ▝▀▘ ▘▀▘▝▀▘▀▀ ▝▀▘▀▀  ▝▀▘▘ ▘▝▀▘ ▐  ▀▘▘ ▘▀▘▀▀ ▘ ▘▀▘▘ ▘▗▄▘ ▝▀▘▌  
- 
-source ${HOME}/.aliases.zsh
+# ▝▀▘ ▘▀▘▝▀▘▀▀ ▝▀▘▀▀  ▝▀▘▘ ▘▝▀▘ ▐  ▀▘▘ ▘▀▘▀▀ ▘ ▘▀▘▘ ▘▗▄▘ ▝▀▘▌
 
-# this bit puts any p10k instant prompt at the bottom of the screen. good to
-# turn off if things are being weird.
-# print ${(pl:$LINES::\n:):-}
+source ${HOME}/.aliases.zsh
 
 # set vi mode for the prompt
 #bindkey -v
 #export KEYTIMEOUT=1
 
 # iTerm2 integration
-test -e /Users/tonye/.iterm2_shell_integration.zsh && \
-    source /Users/tonye/.iterm2_shell_integration.zsh || true
+#test -e /Users/tonye/.iterm2_shell_integration.zsh && \
+#    source /Users/tonye/.iterm2_shell_integration.zsh || true
 
-printf "\e]1337;SetBadgeFormat=%s\a" \
-  $(echo -n "\(hostname) \(jobName)\n\(columns)x\(rows)" | base64)
+#printf "\e]1337;SetBadgeFormat=%s\a" \
+  #$(echo -n "\(hostname) \(jobName)\n\(columns)x\(rows)" | base64)
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# Added by Windsurf
+export PATH="/Users/tonye/.codeium/windsurf/bin:$PATH"
+
+#eval "$(oh-my-posh init zsh)"
+eval "$(oh-my-posh init zsh --config '~/.plongitudes.omp.json')"
+
+# opencode
+export PATH=/Users/tonye/.opencode/bin:$PATH

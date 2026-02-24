@@ -1,0 +1,133 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "upgrade": {
+    "source": "cdn",
+    "interval": "168h",
+    "auto": false,
+    "notice": false
+  },
+  "console_title_template": "{{if .Root}} ⚡ {{end}}{{.Folder | replace \"~\" \"🏚\" }} @ {{.HostName}}",
+  "blocks": [
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "template": " {{ if .WSL }}WSL at {{ end }}{{.Icon}} ",
+          "trailing_diamond": "\ue0b0",
+          "leading_diamond": "<transparent,#daf7a6>\ue0b0</>",
+          "foreground": "#333333",
+          "background": "#daf7a6",
+          "type": "os",
+          "style": "diamond"
+        },
+        {
+          "type": "path",
+          "style": "diamond",
+          "leading_diamond": "<transparent,#ffc300>\ue0b0</>",
+          "trailing_diamond": "\ue0b0",
+          "foreground": "#333333",
+          "background": "#ffc300",
+          "properties": {
+              "style": "unique"
+          }
+        },
+        {
+          "properties": {
+            "fetch_stash_count": true,
+            "fetch_status": true
+          },
+          "template": " {{ .HEAD }}{{ if .Staging.Changed }}<#700> \uf046 {{ .Staging.String }}</>{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if gt .StashCount 0 }} \ueb4b {{ .StashCount }}{{ end }} ",
+          "foreground": "#333333",
+          "powerline_symbol": "\ue0b0",
+          "background": "#ff5733",
+          "type": "git",
+          "style": "powerline",
+          "background_templates": [
+            "{{ if or (.Working.Changed) (.Staging.Changed) }}#ff5733{{ end }}",
+            "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#ff5733{{ end }}",
+            "{{ if gt .Ahead 0 }}#ff5733{{ end }}",
+            "{{ if gt .Behind 0 }}#ff5733{{ end }}"
+          ]
+        },
+        {
+          "properties": {
+            "style": "dallas",
+            "threshold": 0
+          },
+          "leading_diamond": "<transparent,#82561b>\ue0b0</>",
+          "trailing_diamond": "\ue0b0",
+          "template": " {{ .FormattedMs }}s ",
+          "foreground": "#333333",
+          "background": "#82561b",
+          "type": "executiontime",
+          "style": "diamond"
+        },
+        {
+          "template": "<transparent> \uf12a</> {{ reason .Code }} ",
+          "foreground": "#ffffff",
+          "powerline_symbol": "\ue0b0",
+          "background": "#910000",
+          "type": "status",
+          "style": "powerline"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "right",
+      "segments": [
+        {
+          "type": "python",
+          "style": "diamond",
+          "leading_diamond": "\ue0b2",
+          "trailing_diamond": "<transparent,#C70039>\ue0b2</>",
+          "foreground": "#000",
+          "background": "#C70039",
+          "template": "  {{ .Venv }} "
+        },
+        {
+          "type": "python",
+          "style": "diamond",
+          "leading_diamond": "\ue0b2",
+          "trailing_diamond": "<transparent,#C70039>\ue0b2</>",
+          "foreground": "#dddddd",
+          "background": "#C70039",
+          "template": "  {{ .Full }} "
+        },
+        {
+          "properties": {
+            "time_format": "15:04:05"
+          },
+          "template": " {{ .CurrentDate | date .Format }} ",
+          "leading_diamond": "\ue0b2",
+          "trailing_diamond": "<transparent,#581845>\ue0b2</>",
+          "foreground": "#dddddd",
+          "background": "#581845",
+          "type": "time",
+          "style": "diamond"
+        }
+      ]
+    },
+    {
+      "type": "prompt",
+      "alignment": "left",
+      "segments": [
+        {
+          "properties": {
+            "always_enabled": true
+          },
+          "template": "❯ ",
+          "foreground": "#ffffff",
+          "type": "status",
+          "style": "plain",
+          "foreground_templates": [
+            "{{ if gt .Code 0 }}#ff0000{{ end }}"
+          ]
+        }
+      ],
+      "newline": true
+    }
+  ],
+  "version": 3
+}
