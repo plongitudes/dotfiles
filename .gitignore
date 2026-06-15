@@ -6,3 +6,13 @@ __pycache__/
 config/nvim/CLAUDE.md
 *.pyi
 .ha_webhook_url
+
+# Nix
+result
+result-*
+.direnv/
+
+# Beads (local issue-tracking DB; portable state goes through `bd sync` separately)
+.beads/
+.gitattributes
+AGENTS.md
