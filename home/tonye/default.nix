@@ -2,8 +2,7 @@
 {
   home.username = "tonye";
 
-  home.homeDirectory =
-    if pkgs.stdenv.isDarwin then "/Users/tonye" else "/home/tonye";
+  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/tonye" else "/home/tonye";
 
   # See https://nix-community.github.io/home-manager/options.xhtml#opt-home.stateVersion
   # Don't change casually — controls backwards-compat behavior for HM-generated files.
@@ -31,11 +30,15 @@
   # Nix-editing toolchain. Sourced from Nix (not mason) so the exact same
   # binaries work on macOS now and on the NixOS VM later, with no nix-ld shim.
   home.packages = with pkgs; [
-    nixd              # LSP — flake-aware, completes home-manager/NixOS options
-    nixfmt-rfc-style  # formatter — official RFC 166 style (what nixpkgs uses)
-    statix            # linter — flags Nix anti-patterns
-    deadnix           # linter — finds dead/unused bindings
-    manix             # CLI search over nixpkgs / HM / NixOS option docs
+    # LSP — flake-aware, completes home-manager/NixOS options
+    nixd
+    # formatter — official RFC 166 style (what nixpkgs uses)
+    nixfmt-rfc-style
+    # linter — flags Nix anti-patterns
+    statix
+    # linter — finds dead/unused bindings
+    deadnix
+    # CLI search over nixpkgs / HM / NixOS option docs
+    manix
   ];
 }
-
