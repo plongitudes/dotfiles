@@ -193,6 +193,29 @@ return {
             capabilities = default_capabilities,
         }
 
+        -- Configure helpers for nix files
+        -- manual adjustment of nvim setup, not managed by Mason.
+        local flake_path = vim.fn.expand("~/.dotfiles")
+        vim.lsp.config.nixd = {
+            cmd = { "nixd" },
+            root_markers = { "flake.nix", ".git" },
+            capabilities = default_capabilities,
+            settings = {
+                nixd = {
+                    nixpkgs = {
+                        expr = ('import (builtins.getFlake "%s").inputs.nixpkgs {}'):format(flake_path),
+                    },
+                    options = {
+                        ["home-manager"] = {
+                            expr = ('(builtins.getFlake "%s").homeConfigurations.laptop-dev-portmantopia.options'):format(
+                                flake_path
+                            ),
+                        },
+                    },
+                },
+            },
+        }
+
         -- Enable basedpyright and ruff for Python files
         vim.api.nvim_create_autocmd("FileType", {
             pattern = "python",
@@ -220,6 +243,14 @@ return {
             pattern = "lua",
             callback = function()
                 vim.lsp.enable("lua_ls")
+            end,
+        })
+
+        -- Enable nixd for nix configs
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = "nix",
+            callback = function()
+                vim.lsp.enable("nixd")
             end,
         })
     end,
