@@ -72,6 +72,8 @@ function trim() {
 # ▐  ▀▀▘▐   ▀▘▘ ▘ ▝▀▘ ▘ ▝▀▘▘  ▗▄▘ ▀ ▘ ▘▀▘▘ ▘▗▄▘
 
 function fortsplat () {
+    # only run when stdin is a real terminal; skip in non-interactive/piped shells
+    [[ -t 0 ]] || return
     # find a fortune that's short enough to fit in the terminal window with a little extra room.
     width=$(stty size | cut -d ' ' -f 2)
     width=$(expr $width - 20)
