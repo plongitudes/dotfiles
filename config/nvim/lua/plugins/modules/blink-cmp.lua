@@ -1,15 +1,15 @@
 return {
-  'saghen/blink.cmp',
+  "saghen/blink.cmp",
   lazy = false,
   -- optional: provides snippets for the snippet source
-  dependencies = { 
-    'rafamadriz/friendly-snippets',
-    'onsails/lspkind.nvim',
-    'nvim-tree/nvim-web-devicons'
+  dependencies = {
+    "rafamadriz/friendly-snippets",
+    "onsails/lspkind.nvim",
+    "nvim-tree/nvim-web-devicons",
   },
 
   -- use a release tag to download pre-built binaries
-  version = '1.*',
+  version = "1.*",
   -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
   -- build = 'cargo build --release',
   -- If you use nix, you can build from source using latest nightly rust with:
@@ -31,18 +31,18 @@ return {
     --
     -- See :h blink-cmp-config-keymap for defining your own keymap
     keymap = {
-      preset = 'none',
-      ['<M-CR>'] = { 'show', 'show_documentation', 'hide_documentation' },
-      ['<CR>'] = { 'select_and_accept', 'fallback' },
-      ['<Esc>'] = { 'hide', 'fallback' },
-      ['<Tab>'] = { 'select_next', 'fallback' },
-      ['<S-Tab>'] = { 'select_prev', 'fallback' },
+      preset = "none",
+      ["<M-CR>"] = { "show", "show_documentation", "hide_documentation" },
+      ["<CR>"] = { "select_and_accept", "fallback" },
+      ["<Esc>"] = { "hide", "fallback" },
+      ["<Tab>"] = { "select_next", "fallback" },
+      ["<S-Tab>"] = { "select_prev", "fallback" },
     },
 
     appearance = {
       -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
       -- Adjusts spacing to ensure icons are aligned
-      nerd_font_variant = 'mono'
+      nerd_font_variant = "mono",
     },
 
     -- Show documentation popup automatically when completion item is selected
@@ -55,14 +55,13 @@ return {
         show_in_snippet = true,
         -- Auto-show after typing characters (not just LSP trigger characters)
         show_on_keyword = true,
-      }
+      },
     },
-
 
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer' },
+      default = { "lsp", "path", "snippets", "buffer" },
     },
 
     -- (Default) Rust fuzzy matcher for typo resistance and significantly better performance
@@ -70,7 +69,7 @@ return {
     -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
     --
     -- See the fuzzy documentation for more information
-    fuzzy = { implementation = "prefer_rust_with_warning" }
+    fuzzy = { implementation = "prefer_rust_with_warning" },
   },
-  opts_extend = { "sources.default" }
+  opts_extend = { "sources.default" },
 }

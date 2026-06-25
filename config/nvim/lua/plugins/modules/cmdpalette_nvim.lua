@@ -1,6 +1,6 @@
 return {
-    "hachy/cmdpalette.nvim",
-    config = function()
-        require("cmdpalette").setup()
-    end,
+  "hachy/cmdpalette.nvim",
+  config = function()
+    require("cmdpalette").setup()
+  end,
 }

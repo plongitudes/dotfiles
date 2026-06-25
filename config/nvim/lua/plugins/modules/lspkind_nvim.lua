@@ -1,9 +1,9 @@
 return {
-  'onsails/lspkind.nvim',
+  "onsails/lspkind.nvim",
   config = function()
-    require('lspkind').init({
-      mode = 'symbol_text',
-      preset = 'default',
+    require("lspkind").init({
+      mode = "symbol_text",
+      preset = "default",
     })
-  end
+  end,
 }
