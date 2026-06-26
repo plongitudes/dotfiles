@@ -38,7 +38,10 @@
     statix
     # linter — finds dead/unused bindings
     deadnix
-    # CLI search over nixpkgs / HM / NixOS option docs
-    manix
+    # fuzzy CLI search over nixpkgs / HM / NixOS / darwin option docs.
+    # Uses prebuilt downloaded indexes (not channels/NIX_PATH), so HM
+    # options work on this flakes-only setup. Replaces manix, which is
+    # stalled (last release 2024; HM-on-flakes fix merged but unreleased).
+    nix-search-tv
   ];
 }
