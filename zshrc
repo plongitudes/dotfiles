@@ -105,6 +105,17 @@ function _dynamic_fzf () {
 # export FZF_TMUX=1
 _dynamic_fzf
 
+# nix-search-tv in fzf
+# nix-search-tv: fuzzy search nixpkgs / home-manager / nixos option docs.
+# `ns` opens the picker; `ns programs.git` opens it pre-filtered.
+function ns() {
+    nix-search-tv print | fzf \
+        --preview 'nix-search-tv preview {}' \
+        --scheme history \
+        --query "$*"
+}
+
+
 # ▌  ▗        ▐         ▗       ▐  ▗
 # ▌  ▄ ▛▀▖▌ ▌▝▀▖▙▀▖▌ ▌  ▞▀▖▌ ▌▞▀▌▞▀▖▜▀ ▄ ▌ ▌▝▀▖▞▀▌▞▀▖
 # ▐  ▐ ▌ ▌▚▄▌▞▀▌▌  ▚▄▌  ▛▀ ▐▐ ▌ ▌▌ ▖▐ ▖▐ ▐▐ ▞▀▌▌ ▌▛▀
