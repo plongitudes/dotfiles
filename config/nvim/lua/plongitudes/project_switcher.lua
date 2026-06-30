@@ -64,7 +64,7 @@ end
 -- Returns table with {name, path, source, zoxide_rank} for each project directory
 local function get_project_directories()
   local projects = {}
-  local base_dirs = { "~/github/plongitudes/", "~/github/" }
+  local base_dirs = { "~/github/plongitudes/", "~/github/", "~/" }
 
   -- Get zoxide frecency data
   local zoxide_ranks = get_zoxide_ranks()
