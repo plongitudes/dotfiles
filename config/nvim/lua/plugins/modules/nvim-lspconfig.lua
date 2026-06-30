@@ -220,19 +220,6 @@ return {
       callback = function(args)
         vim.lsp.enable("basedpyright")
         vim.lsp.enable("ruff")
-
-        -- Organize imports before save (runs before conform's format_on_save)
-        vim.api.nvim_create_autocmd("BufWritePre", {
-          buffer = args.buf,
-          callback = function()
-            if vim.g.format_on_save then
-              vim.lsp.buf.code_action({
-                context = { only = { "source.organizeImports" } },
-                apply = true,
-              })
-            end
-          end,
-        })
       end,
     })
 
