@@ -1,11 +1,23 @@
-vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = "#3344ee" })
-vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = "#3344ee" })
-vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = "#3344ee" })
-
 return {
   "RRethy/vim-illuminate",
   lazy = false,
   config = function()
+    -- Illuminate highlight colors. Applied via a ColorScheme autocmd so they
+    -- land AFTER the colorscheme loads and re-apply on theme switch — otherwise
+    -- gruvbox-baby's own IlluminatedWord* defs clobber them (they were being set
+    -- at module-load, before init.lua runs `colorscheme gruvbox-baby`).
+    local function illuminate_hl()
+      vim.api.nvim_set_hl(0, "IlluminatedWordText", { bg = "#3344ee" })
+      vim.api.nvim_set_hl(0, "IlluminatedWordRead", { bg = "#3344ee" })
+      vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { bg = "#3344ee" })
+    end
+
+    vim.api.nvim_create_autocmd("ColorScheme", {
+      desc = "Re-apply vim-illuminate highlights after colorscheme load",
+      callback = illuminate_hl,
+    })
+    illuminate_hl() -- apply now in case a colorscheme is already active
+
     -- default configuration
     require("illuminate").configure({
       -- providers: provider used to get references in the buffer, ordered by priority
