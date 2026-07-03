@@ -10,11 +10,21 @@
   programs.zsh = {
     enable = true;
 
-    # oh-my-zsh (still sourced inside the readFile'd content) runs compinit and
-    # provides autosuggestions + syntax highlighting via its plugins, so keep
-    # home-manager's own versions off for now to avoid double-loading.
+    # oh-my-zsh (still sourced inside the readFile'd content) runs compinit.
     enableCompletion = false;
-    autosuggestion.enable = false;
+
+    # zsh-autosuggestions via the native module — sourced at mkOrder 700, i.e.
+    # BEFORE fast-syntax-highlighting below, which is the ordering that keeps
+    # suggestions dimmed. Grey matches nvim's gruvbox comment colour.
+    autosuggestion = {
+      enable = true;
+      strategy = [ "history" "completion" ];
+      highlight = "fg=#665c54";
+    };
+
+    # Keep fast-syntax-highlighting (not home-manager's z-sy-h); it is sourced
+    # from Nix DEAD LAST via initContent mkOrder 1500 below, so the native
+    # syntaxHighlighting module (which would be z-sy-h) stays off.
     syntaxHighlighting.enable = false;
 
     # ~/.zprofile (login shells). brew shellenv + the Obsidian CLI path are
@@ -32,8 +42,13 @@
       export PATH="$HOME/.local/bin:$PATH"
     '';
 
-    # Current zshrc, verbatim. readFile keeps the file as the source of truth
-    # and sidesteps Nix escaping of the shell's ${...}/$(...) syntax.
-    initContent = builtins.readFile ../../zshrc;
+    # Your zshrc (bespoke shell) at the default order, then fast-syntax-
+    # highlighting sourced last so it runs after autosuggestions and every
+    # custom widget. readFile keeps the zshrc as the source of truth and
+    # sidesteps Nix escaping of the shell's ${...}/$(...) syntax.
+    initContent = lib.mkMerge [
+      (lib.mkOrder 1000 (builtins.readFile ../../zshrc))
+      (lib.mkOrder 1500 "source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh")
+    ];
   };
 }
