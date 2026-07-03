@@ -219,7 +219,8 @@ export VIRTUAL_ENV_DISABLE_PROMPT=0
 # ▌  ▐ ▖▗▚  ▝▖▞▀▌▝▀▖▌ ▌▜▀  ▞
 # ▘   ▀ ▘ ▘  ▝▝▀▘▀▀ ▝▀▘▐  ▝
 
-eval "$(/opt/homebrew/bin/mise activate zsh)"
+# mise activation is now handled by programs.mise (shell.nix) via the Nix mise
+# binary — no more hardcoded /opt/homebrew/bin/mise; config moved to globalConfig.
 export EXA_ICON_SPACING=2
 
 

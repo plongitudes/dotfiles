@@ -50,7 +50,7 @@ in
     oh-my-zsh = {
       enable = true;
       theme = ""; # prompt is oh-my-posh (migrated in a later step)
-      plugins = [ "git" "python" "pylint" "virtualenv" "mise" ];
+      plugins = [ "git" "python" "pylint" "virtualenv" ]; # mise → programs.mise (avoids double-activation)
       # Settings migrated from the old zshrc oh-my-zsh block. (The fancy
       # COMPLETION_WAITING_DOTS icon was already overridden by a later "true".)
       extraConfig = ''
@@ -100,5 +100,25 @@ in
       (lib.mkOrder 1000 (builtins.readFile ../../zshrc))
       (lib.mkOrder 1500 "source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh")
     ];
+  };
+
+  # mise — Nix-managed. globalConfig writes ~/.config/mise/config.toml (finally
+  # in-repo/reproducible); the zsh integration activates via the Nix mise binary,
+  # retiring the hardcoded /opt/homebrew/bin/mise eval. mise's _mise completion
+  # ships in the Nix profile, so dropping the OMZ 'mise' plugin loses nothing.
+  programs.mise = {
+    enable = true;
+    globalConfig = {
+      tools = {
+        go = "latest";
+        node = "latest";
+        pipx = "latest";
+        pnpm = "latest";
+        python = "3.11.8";
+        rust = "latest";
+        uv = "latest";
+      };
+      settings.experimental = true;
+    };
   };
 }
