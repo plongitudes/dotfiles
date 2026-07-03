@@ -62,6 +62,8 @@ return {
       { "<leader>add", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny Claude diff" },
 
       { "<leader>c", group = "[C]ode Actions" },
+      { "<leader>cd", "<cmd>Neogen<cr>", desc = "Generate [D]ocstring" },
+      { "<leader>cD", "<cmd>Neogen class<cr>", desc = "Generate class docstring" },
 
       { "<leader>w", group = "[W]orkspace" },
 

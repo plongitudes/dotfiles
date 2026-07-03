@@ -1,92 +1,46 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  branch = "main",
   lazy = false,
   build = ":TSUpdate",
   dependencies = {
     "abecodes/tabout.nvim",
-    "nvim-treesitter/nvim-tree-docs",
   },
   config = function()
-    require("nvim-treesitter.configs").setup({
-      -- A list of parser names, or 'all' (the five listed parsers should always be installed)
-      ensure_installed = {
-        "bash",
-        "html",
-        "javascript",
-        "json",
-        "lua",
-        "markdown",
-        "markdown_inline",
-        "nix",
-        "python",
-        "query",
-        "regex",
-        "ruby",
-        "sql",
-        "vim",
-        "vimdoc",
-      },
+    -- main branch has no module system: install parsers explicitly, then
+    -- enable highlighting per-buffer (highlight/indent/fold live in core now).
+    require("nvim-treesitter").install({
+      "bash",
+      "html",
+      "javascript",
+      "json",
+      "lua",
+      "markdown",
+      "markdown_inline",
+      "nix",
+      "python",
+      "query",
+      "regex",
+      "ruby",
+      "sql",
+      "vim",
+      "vimdoc",
+    })
 
-      -- Install parsers synchronously (only applied to `ensure_installed`)
-      sync_install = false,
-
-      -- Automatically install missing parsers when entering buffer
-      -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-      auto_install = true,
-
-      -- List of parsers to ignore installing (for 'all')
-      ignore_install = {},
-
-      ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
-      -- parser_install_dir = '/some/path/to/store/parsers', -- Remember to run vim.opt.runtimepath:append('/some/path/to/store/parsers')!
-
-      indent = {
-        enable = false,
-      },
-
-      highlight = {
-        enable = true,
-
-        -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-        -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-        -- the name of the parser)
-        -- list of language that will be disabled
-        -- disable = { 'c', 'rust' },
-        -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-        disable = function(lang, buf)
-          local max_filesize = 1000 * 1024 -- 1000 KB
-          local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-          if ok and stats and stats.size > max_filesize then
-            return true
-          end
-        end,
-
-        -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-        -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-        -- Using this option may slow down your editor, and you may see some duplicate highlights.
-        -- Instead of true it can also be a list of languages
-        additional_vim_regex_highlighting = false,
-      },
-
-      tree_docs = {
-        enable = true,
-      },
-
-      yati = {
-        enable = true,
-        -- Disable by languages, see `Supported languages`
-        disable = {},
-
-        -- Whether to enable lazy mode (recommend to enable this if bad indent happens frequently)
-        default_lazy = true,
-
-        -- Determine the fallback method used when we cannot calculate indent by tree-sitter
-        --   "auto": fallback to vim auto indent
-        --   "asis": use current indent as-is
-        --   "cindent": see `:h cindent()`
-        -- Or a custom function return the final indent result.
-        default_fallback = "auto",
-      },
+    -- Replaces the old `highlight = { enable = true }` module. Start treesitter
+    -- highlighting on any filetype that has a parser; the size guard mirrors the
+    -- previous disable-by-filesize behavior. Indentation is intentionally left to
+    -- Neovim's runtime indent scripts (nvim-yati is dead on main) and folding is
+    -- left unconfigured, matching the pre-migration behavior.
+    vim.api.nvim_create_autocmd("FileType", {
+      callback = function(args)
+        local max_filesize = 1000 * 1024 -- 1000 KB
+        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+        if ok and stats and stats.size > max_filesize then
+          return
+        end
+        pcall(vim.treesitter.start) -- no-ops if this filetype has no parser
+      end,
     })
   end,
 }

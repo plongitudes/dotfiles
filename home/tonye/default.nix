@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   home.username = "tonye";
 
@@ -22,8 +22,15 @@
     ".gitconfig".source = ../../gitconfig;
     ".gitignore_global".source = ../../gitignore_global;
 
-    # Editor + terminal-emulator configs (directories, recursively linked)
-    ".config/nvim".source = ../../config/nvim;
+    # nvim points at the LIVE repo (not the read-only store copy) so lazy.nvim
+    # can write lazy-lock.json on :Lazy sync. Also means nvim config edits are
+    # live without a `home-manager switch`. Reproducibility still holds: the
+    # lockfile is committed to the repo, which is the source of truth on both
+    # machines (assumes the repo is cloned to ~/.dotfiles, which it is).
+    ".config/nvim".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/config/nvim";
+
+    # ghostty stays an in-store copy (nothing writes back into its config dir)
     ".config/ghostty".source = ../../config/ghostty;
   };
 
@@ -43,5 +50,11 @@
     # options work on this flakes-only setup. Replaces manix, which is
     # stalled (last release 2024; HM-on-flakes fix merged but unreleased).
     nix-search-tv
+
+    # tree-sitter CLI — nvim-treesitter's 'main' branch compiles parsers
+    # locally and needs the CLI (>=0.26.1). Sourced from Nix so it's identical
+    # on the Mac and the NixOS VM (native, no nix-ld). Homebrew's tree-sitter
+    # ships only libtree-sitter (neovim's library dep), not the CLI.
+    tree-sitter
   ];
 }
