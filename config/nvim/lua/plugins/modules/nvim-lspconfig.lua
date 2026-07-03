@@ -111,8 +111,8 @@ return {
       settings = {
         basedpyright = {
           disableOrganizeImports = true,
-          autoImportCompletions = true,
           analysis = {
+            autoImportCompletions = true,
             --autoSearchPaths = true,
             --useLibraryCodeForTypes = true,
             ignore = { "*" },
