@@ -183,6 +183,10 @@ export FZF_CTRL_R_OPTS="
 # zsh env vars
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+# Match nvim's gruvbox comment grey (#665c54) so suggestions read as clearly
+# faded and are consistent with the editor. Requires fast-syntax-highlighting
+# to load AFTER zsh-autosuggestions (see plugins list) or this is ignored.
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#665c54'
 UPDATE_ZSH_DAYS=1
 
 # behavior
@@ -272,7 +276,6 @@ HIST_STAMPS="yyyy-mm-dd"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
-    fast-syntax-highlighting
     fzf-tab
     git
     mise
@@ -280,8 +283,11 @@ plugins=(
     pylint
     python
     virtualenv
-    zsh-autosuggestions
     zsh-completions
+    zsh-autosuggestions
+    # fast-syntax-highlighting MUST load last (after zsh-autosuggestions), or it
+    # repaints the autosuggestion region at full fg instead of the dim style.
+    fast-syntax-highlighting
 )
     # do not load zsh-completions in the plugins folder (see above)
 
