@@ -84,18 +84,14 @@ function fortsplat () {
     echo $(lolcat -f <<< "${fort_pfx}${fort_str}${fort_sfx}")
 }
 
-# TODO: rework this so that matching paths only show up once -- likely the last two search paths
 function _dynamic_fzf () {
     # when changing directories, update the fd search directories and generate a new fortune.
-    local search_paths=("${HOME}/.config" "${HOME}/.oh-my-zsh" "${PWD}" "${HOME}")
+    local search_paths=("${PWD}" "${HOME}/.config" "${HOME}/.oh-my-zsh" "${HOME}")
     local flags="-IL --max-depth 7 --exclude '.git' --exclude 'Library'"
-    flags="${flags} --search-path $PWD --search-path ${HOME}/.config --search-path ${HOME}/.oh-my-zsh --search-path ${HOME}"
-    # unique_search_paths=(${(u)search_paths[@]})
-    # echo $unique_search_paths
-    # for path in $unique_search_paths; do
-        # echo $flags
-        # flags="${flags} --search-path ${path}"
-    # done
+    # dedupe: when PWD == $HOME the literal ~ would otherwise be searched twice,
+    # doubling Alt-C results. ${(u)} keeps unique entries (fd already dedupes
+    # subtree overlaps, so only the exact PWD==HOME collision needed handling).
+    for p in "${(u)search_paths[@]}"; do flags="${flags} --search-path ${p}"; done
     export FZF_DEFAULT_OPTS="--height=40% --min-height=10 --layout=reverse-list --border=rounded --border-label=\"$(fortsplat)\""
     export FZF_DEFAULT_COMMAND="fd --type f ${flags}"
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -244,10 +240,8 @@ export EXA_ICON_SPACING=2
 # now, an easier way to do it that can be included in settings.lua
 # for the python3_provider
 # export NVIM_PYTHON_PATH=`which python`  # No longer needed - python3_host_prog set in settings.lua
-apps_for_path=("bat" "fd" "fzf")
-for application in ${apps_for_path}; do
-    export PATH=${PATH}:$(command -v ${application})
-done
+# (dropped the apps_for_path loop — it appended binary file paths to PATH, a
+# no-op; bat/fd are already on PATH and fzf now comes from Nix via programs.fzf)
 
 
 #    ▜ ▗                      ▌ ▗▀▖▗    ▗    ▌  ▗
@@ -268,7 +262,7 @@ source ${HOME}/.aliases.zsh
 #printf "\e]1337;SetBadgeFormat=%s\a" \
   #$(echo -n "\(hostname) \(jobName)\n\(columns)x\(rows)" | base64)
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# fzf keybindings + completion now come from programs.fzf (shell.nix), not ~/.fzf.zsh
 
 # Added by Windsurf
 export PATH="/Users/tonye/.codeium/windsurf/bin:$PATH"

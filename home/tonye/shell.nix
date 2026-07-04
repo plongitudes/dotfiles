@@ -51,11 +51,12 @@ in
       enable = true;
       theme = ""; # prompt is oh-my-posh (migrated in a later step)
       plugins = [ "git" "python" "pylint" "virtualenv" ]; # mise → programs.mise (avoids double-activation)
-      # Settings migrated from the old zshrc oh-my-zsh block. (The fancy
-      # COMPLETION_WAITING_DOTS icon was already overridden by a later "true".)
+      # Settings migrated from the old zshrc oh-my-zsh block. COMPLETION_WAITING_DOTS
+      # was dropped: it makes OMZ wrap Tab with expand-or-complete-with-dots, which
+      # conflicts with fzf-tab (double-tab on an empty buffer). The dots were
+      # already cosmetic anyway (the custom icon had been overridden to "true").
       extraConfig = ''
         HYPHEN_INSENSITIVE="true"
-        COMPLETION_WAITING_DOTS="true"
         HIST_STAMPS="yyyy-mm-dd"
       '';
     };
@@ -129,4 +130,9 @@ in
     enable = true;
     configFile = ../../.plongitudes.omp.json;
   };
+
+  # fzf — Nix binary + zsh keybindings/completion (replaces ~/.fzf.zsh). No
+  # command/opts set here, so no FZF_* env vars are exported — your _dynamic_fzf
+  # and the CTRL_T/CTRL_R/ALT_C opts in the zshrc stay the sole source.
+  programs.fzf.enable = true;
 }
