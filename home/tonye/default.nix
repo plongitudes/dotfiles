@@ -15,7 +15,7 @@
     # are the files it still sources.
     ".aliases.zsh".source = ../../aliases.zsh;
     ".p10k.zsh".source = ../../p10k.zsh;
-    ".plongitudes.omp.json".source = ../../.plongitudes.omp.json;
+    # .plongitudes.omp.json now provided via programs.oh-my-posh.configFile (shell.nix)
 
     # Terminal multiplexer
     ".tmux.conf".source = ../../tmux.conf;

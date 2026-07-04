@@ -121,4 +121,12 @@ in
       settings.experimental = true;
     };
   };
+
+  # oh-my-posh — Nix-managed prompt. configFile points at your theme as-is (no
+  # JSON→Nix round-trip); the zsh integration inits via the Nix binary, retiring
+  # the hardcoded `eval "$(oh-my-posh init …)"`. (Theme edits need a switch.)
+  programs.oh-my-posh = {
+    enable = true;
+    configFile = ../../.plongitudes.omp.json;
+  };
 }

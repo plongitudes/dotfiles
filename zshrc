@@ -273,8 +273,8 @@ source ${HOME}/.aliases.zsh
 # Added by Windsurf
 export PATH="/Users/tonye/.codeium/windsurf/bin:$PATH"
 
-#eval "$(oh-my-posh init zsh)"
-eval "$(oh-my-posh init zsh --config '~/.plongitudes.omp.json')"
+# prompt (oh-my-posh) is now inited by programs.oh-my-posh (shell.nix) via the
+# Nix binary; theme comes from programs.oh-my-posh.configFile.
 
 # opencode
 export PATH=/Users/tonye/.opencode/bin:$PATH
