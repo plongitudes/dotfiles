@@ -132,6 +132,88 @@ alias vw='vi ~/.dotfiles/wezterm.lua'
 
 
 ###########################
+# nix / fleet sync        #
+###########################
+
+# `switch` — rebuild this machine from ~/.dotfiles. Dispatches on hostname so the
+# same command works on the Mac (home-manager) and the NixOS VM (nixos-rebuild).
+# Args pass through, e.g. `switch -b backup` or `switch --show-trace`.
+function switch() {
+    case "$(hostname -s)" in
+        portmantopia)
+            home-manager switch --flake "$HOME/.dotfiles#laptop-dev-portmantopia" "$@" ;;
+        inverness)
+            sudo nixos-rebuild switch --flake "$HOME/.dotfiles#server-homelab-inverness" "$@" ;;
+        *)
+            echo "switch: unknown host '$(hostname -s)' — add it to switch() in aliases.zsh" >&2
+            return 1 ;;
+    esac
+}
+
+# `nixie` — where does THIS machine stand vs the shared config? (nix-check)
+#   rebuild: built config vs active generation (a full eval — a few seconds)
+#   push:    uncommitted / unpushed work the fleet can't see yet (git, free)
+#   pull:    is origin ahead of me? (only with -f, which fetches — network)
+# Reports this machine's standing vs the hub; can't know if others have pulled.
+# Note: rebuild sees git-TRACKED state — `git add` new files first. push's
+# "unpushed" count needs a tracking branch (gitup sets it).
+function nixie() {
+    local d="$HOME/.dotfiles" fetch=0
+    [ "$1" = "-f" ] && fetch=1
+    [ -d "$d/.git" ] || { echo "nixie: $d is not a git repo" >&2; return 1; }
+
+    # rebuild axis — per host (only the local eval is expensive)
+    local rebuild
+    case "$(hostname -s)" in
+        portmantopia)
+            local built active
+            built=$(nix build --no-link --print-out-paths \
+                "$d#homeConfigurations.laptop-dev-portmantopia.activationPackage" 2>/dev/null)
+            active=$(readlink -f ~/.local/state/nix/profiles/home-manager)
+            [ "$built" = "$active" ] && rebuild="✓ up to date" \
+                || rebuild="⚠ needed (built config ≠ active generation)" ;;
+        *) rebuild="– unknown host (wire up in M7)" ;;
+    esac
+
+    # push axis — git, free
+    local dirty ahead push
+    dirty=$(git -C "$d" status --porcelain 2>/dev/null | grep -c .)
+    ahead=$(git -C "$d" rev-list --count '@{upstream}..HEAD' 2>/dev/null)
+    { [ "${dirty:-0}" -eq 0 ] && [ "${ahead:-0}" -eq 0 ]; } \
+        && push="✓ in sync with origin" || push="⚠ ${ahead:-0} ahead, ${dirty:-0} dirty"
+
+    # pull axis — needs network, so opt-in
+    local pull behind
+    if [ "$fetch" -eq 1 ]; then
+        git -C "$d" fetch --quiet 2>/dev/null
+        behind=$(git -C "$d" rev-list --count 'HEAD..@{upstream}' 2>/dev/null)
+        [ "${behind:-0}" -eq 0 ] && pull="✓ up to date" \
+            || pull="⚠ ${behind} behind — pull + switch"
+    else
+        pull="– not checked (nixie -f to fetch)"
+    fi
+
+    printf '~/.dotfiles:\n  rebuild  %s\n  push     %s\n  pull     %s\n' "$rebuild" "$push" "$pull"
+}
+
+# Startup nudge: warn if ~/.dotfiles has local work the fleet can't see yet.
+# Free & offline — no fetch (that's `nixie -f`). Push axis only. Called from zshrc.
+function _nixie_hint() {
+    local d="$HOME/.dotfiles"
+    [ -d "$d/.git" ] || return 0
+    local dirty ahead parts=""
+    dirty=$(git -C "$d" status --porcelain 2>/dev/null | grep -c .)
+    ahead=$(git -C "$d" rev-list --count '@{upstream}..HEAD' 2>/dev/null)
+    [ "${dirty:-0}" -gt 0 ] && parts="${dirty} uncommitted"
+    if [ "${ahead:-0}" -gt 0 ]; then
+        [ -n "$parts" ] && parts="${parts} + "
+        parts="${parts}${ahead} unpushed"
+    fi
+    [ -n "$parts" ] && printf '\033[33m⚠ ~/.dotfiles: %s — push to sync the fleet\033[0m\n' "$parts"
+}
+
+
+###########################
 # Alfred Things           #
 ###########################
 

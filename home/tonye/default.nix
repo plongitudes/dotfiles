@@ -13,7 +13,12 @@
   home.file = {
     # Shell stack. zsh itself is managed by ./shell.nix (programs.zsh); these
     # are the files it still sources.
-    ".aliases.zsh".source = ../../aliases.zsh;
+    # aliases.zsh is mostly shell functions + conditionals (not just aliases), so
+    # it stays a sourced file rather than programs.zsh.shellAliases. Live symlink
+    # (not an in-store copy) so `sa`/`va` (edit + re-source ~/.dotfiles/aliases.zsh)
+    # and fresh shells resolve to the same file — alias edits need no switch.
+    ".aliases.zsh".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/aliases.zsh";
     ".p10k.zsh".source = ../../p10k.zsh;
     # .plongitudes.omp.json now provided via programs.oh-my-posh.configFile (shell.nix)
 
