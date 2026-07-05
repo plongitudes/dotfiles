@@ -80,11 +80,18 @@
     ripgrep # provides `rg`
     tree
     # General dev CLIs — not in the zsh hot path, but wanted identical fleet-wide:
-    jq
     gh
     ncdu
     btop # process monitor (htop dropped — carried btop forward)
     tig # git log/blame browser
     lazygit # full git TUI
+    # jq: sourced from Nix like its siblings. macOS ships /usr/bin/jq (1.7.1,
+    # SIP-locked) ahead of ~/.nix-profile on PATH, so it shadows this build for
+    # bare `jq`. Fix is a Darwin interactive alias in aliases.zsh pointing at the
+    # Nix jq (1.8.x); scripts that need it call ~/.nix-profile/bin/jq explicitly
+    # (like writing /bin/ls when you mean exactly that binary). mise was tried
+    # and reverted — its PATH win is ALSO interactive-only, so it just relocated
+    # the problem without solving it. See nix-9zy.
+    jq
   ];
 }

@@ -240,6 +240,13 @@ if [[ $(uname) == "Darwin" ]]; then
     function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
     alias godark='it2prof gruvbox-dark'
     alias golight='it2prof gruvbox-light'
+
+    # macOS ships /usr/bin/jq (1.7.1, SIP-locked) ahead of ~/.nix-profile on
+    # PATH, so point interactive `jq` at the newer Nix build. Interactive only —
+    # aliases aren't inherited by scripts; when a script must use the Nix jq,
+    # call ~/.nix-profile/bin/jq explicitly (as you would /bin/ls for that exact
+    # binary). See the jq notes in home/tonye/default.nix + nix-9zy.
+    alias jq="$HOME/.nix-profile/bin/jq"
 fi
 
 function ka() { kill -9 $(pgrep -i $*) }
