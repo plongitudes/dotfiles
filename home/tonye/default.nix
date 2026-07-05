@@ -19,7 +19,6 @@
     # and fresh shells resolve to the same file — alias edits need no switch.
     ".aliases.zsh".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/aliases.zsh";
-    ".p10k.zsh".source = ../../p10k.zsh;
     # .plongitudes.omp.json now provided via programs.oh-my-posh.configFile (shell.nix)
 
     # Terminal multiplexer
@@ -36,6 +35,16 @@
     # machines (assumes the repo is cloned to ~/.dotfiles, which it is).
     ".config/nvim".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/config/nvim";
+
+    # Neovide (GUI) reads this. Point the prebuilt Neovide.app (a brew cask) at
+    # the Nix nvim — a Finder-launched app has no ~/.nix-profile on PATH, so it
+    # can't discover nvim on its own. Nix-managed in-store (you'll never hand-edit
+    # it). Mac-only in practice; harmless no-op on the headless VM. Neovide stays
+    # a cask because nixpkgs neovide builds no darwin .app bundle (nixpkgs#301984)
+    # and is 2.8 GiB unpacked — not worth it for a storage-tight machine.
+    ".config/neovide/config.toml".text = ''
+      neovim-bin = "${pkgs.neovim}/bin/nvim"
+    '';
 
     # ghostty stays an in-store copy (nothing writes back into its config dir)
     ".config/ghostty".source = ../../config/ghostty;
@@ -93,5 +102,16 @@
     # and reverted — its PATH win is ALSO interactive-only, so it just relocated
     # the problem without solving it. See nix-9zy.
     jq
+
+    # neovim: from Nix so the VM gets a reproducible editor, and the Mac has a
+    # pinned nvim that Neovide targets (via the config above). NOTE both nvims
+    # coexist on the Mac: brew's neovim ALSO stays because the neovide-app cask
+    # hard-depends on it, and brew (PATH pos 14) wins bare `nvim` in the terminal
+    # over this one (~/.nix-profile, pos 32). We keep both rather than fight the
+    # cask's dependency — revisit if nixpkgs neovide gains a darwin .app bundle
+    # (nixpkgs#301984). Minimal per nix-b02: binary only — lazy.nvim owns plugins
+    # from the live ~/.config/nvim symlink; NOT programs.neovim, which would fight
+    # that symlink by managing init.lua.
+    neovim
   ];
 }

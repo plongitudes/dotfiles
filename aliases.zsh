@@ -247,6 +247,17 @@ if [[ $(uname) == "Darwin" ]]; then
     # call ~/.nix-profile/bin/jq explicitly (as you would /bin/ls for that exact
     # binary). See the jq notes in home/tonye/default.nix + nix-9zy.
     alias jq="$HOME/.nix-profile/bin/jq"
+
+    # Brew's neovim wins bare `nvim` on PATH (the neovide-app cask hard-depends
+    # on it, so it stays) — pin interactive `nvim` to the reproducible Nix build
+    # as a hedge against brew drift. ~/.nix-profile/bin/nvim is the active
+    # generation's nvim (self-updates on switch; identical path on the VM). `vi`
+    # (aliased to `nvim` at the top of this file) chains here via zsh's recursive
+    # alias expansion, so it follows for free. $EDITOR is set to the same absolute
+    # path in zshrc, so git commits etc. use Nix nvim too. Remaining gap: a bare
+    # `nvim` inside a script/function bypasses this alias and PATH-resolves to
+    # brew's — call ~/.nix-profile/bin/nvim explicitly there if it matters.
+    alias nvim="$HOME/.nix-profile/bin/nvim"
 fi
 
 function ka() { kill -9 $(pgrep -i $*) }

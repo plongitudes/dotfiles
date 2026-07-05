@@ -17,11 +17,13 @@ export PATH="$PATH:$GOPATH/bin"
 export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
 export MANPATH="/usr/local/man:$MANPATH"
 export LANG=en_US.UTF-8
-export EDITOR='nvim'
-export BATDIFF_USE_DELTA=true
+# Absolute path to the Nix nvim (not bare 'nvim', which PATH-resolves to brew's
+# on macOS, where the neovide-app cask keeps brew neovim installed). Pins the
+# reproducible editor for $EDITOR consumers (git commit, crontab -e, …). Same
+# path on the VM, so it's fleet-safe. See the nvim notes in home/tonye/default.nix.
+export EDITOR="$HOME/.nix-profile/bin/nvim"
 export PAGER='less'
 export LESS='-FiMXr -j.5'
-export DELTA_FEATURES='side-by-side line-numbers'
 export PYTHONSTARTUP="${HOME}/.pystartup"
 export HOOBASTANK=$(< ${HOME}/.hoobastank)
 export VIRTUAL_ENV_DISABLE_PROMPT=0
@@ -86,7 +88,7 @@ function fortsplat () {
 
 function _dynamic_fzf () {
     # when changing directories, update the fd search directories and generate a new fortune.
-    local search_paths=("${PWD}" "${HOME}/.config" "${HOME}/.oh-my-zsh" "${HOME}")
+    local search_paths=("${PWD}" "${HOME}/.config" "${HOME}")
     local flags="-IL --max-depth 7 --exclude '.git' --exclude 'Library'"
     # dedupe: when PWD == $HOME the literal ~ would otherwise be searched twice,
     # doubling Alt-C results. ${(u)} keeps unique entries (fd already dedupes
