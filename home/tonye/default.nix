@@ -63,5 +63,28 @@
     # on the Mac and the NixOS VM (native, no nix-ld). Homebrew's tree-sitter
     # ships only libtree-sitter (neovim's library dep), not the CLI.
     tree-sitter
+
+    # ── De-brewed CLI tooling (nix-9zy) ──────────────────────────────────────
+    # Dev CLIs sourced from Nix so the exact same binaries exist on the Mac and
+    # the NixOS VM. Pragmatic split: only small/fast-building tools live here;
+    # heavy media stacks (ffmpeg, imagemagick, …) stay in Homebrew on the Mac
+    # (prebuilt bottles, huge closures, storage-limited machine). fzf, oh-my-posh
+    # and mise already come from Nix via programs.*; they aren't repeated here —
+    # uninstalling their shadowing brew copies is what makes them win on PATH
+    # (~/.nix-profile/bin sits after /opt/homebrew/bin).
+    #
+    # Load-bearing in the shell config (invoked across zshrc + aliases.zsh):
+    fd
+    eza
+    bat
+    ripgrep # provides `rg`
+    tree
+    # General dev CLIs — not in the zsh hot path, but wanted identical fleet-wide:
+    jq
+    gh
+    ncdu
+    btop # process monitor (htop dropped — carried btop forward)
+    tig # git log/blame browser
+    lazygit # full git TUI
   ];
 }

@@ -31,16 +31,6 @@
 	directory = /mnt/d/opt/
 	directory = /mnt/d/opt/bat-extras
 
-#added for https://github.com/dandavison/delta
-[core]
-        pager = delta
-[interactive]
-    diffFilter = delta --color-only
-[delta]
-    navigate = true    # use n and N to move between diff sections
-    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
-    side-by-bide = true
-    line-numbers = true
 [merge]
     conflictstyle = diff3
 [diff]
