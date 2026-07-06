@@ -4,7 +4,8 @@
 
   home.username = "tonye";
 
-  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/tonye" else "/home/tonye";
+  home.homeDirectory =
+    if pkgs.stdenv.isDarwin then "/Users/${config.home.username}" else "/home/${config.home.username}";
 
   # See https://nix-community.github.io/home-manager/options.xhtml#opt-home.stateVersion
   # Don't change casually — controls backwards-compat behavior for HM-generated files.
@@ -21,8 +22,8 @@
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/aliases.zsh";
     # .plongitudes.omp.json now provided via programs.oh-my-posh.configFile (shell.nix)
 
-    # Terminal multiplexer
-    ".tmux.conf".source = ../../tmux.conf;
+    # tmux config is now owned by programs.tmux (shell.nix) — it writes the
+    # generated config (settings + plugin run-shell lines) to ~/.config/tmux.
 
     # Git
     ".gitconfig".source = ../../gitconfig;

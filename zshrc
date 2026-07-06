@@ -262,8 +262,8 @@ source ${HOME}/.aliases.zsh
 #export KEYTIMEOUT=1
 
 # iTerm2 integration
-#test -e /Users/tonye/.iterm2_shell_integration.zsh && \
-#    source /Users/tonye/.iterm2_shell_integration.zsh || true
+#test -e "${HOME}/.iterm2_shell_integration.zsh" && \
+#    source "${HOME}/.iterm2_shell_integration.zsh" || true
 
 #printf "\e]1337;SetBadgeFormat=%s\a" \
   #$(echo -n "\(hostname) \(jobName)\n\(columns)x\(rows)" | base64)
@@ -271,10 +271,10 @@ source ${HOME}/.aliases.zsh
 # fzf keybindings + completion now come from programs.fzf (shell.nix), not ~/.fzf.zsh
 
 # Added by Windsurf
-export PATH="/Users/tonye/.codeium/windsurf/bin:$PATH"
+export PATH="$HOME/.codeium/windsurf/bin:$PATH"
 
 # prompt (oh-my-posh) is now inited by programs.oh-my-posh (shell.nix) via the
 # Nix binary; theme comes from programs.oh-my-posh.configFile.
 
 # opencode
-export PATH=/Users/tonye/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"

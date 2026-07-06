@@ -161,6 +161,17 @@ function switch() {
             echo "switch: unknown host '$(hostname -s)' — add it to switch() in aliases.zsh" >&2
             return 1 ;;
     esac
+    local rc=$?
+    # After a successful rebuild, if we're inside tmux, reload the LIVE server so
+    # a tmux.conf change lands now instead of only in the next fresh session. The
+    # call is coming from inside the house on purpose: source-file is
+    # non-destructive — it re-applies options and re-runs the plugin run-shell
+    # lines, but does NOT kill the server. (Config is Nix-managed by programs.tmux
+    # at ~/.config/tmux/tmux.conf.)
+    if [[ $rc -eq 0 && -n "$TMUX" ]] && command -v tmux >/dev/null 2>&1; then
+        tmux source-file "${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
+    fi
+    return $rc
 }
 
 # `nixie` — where does THIS machine stand vs the shared config? (nix-check)
