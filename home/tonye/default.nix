@@ -73,6 +73,11 @@
     # ships only libtree-sitter (neovim's library dep), not the CLI.
     tree-sitter
 
+    # nix-output-monitor (nom) — live build/download progress tree. `switch`
+    # (aliases.zsh) builds through `nom build` before activating, so a rebuild
+    # shows what's fetching/compiling instead of going silent. See nix-kho.
+    nix-output-monitor
+
     # ── De-brewed CLI tooling (nix-9zy) ──────────────────────────────────────
     # Dev CLIs sourced from Nix so the exact same binaries exist on the Mac and
     # the NixOS VM. Pragmatic split: only small/fast-building tools live here;

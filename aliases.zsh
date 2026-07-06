@@ -128,6 +128,7 @@ alias va='vi ~/.dotfiles/aliases.zsh; sa'
 alias vz='vi ~/.zshrc'
 alias vb='vi ~/.bashrc'
 alias vw='vi ~/.dotfiles/wezterm.lua'
+alias ez='exec zsh'
 #alias vqo       'vi $SCRIPTHOME/sig_quotes.txt'
 
 
@@ -138,12 +139,24 @@ alias vw='vi ~/.dotfiles/wezterm.lua'
 # `switch` — rebuild this machine from ~/.dotfiles. Dispatches on hostname so the
 # same command works on the Mac (home-manager) and the NixOS VM (nixos-rebuild).
 # Args pass through, e.g. `switch -b backup` or `switch --show-trace`.
+#
+# nom: when nix-output-monitor is installed, build through `nom build` FIRST for a
+# live progress tree, then run the real switch — its internal build is then a cache
+# hit, so it goes straight to activation. Costs one extra eval (~seconds); the heavy
+# build/download happens once, under nom. The `{ ! command -v nom || nom build …; }`
+# guard means: no nom → plain switch; nom build fails → stop before activating.
+# (nixie stays nom-free on purpose — a quiet status probe, usually a no-op build.)
 function switch() {
+    local d="$HOME/.dotfiles" attr
     case "$(hostname -s)" in
         portmantopia)
-            home-manager switch --flake "$HOME/.dotfiles#laptop-dev-portmantopia" "$@" ;;
+            attr="homeConfigurations.laptop-dev-portmantopia.activationPackage"
+            { ! command -v nom >/dev/null 2>&1 || nom build "$d#$attr" --no-link; } &&
+                home-manager switch --flake "$d#laptop-dev-portmantopia" "$@" ;;
         inverness)
-            sudo nixos-rebuild switch --flake "$HOME/.dotfiles#server-homelab-inverness" "$@" ;;
+            attr="nixosConfigurations.server-homelab-inverness.config.system.build.toplevel"
+            { ! command -v nom >/dev/null 2>&1 || nom build "$d#$attr" --no-link; } &&
+                sudo nixos-rebuild switch --flake "$d#server-homelab-inverness" "$@" ;;
         *)
             echo "switch: unknown host '$(hostname -s)' — add it to switch() in aliases.zsh" >&2
             return 1 ;;
