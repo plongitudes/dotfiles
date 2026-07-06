@@ -1,60 +1,51 @@
 # Plongitudes' dotfiles
 
-[![youtube video timelapse of the bootstrap process](https://i.imgur.com/ntxvO5W.png)](https://www.youtube.com/watch?v=1merxGRo-QE)
+Nix + [home-manager](https://github.com/nix-community/home-manager), one flake, driving all machines. The whole thing is declarative: `flake.nix` is the source of truth, and a single `home-manager switch` rebuilds the entire user environment out of it — shell, prompt, editor, CLI tooling, dotfiles, the lot.
 
-## Advantages of this particular dotfiles repo
-### Easy Vim setup
-The `.vimrc` in this repo includes its own bootstrap, and the first time you launch vim, nvim, or vimR, it will install [Vundle](https://github.com/VundleVim/Vundle.vim) and all plugins that are listed in `.vimrc`. This is handy for getting your painstakingly-crafted [Vim](https://www.vim.org) config up and running on a brand new system, with no messy mucking about. One requirement though is that you at least have `vim` installed -- most vanilla `vi` binaries can't handle the bootstrapping script in the `.vimrc`. I'm sure this could be adapted for other vim plugin managers, but I haven't tried.
+## What you get
 
-### Hands-free installation of iTerm prefs
-For macOS (Darwin-style linux) installs, [iTerm2](https://www.iterm2.com/) preference files will be installed, so that the iTerm config from the dotfiles repo will look just like it should once bootstrapping is done. No need to launch iTerm, mess with prefs, and relaunch. For `iTerm2`, linking the binary prefs file means that on first launch, you won't need to tell `iTerm` to look in the dotfiles repo for it's pref and profile info. This is very handy if you're using [nerd-fonts](https://github.com/ryanoasis/nerd-fonts) and/or [gruvbox](https://github.com/morhetz/gruvbox) and have your terminal set up *just so*.
+### Reproducible, not just "documented"
+The old version of this repo was a pile of files plus a bootstrap script that imperatively glued them into place. This one is a flake. Every package, every config file, every symlink is declared in `home/${USER}/default.nix` (+ `shell.nix`), pinned by `flake.lock`. Two machines run the same closure, so "works on my laptop" and "works on the server" are the same statement. No drift, no "wait, which version of node did I install here."
 
-### Alfred sync-folder setup 
-I give [Alfred](https://www.alfredapp.com/) a sync folder location (like Box or Dropbox) so that all my macs have access to the same workflows and preferences. Including `Alfred`'s prefs in this repo means that it will know where to look as soon as bootstrapping (and syncing) is complete.
-__Note:__ If you adopt this method, be sure to put your sync folders in the same place each time so that the related prefs files are looking in the right place.
+### Live-editable where it actually matters
+Full reproducibility usually means your configs live read-only in the Nix store, and every tweak needs a rebuild. That's miserable for the two files I fiddle with constantly, so those are symlinked straight back into the repo: `aliases.zsh` and `~/.config/nvim`. Edit them in place, re-source (`sa`/`va`) or reload nvim, done — no `switch` required. Everything else is nix-managed in-store, where it belongs. `lazy.nvim` can still write its lockfile because the nvim dir is a live symlink, and that lockfile is committed, so reproducibility holds.
 
-### Cross-platform functionality and some shell/homedir homogenization.
-The bootstrap script knows about `Darwin` and `Linux` platforms, and will tailor the bootstrapping process depending on your host OS. Regardless of whether you install on Linux or macOS, the resulting homedir will be very similar in setup, so that if you hop back and forth between platforms during the day, most of your shell experience will be the same for you.
-__Note:__ There's a lot of app pre-installation that happens on the macOS side, but less for Linux. That's more of a personal preference for my daily work, and I'm confident in your ability to customize that to suit your tastes.
+### One flake, every machine
+`flake.nix` carries a `homeConfigurations` entry for macOS (and nix-on-linux) machines and a `nixosConfigurations` entry for nixOS. Same `default.nix` feeds both, with `pkgs.stdenv.isDarwin` guarding the handful of things that differ. Hop between them and the shell feels identical, because it *is* identical — same zsh, same [oh-my-posh](https://ohmyposh.dev/) prompt, same [mise](https://mise.jdx.dev/) runtimes, same `fd`/`eza`/`bat`/`ripgrep`/`gh`/etc., all from Nix.
 
-### Lowest-common-denominator prompt theming
-The prompt theming tries to be as smart as possible. While truecolor terminals are ideal, less-capable terminals are also heartily welcomed. If your term supports less than 256 colors, the [powerlevel9k](https://github.com/bhilburn/powerlevel9k) theme will be turned off in favor of a simpler custom `oh-my-zsh` theme. If your term is _really_ poor and has less than 16 colors, the prompt theme will fall even further back to a very plain prompt (but you'll still get some decent functionality out of it). There hasn't been a ton of work put into this last resort as such, it's mostly geared towards simplicity and not accidentally wandering into the realms of blinky text on account of unrenderable colors being requested.
-
+### Pragmatic about Homebrew
+Nix builds from source. For small, fast-compiling CLI tools, that cost is almost free and you get the reproducibility win. For heavier (`ffmpeg`, `imagemagick`) or other GUI apps, Homebrew's prebuilt bottles are prefereable; especially on a storage-tight laptop where you might not want a 2.8 GiB source build for a GUI front-end. So there's a deliberate split: the reproducible core lives in Nix, the heavy/GUI stuff lives in brew. `bootstrap.sh` installs the brew set dead last, because Nix and brew don't depend on each other. I'd rather have the deterministic half working before the imperative half gets a chance to prompt for sudo.
 
 ## Installation
-__Warning:__ If you want to give this repo a try, realize that many of the dotfiles are fairly customized to my own preferences (as is anyone's dotfiles repo), especially `.vimrc`, `.zshrc`, and my choice of oh-my-zsh plugins (in the bootstrap script). However, if you'd like to go bravely soldier on and give it a whirl, please do so.
 
-### Kick it all off with the bootstrap script
-The fastest way to get started is to use `curl` or `wget` to pull the bootstrap script from github, make the file executeable, and run it. I recommend downloading it first and examining its contents (unless you've already pored over the repo on github) before blindly sallying forth.
+### bootstrap.sh
+Fresh machine? Call `bootstrap.sh`. It installs Xcode Command Line Tools (macOS), then Nix. The [Determinate](https://github.com/DeterminateSystems/nix-installer) installer has flakes on by default, and they survive OS upgrades. We then clone this repo to `~/.dotfiles`, and run the first `home-manager switch`. That switch is where the real work happens: every symlink, the whole shell, mise, oh-my-posh, the CLI toolchain. On macOS it finishes by installing the Homebrew set.
 
-#### Option A: suspiciousfry.jpg (recommended)
+Download it and read it before you run it. It's short.
+
 ```
 curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/master/bootstrap.sh > bootstrap.sh
 vi bootstrap.sh
 ./bootstrap.sh
 ```
 
-#### Option B: doitlive.gif
-```
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/plongitudes/dotfiles/master/bootstrap.sh)"
-```
+The brew formulae/casks in `bootstrap.sh` should be altered to taste, unless you're me, in which case you're already set.
 
-## Various Caveats and Gotchas
-### (aka, this script cannot be run 100% unattended)
-- __Brew cask:__ The `brew cask` installation process will prompt you for superuser access once.
-- __Oh My Zsh:__ The [oh-my-zsh](http://ohmyz.sh/) installation step currently drops you into a `zsh` shell after it's done but before the bootstrap is complete. The boostrap will warn you about this before it happens, but be aware that all you have to do is type `exit` to continue bootstrapping. There's an open issue on the OMZ repo about this, and I'll integrate the change as soon as it's resolved.
-- __Oh My Zsh:__ The `oh-my-zsh` install will prompt you for your password so that it can change your shell from whatever it currently is to `zsh`.
+### Day to day
+Once it's live, three commands carry most of the weight (all defined in `aliases.zsh`):
 
-## macOS Caveats
-- __Ruby and curl:__ The bootstrapper will check for `ruby` and `curl` as pre-requisites to installing [Homebrew](https://brew.sh/) as the package manager. If it can't find ruby or curl, it will bail out and not proceed any further. If successful, it will then go on to use `brew` and `brew cask` for all subsequent installations.
-- __Brew cask:__ Install might take a bit longer, depending on how many applications you decide to `brew cask install`. The default set is pretty hefty, so be aware.
-- __iTerm:__ If you're planning on carrying your iTerm2 settings around, I would recommend changing the `Load preferences from a custom folder or URL` path to `~/.dotfiles/iterm2` instead of an absolute path, if you care about your username or path being stored in github.
+- **`switch`** — rebuild from the flake. Picks the right config by hostname and pipes the build through [nom](https://github.com/maralorn/nix-output-monitor) so you get a live progress tree instead of a long silence.
+- **`nixie`** — quiet status probe: what's out of date, what would change, without the build noise.
+- **`ns <query>`** — fuzzy-search nixpkgs / home-manager / NixOS options right in the terminal (via [nix-search-tv](https://github.com/3timeslazy/nix-search-tv)).
 
-## Linux Caveats
-- __Terminal emulation:__ Because of the reliance on the `powerlevel9k` and `vim-airline` plugin's requirements, the default terminal will look pretty wonky until you install `nerd-fonts`. However, cloning the nerd fonts repo is disabled by default because it's almost 1.5GB in size. Once installed and properly set up, things look much better. I haven't made this very smart yet since I don't spend much time in Linux desktop environments. If that changes, expect this section to improve ;)
+## Caveats and gotchas
+- __Opinionated and Specific__ Everything here is fairly heavily to my own prefs — `zshrc`, the prompt, the app list, but very especially the neovim config. Fork it, gut it, make it yours. Or don't.
+- __Xcode CLT prompt (macOS).__ On a fresh Mac, `bootstrap.sh` triggers the Command Line Tools GUI installer and then exits; let that finish, then re-run. Everything after is unattended until brew.
+- __Login shell is manual.__ home-manager installs zsh into the Nix profile but won't `chsh` you into it — that needs root and an `/etc/shells` entry. `bootstrap.sh` prints the two commands you'll need.
+- __The VM is different.__ non-nixOS machines provision via `nixos-rebuild`, not this script. `bootstrap.sh` is the macOS (and generic Nix-on-Linux) path.
 
 ## Thanks
-- [Andre Klärner](https://github.com/klaernie) for his super-clever gist about [bootstrapping vimrc and vundle](https://gist.github.com/klaernie/db37962e955c82254fed)
-- The [Homebrew](https://brew.sh/) group for putting together and maintaining such an awesome package manager
-- The [Homebrew Cask](https://github.com/caskroom/homebrew-cask) folks for making my life so much easier
-- All the [dotfiles](https://dotfiles.github.io/) repos that I trawled through
+- The [nix-community](https://github.com/nix-community/home-manager) folks for home-manager, which is doing 90% of the work here.
+- [Determinate Systems](https://determinate.systems/) for a Nix installer that doesn't fall over on the next macOS update.
+- The [Homebrew](https://brew.sh/) crew — still the right tool for the heavy, GUI half.
+- Every [dotfiles](https://dotfiles.github.io/) repo I've ever trawled through for ideas.
