@@ -136,9 +136,12 @@ alias ez='exec zsh'
 # nix / fleet sync        #
 ###########################
 
-# `switch` — rebuild this machine from ~/.dotfiles. Dispatches on hostname so the
-# same command works on the Mac (home-manager) and the NixOS VM (nixos-rebuild).
-# Args pass through, e.g. `switch -b backup` or `switch --show-trace`.
+# `switch` — rebuild this machine from ~/.dotfiles. Dispatches on the selected
+# profile (~/.config/dotfiles/profile, or $DOTFILES_PROFILE) rather than the
+# hostname, so no machine identity lives in this public repo. `darwin-*` profiles
+# use home-manager, `linux-*` use nixos-rebuild. All builds pass `--impure` because
+# the flake derives home.username from $USER (getEnv). Args pass through, e.g.
+# `switch -b backup` or `switch --show-trace`.
 #
 # nom: when nix-output-monitor is installed, build through `nom build` FIRST for a
 # live progress tree, then run the real switch — its internal build is then a cache
@@ -148,18 +151,20 @@ alias ez='exec zsh'
 # (nixie stays nom-free on purpose — a quiet status probe, usually a no-op build.)
 function switch() {
     local d="$HOME/.dotfiles" attr
-    case "$(hostname -s)" in
-        portmantopia)
-            attr="homeConfigurations.laptop-dev-portmantopia.activationPackage"
-            { ! command -v nom >/dev/null 2>&1 || nom build "$d#$attr" --no-link; } &&
-                home-manager switch --flake "$d#laptop-dev-portmantopia" "$@" ;;
-        inverness)
-            attr="nixosConfigurations.server-homelab-inverness.config.system.build.toplevel"
-            { ! command -v nom >/dev/null 2>&1 || nom build "$d#$attr" --no-link; } &&
-                sudo nixos-rebuild switch --flake "$d#server-homelab-inverness" "$@" ;;
+    local profile="${DOTFILES_PROFILE:-$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/profile" 2>/dev/null)}"
+    if [ -z "$profile" ]; then
+        echo "switch: no profile set — write one to ~/.config/dotfiles/profile (e.g. darwin-personal) or export DOTFILES_PROFILE" >&2
+        return 1
+    fi
+    case "$profile" in
+        linux-*)
+            attr="nixosConfigurations.$profile.config.system.build.toplevel"
+            { ! command -v nom >/dev/null 2>&1 || nom build --impure "$d#$attr" --no-link; } &&
+                sudo nixos-rebuild switch --impure --flake "$d#$profile" "$@" ;;
         *)
-            echo "switch: unknown host '$(hostname -s)' — add it to switch() in aliases.zsh" >&2
-            return 1 ;;
+            attr="homeConfigurations.$profile.activationPackage"
+            { ! command -v nom >/dev/null 2>&1 || nom build --impure "$d#$attr" --no-link; } &&
+                home-manager switch --impure --flake "$d#$profile" "$@" ;;
     esac
     local rc=$?
     # After a successful rebuild, if we're inside tmux, reload the LIVE server so
@@ -186,17 +191,19 @@ function nixie() {
     [ "$1" = "-f" ] && fetch=1
     [ -d "$d/.git" ] || { echo "nixie: $d is not a git repo" >&2; return 1; }
 
-    # rebuild axis — per host (only the local eval is expensive)
+    # rebuild axis — per profile (only the local eval is expensive)
     local rebuild
-    case "$(hostname -s)" in
-        portmantopia)
+    local profile="${DOTFILES_PROFILE:-$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/profile" 2>/dev/null)}"
+    case "$profile" in
+        darwin-*)
             local built active
-            built=$(nix build --no-link --print-out-paths \
-                "$d#homeConfigurations.laptop-dev-portmantopia.activationPackage" 2>/dev/null)
+            built=$(nix build --no-link --print-out-paths --impure \
+                "$d#homeConfigurations.$profile.activationPackage" 2>/dev/null)
             active=$(readlink -f ~/.local/state/nix/profiles/home-manager)
             [ "$built" = "$active" ] && rebuild="✓ up to date" \
                 || rebuild="⚠ needed (built config ≠ active generation)" ;;
-        *) rebuild="– unknown host (wire up in M7)" ;;
+        linux-*) rebuild="– linux profile: use nixos-rebuild (M6+)" ;;
+        *) rebuild="– no profile set (see ~/.config/dotfiles/profile)" ;;
     esac
 
     # push axis — git, free

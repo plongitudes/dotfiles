@@ -57,18 +57,17 @@ in
     # syntaxHighlighting module (which would be z-sy-h) stays off.
     syntaxHighlighting.enable = false;
 
-    # oh-my-zsh, Nix-managed (retires the manual ~/.oh-my-zsh clone). HM sources
-    # it at mkOrder 800. Only BUILT-IN OMZ plugins live here; the widget-wrapping
-    # external ones (autosuggestions, fzf-tab, fast-syntax-highlighting) are
-    # handled natively with explicit ordering above/below.
+    # oh-my-zsh, Nix-managed. HM sources it at mkOrder 800. Only BUILT-IN OMZ
+    # plugins live here; the widget-wrapping external ones (autosuggestions,
+    # fzf-tab, fast-syntax-highlighting) are handled natively with explicit
+    # ordering above/below.
     oh-my-zsh = {
       enable = true;
-      theme = ""; # prompt is oh-my-posh (migrated in a later step)
-      plugins = [ "git" "python" "pylint" "virtualenv" ]; # mise → programs.mise (avoids double-activation)
-      # Settings migrated from the old zshrc oh-my-zsh block. COMPLETION_WAITING_DOTS
-      # was dropped: it makes OMZ wrap Tab with expand-or-complete-with-dots, which
-      # conflicts with fzf-tab (double-tab on an empty buffer). The dots were
-      # already cosmetic anyway (the custom icon had been overridden to "true").
+      theme = ""; # prompt is oh-my-posh (see programs.oh-my-posh below)
+      plugins = [ "git" "python" "pylint" "virtualenv" ]; # no 'mise' plugin — activation is via programs.mise (avoids double-activation)
+      # COMPLETION_WAITING_DOTS is intentionally omitted: it makes OMZ wrap Tab
+      # with expand-or-complete-with-dots, which conflicts with fzf-tab (double-tab
+      # on an empty buffer), and the dots are only cosmetic.
       extraConfig = ''
         HYPHEN_INSENSITIVE="true"
         HIST_STAMPS="yyyy-mm-dd"
@@ -86,16 +85,14 @@ in
     ];
 
     # ~/.zprofile (login shells). brew shellenv + the Obsidian CLI path are
-    # macOS-only, so guard them — the NixOS VM has neither. (Migrated out of the
-    # pre-existing hand-written ~/.zprofile that programs.zsh now owns.)
+    # macOS-only, so guard them — the NixOS VM has neither.
     profileExtra = lib.optionalString pkgs.stdenv.isDarwin ''
       eval "$(/opt/homebrew/bin/brew shellenv)"
       export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
     '';
 
     # ~/.zshenv (all shells). Keep ~/.local/bin on PATH everywhere (uv/pipx
-    # shims), not just interactive shells. (Migrated out of the pre-existing
-    # ~/.zshenv that programs.zsh now owns.)
+    # shims), not just interactive shells.
     envExtra = ''
       export PATH="$HOME/.local/bin:$PATH"
     '';
@@ -117,10 +114,9 @@ in
     ];
   };
 
-  # mise — Nix-managed. globalConfig writes ~/.config/mise/config.toml (finally
-  # in-repo/reproducible); the zsh integration activates via the Nix mise binary,
-  # retiring the hardcoded /opt/homebrew/bin/mise eval. mise's _mise completion
-  # ships in the Nix profile, so dropping the OMZ 'mise' plugin loses nothing.
+  # mise — Nix-managed. globalConfig writes ~/.config/mise/config.toml (in-repo,
+  # reproducible); tools and settings live there. zsh integration activates via
+  # the Nix mise binary, and _mise completion ships in the Nix profile.
   programs.mise = {
     enable = true;
     globalConfig = {
@@ -138,22 +134,22 @@ in
   };
 
   # oh-my-posh — Nix-managed prompt. configFile points at your theme as-is (no
-  # JSON→Nix round-trip); the zsh integration inits via the Nix binary, retiring
-  # the hardcoded `eval "$(oh-my-posh init …)"`. (Theme edits need a switch.)
+  # JSON→Nix round-trip); the zsh integration inits via the Nix binary. Edit the
+  # theme in .plongitudes.omp.json (needs a switch to take effect).
   programs.oh-my-posh = {
     enable = true;
     configFile = ../../.plongitudes.omp.json;
   };
 
-  # fzf — Nix binary + zsh keybindings/completion (replaces ~/.fzf.zsh). No
+  # fzf — Nix binary + zsh keybindings/completion via programs.fzf. No
   # command/opts set here, so no FZF_* env vars are exported — your _dynamic_fzf
   # and the CTRL_T/CTRL_R/ALT_C opts in the zshrc stay the sole source.
   programs.fzf.enable = true;
 
   # tmux — Nix-managed (nix-ojb). Binary + plugins from nixpkgs, pinned by
-  # flake.lock — retires the Homebrew tmux and the hand-cloned TPM under
-  # ~/.tmux/plugins. Config stays authoritative in ../../tmux.conf (read
-  # verbatim); HM writes the generated result to ~/.config/tmux/tmux.conf.
+  # flake.lock — no Homebrew tmux, no TPM. Config is authoritative in
+  # ../../tmux.conf (read verbatim); HM writes the generated result to
+  # ~/.config/tmux/tmux.conf.
   #
   # ORDERING GOTCHA: home-manager emits the plugin `run-shell` lines BEFORE
   # `extraConfig` — the reverse of TPM (whose `run tpm` sat at the bottom). So

@@ -2,7 +2,9 @@
 {
   imports = [ ./shell.nix ];
 
-  home.username = "tonye";
+  # Derived from $USER at build time (this is why every build needs `--impure`),
+  # so no username is committed to this public repo. homeDirectory follows from it.
+  home.username = builtins.getEnv "USER";
 
   home.homeDirectory =
     if pkgs.stdenv.isDarwin then "/Users/${config.home.username}" else "/home/${config.home.username}";
@@ -20,10 +22,10 @@
     # and fresh shells resolve to the same file — alias edits need no switch.
     ".aliases.zsh".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/aliases.zsh";
-    # .plongitudes.omp.json now provided via programs.oh-my-posh.configFile (shell.nix)
+    # .plongitudes.omp.json is provided via programs.oh-my-posh.configFile (shell.nix)
 
-    # tmux config is now owned by programs.tmux (shell.nix) — it writes the
-    # generated config (settings + plugin run-shell lines) to ~/.config/tmux.
+    # tmux config is owned by programs.tmux (shell.nix) — it writes the generated
+    # config (settings + plugin run-shell lines) to ~/.config/tmux.
 
     # Git
     ".gitconfig".source = ../../gitconfig;
@@ -64,7 +66,7 @@
     deadnix
     # fuzzy CLI search over nixpkgs / HM / NixOS / darwin option docs.
     # Uses prebuilt downloaded indexes (not channels/NIX_PATH), so HM
-    # options work on this flakes-only setup. Replaces manix, which is
+    # options work on this flakes-only setup. Preferred over manix, which is
     # stalled (last release 2024; HM-on-flakes fix merged but unreleased).
     nix-search-tv
 
@@ -97,7 +99,7 @@
     # General dev CLIs — not in the zsh hot path, but wanted identical fleet-wide:
     gh
     ncdu
-    btop # process monitor (htop dropped — carried btop forward)
+    btop # process monitor (picked over htop — one is enough)
     tig # git log/blame browser
     lazygit # full git TUI
     # jq: sourced from Nix like its siblings. macOS ships /usr/bin/jq (1.7.1,
