@@ -27,11 +27,10 @@ return {
       "vimdoc",
     })
 
-    -- Replaces the old `highlight = { enable = true }` module. Start treesitter
-    -- highlighting on any filetype that has a parser; the size guard mirrors the
-    -- previous disable-by-filesize behavior. Indentation is intentionally left to
-    -- Neovim's runtime indent scripts (nvim-yati is dead on main) and folding is
-    -- left unconfigured, matching the pre-migration behavior.
+    -- Start treesitter highlighting on any filetype that has a parser; the size
+    -- guard skips very large files. Indentation is intentionally left to Neovim's
+    -- runtime indent scripts (nvim-yati is dead on main), and folding is left
+    -- unconfigured.
     vim.api.nvim_create_autocmd("FileType", {
       callback = function(args)
         local max_filesize = 1000 * 1024 -- 1000 KB

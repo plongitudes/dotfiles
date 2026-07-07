@@ -196,8 +196,8 @@ setopt hist_ignore_all_dups
 setopt hist_ignore_space
 setopt share_history
 
-# fpath entries moved to shell.nix (mkOrder 550) so they land before oh-my-zsh
-# runs compinit; zsh-completions now comes from the Nix profile.
+# fpath entries live in shell.nix (mkOrder 550) so they land before oh-my-zsh
+# runs compinit; zsh-completions comes from the Nix profile.
 
 
 #    ▌                     ▌
@@ -205,11 +205,9 @@ setopt share_history
 # ▌ ▌▌ ▌   ▌▐ ▌▚▄▌   ▗▘ ▝▀▖▌ ▌
 # ▝▀ ▘ ▘   ▘▝ ▘▗▄▘   ▀▀▘▀▀ ▘ ▘
 
-# oh-my-zsh + its plugins are now managed by programs.zsh.oh-my-zsh in shell.nix
-# (Nix-provided; no manual ~/.oh-my-zsh clone). HM sources oh-my-zsh at mkOrder
-# 800, before this file (mkOrder 1000). Built-in plugins (git/python/pylint/
-# virtualenv/mise) and settings (HYPHEN_INSENSITIVE/COMPLETION_WAITING_DOTS/
-# HIST_STAMPS) moved there; ohmyzsh-full-autoupdate was dropped (Nix owns updates).
+# oh-my-zsh + its plugins are configured in programs.zsh.oh-my-zsh (shell.nix).
+# HM sources oh-my-zsh at mkOrder 800, before this file (mkOrder 1000), so its
+# plugins and settings (HYPHEN_INSENSITIVE, HIST_STAMPS) are already in place.
 export VIRTUAL_ENV_DISABLE_PROMPT=0
 
 #    ▐       ▞        ▌▗▀▖▝▖
@@ -217,8 +215,8 @@ export VIRTUAL_ENV_DISABLE_PROMPT=0
 # ▌  ▐ ▖▗▚  ▝▖▞▀▌▝▀▖▌ ▌▜▀  ▞
 # ▘   ▀ ▘ ▘  ▝▝▀▘▀▀ ▝▀▘▐  ▝
 
-# mise activation is now handled by programs.mise (shell.nix) via the Nix mise
-# binary — no more hardcoded /opt/homebrew/bin/mise; config moved to globalConfig.
+# mise is activated by programs.mise (shell.nix); its tools/settings live in
+# that module's globalConfig.
 export EXA_ICON_SPACING=2
 
 
@@ -241,9 +239,7 @@ export EXA_ICON_SPACING=2
 
 # now, an easier way to do it that can be included in settings.lua
 # for the python3_provider
-# export NVIM_PYTHON_PATH=`which python`  # No longer needed - python3_host_prog set in settings.lua
-# (dropped the apps_for_path loop — it appended binary file paths to PATH, a
-# no-op; bat/fd are already on PATH and fzf now comes from Nix via programs.fzf)
+# export NVIM_PYTHON_PATH=`which python`  # python3_host_prog is set in settings.lua instead
 
 
 #    ▜ ▗                      ▌ ▗▀▖▗    ▗    ▌  ▗
@@ -268,13 +264,13 @@ source ${HOME}/.aliases.zsh
 #printf "\e]1337;SetBadgeFormat=%s\a" \
   #$(echo -n "\(hostname) \(jobName)\n\(columns)x\(rows)" | base64)
 
-# fzf keybindings + completion now come from programs.fzf (shell.nix), not ~/.fzf.zsh
+# fzf keybindings + completion come from programs.fzf (shell.nix)
 
 # Added by Windsurf
 export PATH="$HOME/.codeium/windsurf/bin:$PATH"
 
-# prompt (oh-my-posh) is now inited by programs.oh-my-posh (shell.nix) via the
-# Nix binary; theme comes from programs.oh-my-posh.configFile.
+# prompt (oh-my-posh) is inited by programs.oh-my-posh (shell.nix); theme comes
+# from programs.oh-my-posh.configFile (.plongitudes.omp.json).
 
 # opencode
 export PATH="$HOME/.opencode/bin:$PATH"
