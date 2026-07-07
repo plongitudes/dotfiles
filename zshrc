@@ -25,19 +25,14 @@ export EDITOR="$HOME/.nix-profile/bin/nvim"
 export PAGER='less'
 export LESS='-FiMXr -j.5'
 export PYTHONSTARTUP="${HOME}/.pystartup"
-export HOOBASTANK=$(< ${HOME}/.hoobastank)
 export VIRTUAL_ENV_DISABLE_PROMPT=0
 export HOMEBREW_AUTO_UPDATE_SECS=43200
 export GITHUB_HOME="${HOME}/github/plongitudes"
 
-# Home Assistant Pyscript configuration
-# Get token from: HA → Profile → Long-Lived Access Tokens
-unamestr=$(uname)
-if [ "$unamestr" = 'Linux' ]; then
-  export $(grep -v '^#' ${HOME}/.ha_env | xargs -d '\n')
-elif [ "$unamestr" = 'FreeBSD' ] || [ "$unamestr" = 'Darwin' ]; then
-  export $(grep -v '^#' ${HOME}/.ha_env | xargs -0)
-fi
+# Home-only shell extras (e.g. home-automation env) live in a private overlay
+# and load only when it's cloned to ~/.undisclosed — absent on work machines,
+# where this is a silent no-op.
+[ -f ~/.undisclosed/zshrc.local ] && source ~/.undisclosed/zshrc.local
 
 # eza env vars
 export EXA_COLORS="da=1;36"
