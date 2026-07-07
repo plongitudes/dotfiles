@@ -30,6 +30,7 @@
 [commit]
 [credential]
 [init]
+	defaultBranch = main
 [merge]
     conflictstyle = diff3
 [diff]
