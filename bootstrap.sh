@@ -11,14 +11,17 @@
 # other — so the reproducible core is fully working before any imperative
 # brew step runs.
 #
-# NOT for the NixOS VM (server-homelab-inverness): that host provisions via
-# nixos-rebuild (see the M7 host config under hosts/), not this script.
+# NOT for a Linux/NixOS host: those provision via nixos-rebuild (see the
+# linux-* host config under hosts/, reserved for M6+), not this script.
 
 set -euo pipefail
 
 REPO_URL="https://github.com/plongitudes/dotfiles.git"
 DOTFILES="${HOME}/.dotfiles"
-HM_CONFIG="laptop-dev-portmantopia"   # the darwin homeConfiguration in flake.nix
+PROFILE_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles"
+PROFILE_FILE="$PROFILE_DIR/profile"   # which flake profile this machine builds
+# HM_CONFIG is chosen in phase 2.5 and persisted to $PROFILE_FILE — no machine
+# identity is hardcoded here (this bootstrap is public).
 
 # ── messaging helpers ─────────────────────────────────────────────────────
 say()  { printf '\n...---===### [[[ %s ]]]\n' "$1"; }
@@ -65,19 +68,56 @@ else
     say "Dotfiles already present at $DOTFILES — skipping clone"
 fi
 
+# ── phase 2.5: select this machine's profile ──────────────────────────────
+# switch()/nixie() (aliases.zsh) build the flake profile named in $PROFILE_FILE,
+# NOT the hostname — so no machine identity lives in the public repo. Persist the
+# choice once here; re-runs reuse it.
+if [ -f "$PROFILE_FILE" ]; then
+    HM_CONFIG="$(cat "$PROFILE_FILE")"
+    say "Using existing profile: $HM_CONFIG"
+else
+    say "Select this machine's profile"
+    step "darwin-personal — personal Mac"
+    step "darwin-work       — work Mac"
+    printf '      profile [darwin-personal]: '
+    read -r HM_CONFIG
+    HM_CONFIG="${HM_CONFIG:-darwin-personal}"
+    mkdir -p "$PROFILE_DIR"
+    printf '%s\n' "$HM_CONFIG" > "$PROFILE_FILE"
+    step "wrote $PROFILE_FILE"
+fi
+
+# ── phase 2.6 (optional): private overlay repo ────────────────────────────
+# Home machines keep home-specific tooling (Home Assistant, NAS scripts, …) in a
+# SEPARATE private repo that the public config sources only if present, at
+# ~/.dotfiles-undisclosed. The URL is intentionally NOT hardcoded — this bootstrap
+# is public. Paste it to clone, or leave blank (e.g. on a work box).
+UNDISCLOSED="${HOME}/.dotfiles-undisclosed"
+if [ ! -d "$UNDISCLOSED/.git" ]; then
+    printf '\n      private overlay repo URL (blank to skip): '
+    read -r OVERLAY_URL
+    if [ -n "${OVERLAY_URL:-}" ]; then
+        say "Cloning private overlay → $UNDISCLOSED"
+        git clone "$OVERLAY_URL" "$UNDISCLOSED"
+    else
+        step "skipped — no private overlay"
+    fi
+fi
+
 # ── phase 3: THE CORE — home-manager switch ───────────────────────────────
 # The important step. `nix run home-manager/master` fetches HM just to run
 # the first switch (afterward the `switch` alias in aliases.zsh takes over,
 # using the HM pinned in flake.lock). `-b backup` renames any pre-existing
 # colliding file to <name>.backup instead of aborting, so this is safe on a
-# box that isn't perfectly fresh.
+# box that isn't perfectly fresh. --impure because the flake derives
+# home.username from $USER (getEnv), so no username is committed to the repo.
 if [ "$os" = "Darwin" ]; then
     say "Running home-manager switch (#$HM_CONFIG) — this does the real work"
-    nix run home-manager/master -- switch -b backup --flake "$DOTFILES#$HM_CONFIG"
+    nix run home-manager/master -- switch --impure -b backup --flake "$DOTFILES#$HM_CONFIG"
 elif [ "$os" = "Linux" ]; then
     say "Linux host detected"
     step "This repo provisions Linux via nixos-rebuild, not home-manager"
-    step "standalone. See the M7 NixOS host config under hosts/. Stopping here."
+    step "standalone. See the linux-* NixOS host config under hosts/ (M6+). Stopping here."
     exit 0
 fi
 
@@ -95,7 +135,7 @@ if [ "$os" = "Darwin" ]; then
 
     say "Installing brew formulae + casks (pragmatic-split set)"
 
-    # ── TODO(tonye): curate these two lists ──────────────────────────────
+    # ── TODO: curate these two lists ─────────────────────────────────────
     # Only what the Mac genuinely wants from brew rather than Nix. Leave a
     # short comment on each so future-you knows WHY it's here and not in Nix.
     brew_formulae=(

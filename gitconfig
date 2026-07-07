@@ -1,5 +1,8 @@
 [user]
-	email = github@tonyetienne.com
+	# GitHub no-reply — public-safe, still attributes commits to the account via
+	# the numeric ID, exposes no real address. Work repos can override per-tree
+	# with an includeIf pointing at an untracked ~/.gitconfig.local.
+	email = 3813410+plongitudes@users.noreply.github.com
 	name = plongitudes
 [core]
 	editor = nvim
@@ -27,11 +30,13 @@
 [commit]
 [credential]
 [init]
-[safe]
-	directory = /mnt/d/opt/
-	directory = /mnt/d/opt/bat-extras
-
 [merge]
     conflictstyle = diff3
 [diff]
     colorMoved = default
+
+# Machine-specific / private git config (work email overrides, per-host
+# safe.directory entries, and other machine-local settings) lives here,
+# untracked. A missing file is silently ignored, so this is safe everywhere.
+[include]
+	path = ~/.gitconfig.local

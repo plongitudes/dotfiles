@@ -5,7 +5,7 @@ Nix + [home-manager](https://github.com/nix-community/home-manager), one flake, 
 ## What you get
 
 ### Reproducible, not just "documented"
-The old version of this repo was a pile of files plus a bootstrap script that imperatively glued them into place. This one is a flake. Every package, every config file, every symlink is declared in `home/${USER}/default.nix` (+ `shell.nix`), pinned by `flake.lock`. Two machines run the same closure, so "works on my laptop" and "works on the server" are the same statement. No drift, no "wait, which version of node did I install here."
+The old version of this repo was a pile of files plus a bootstrap script that imperatively glued them into place. This one is a flake. Every package, every config file, every symlink is declared in `home/common/default.nix` (+ `shell.nix`), pinned by `flake.lock`. Two machines run the same closure, so "works on my laptop" and "works on the server" are the same statement. No drift, no "wait, which version of node did I install here."
 
 ### Live-editable where it actually matters
 Full reproducibility usually means your configs live read-only in the Nix store, and every tweak needs a rebuild. That's miserable for the two files I fiddle with constantly, so those are symlinked straight back into the repo: `aliases.zsh` and `~/.config/nvim`. Edit them in place, re-source (`sa`/`va`) or reload nvim, done — no `switch` required. Everything else is nix-managed in-store, where it belongs. `lazy.nvim` can still write its lockfile because the nvim dir is a live symlink, and that lockfile is committed, so reproducibility holds.
