@@ -197,6 +197,11 @@ return {
     -- Configure helpers for nix files
     -- manual adjustment of nvim setup, not managed by Mason.
     local flake_path = vim.fn.expand("~/.dotfiles")
+    -- Which profile's options nixd completes against — read the same marker
+    -- switch()/nixie() use, so it's correct on any machine (fallback darwin-personal).
+    local marker = vim.fn.expand("~/.config/dotfiles/profile")
+    local hm_profile = (vim.fn.filereadable(marker) == 1) and vim.fn.trim(vim.fn.readfile(marker)[1])
+      or "darwin-personal"
     vim.lsp.config.nixd = {
       cmd = { "nixd" },
       root_markers = { "flake.nix", ".git" },
@@ -208,7 +213,7 @@ return {
           },
           options = {
             ["home-manager"] = {
-              expr = ('(builtins.getFlake "%s").homeConfigurations.laptop-dev-portmantopia.options'):format(flake_path),
+              expr = ('(builtins.getFlake "%s").homeConfigurations.%s.options'):format(flake_path, hm_profile),
             },
           },
         },
