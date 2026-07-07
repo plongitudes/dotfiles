@@ -34,12 +34,12 @@
         darwin-work = mkHome { };
       };
 
-      # Reserved for M6+ — full NixOS host config for the Linux VM (role word TBD):
+      # Reserved for M6+ — full NixOS host config for the homelab VM:
       #
-      # nixosConfigurations.linux-server = nixpkgs.lib.nixosSystem {
+      # nixosConfigurations.linux-homelab = nixpkgs.lib.nixosSystem {
       #   system = linuxSystem;
       #   modules = [
-      #     ./hosts/linux-server
+      #     ./hosts/linux-homelab
       #     home-manager.nixosModules.home-manager
       #     { home-manager.users.<user> = import ./home/common/default.nix; }
       #   ];
