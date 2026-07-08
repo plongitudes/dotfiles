@@ -84,7 +84,12 @@ function fortsplat () {
 function _dynamic_fzf () {
     # when changing directories, update the fd search directories and generate a new fortune.
     local search_paths=("${PWD}" "${HOME}/.config" "${HOME}")
-    local flags="-IL --max-depth 7 --exclude '.git' --exclude 'Library'"
+    # -I (don't honor .gitignore) but deliberately NOT -L (follow symlinks):
+    # with -L, fd walks the home-manager store symlinks into /nix/store and
+    # enumerates the whole closure on every Ctrl-T/Alt-C (~5M paths, ~110s).
+    # Dropped so we're not wading through the nix store on every hit — the
+    # editable configs are still reachable at their real ~/.dotfiles/ paths.
+    local flags="-I --max-depth 7 --exclude '.git' --exclude 'Library'"
     # dedupe: when PWD == $HOME the literal ~ would otherwise be searched twice,
     # doubling Alt-C results. ${(u)} keeps unique entries (fd already dedupes
     # subtree overlaps, so only the exact PWD==HOME collision needed handling).

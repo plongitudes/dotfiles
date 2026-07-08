@@ -150,7 +150,7 @@ alias ez='exec zsh'
 # guard means: no nom → plain switch; nom build fails → stop before activating.
 # (nixie stays nom-free on purpose — a quiet status probe, usually a no-op build.)
 function switch() {
-    local d="$HOME/.dotfiles" attr
+    local d="$HOME/.dotfiles" attr out
     local profile="${DOTFILES_PROFILE:-$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/profile" 2>/dev/null)}"
     if [ -z "$profile" ]; then
         echo "switch: no profile set — write one to ~/.config/dotfiles/profile (e.g. darwin-personal) or export DOTFILES_PROFILE" >&2
@@ -162,9 +162,21 @@ function switch() {
             { ! command -v nom >/dev/null 2>&1 || nom build --impure "$d#$attr" --no-link; } &&
                 sudo nixos-rebuild switch --impure --flake "$d#$profile" "$@" ;;
         *)
+            # Build the activation package ONCE (through nom for a live progress
+            # tree when available) and run its activate script directly — one flake
+            # eval instead of two (a bare `home-manager switch` re-evaluates). The
+            # activate script does the real generation registration (nix-env --set)
+            # itself. "$@" forwards to the build, so `switch --show-trace` still
+            # works. No backup ext on purpose: a file collision errors and stops —
+            # rare here (HM already owns its paths) and worth knowing about;
+            # bootstrap.sh uses -b backup for first-run, where collisions are normal.
             attr="homeConfigurations.$profile.activationPackage"
-            { ! command -v nom >/dev/null 2>&1 || nom build --impure "$d#$attr" --no-link; } &&
-                home-manager switch --impure --flake "$d#$profile" "$@" ;;
+            if command -v nom >/dev/null 2>&1; then
+                out=$(nom build --impure "$d#$attr" --no-link --print-out-paths "$@") || return
+            else
+                out=$(nix build --impure "$d#$attr" --no-link --print-out-paths "$@") || return
+            fi
+            "$out/activate" ;;
     esac
     local rc=$?
     # After a successful rebuild, if we're inside tmux, reload the LIVE server so

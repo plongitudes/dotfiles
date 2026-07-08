@@ -35,7 +35,7 @@ return {
             desc = proj_desc,
             action = ":lua require('plongitudes.project_switcher').switch_to_project()",
           },
-          { icon = " ", key = "v", desc = "Neovide", action = ":Neovide", enabled = vim.g.neovide ~= nil },
+          { icon = " ", key = "v", desc = "Neovide", action = ":Evensong", enabled = vim.g.neovide ~= nil },
           { icon = " ", key = "m", desc = "Mason", action = ":Mason" },
           {
             icon = " ",
