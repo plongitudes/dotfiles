@@ -111,11 +111,11 @@ else
 fi
 
 # ── phase 2.6 (optional): private overlay repo ────────────────────────────
-# Home machines keep home-specific tooling (Home Assistant, NAS scripts, …) in a
-# SEPARATE private repo that the public config sources only if present, at
-# ~/.undisclosed (the path zshrc + the nvim molten loader expect). The URL is
-# intentionally NOT hardcoded — this bootstrap is public. Paste it to clone, or
-# leave blank (e.g. on a work box).
+# Home machines keep home-specific tooling in a SEPARATE private repo that the
+# public config sources only if present, at ~/.undisclosed (the path zshrc +
+# the nvim molten loader expect). The URL is intentionally NOT hardcoded —
+# this bootstrap is public. Paste it to clone, or leave blank (e.g. on a work
+# box).
 UNDISCLOSED="${HOME}/.undisclosed"
 if [ ! -d "$UNDISCLOSED/.git" ]; then
     printf '\n      private overlay repo URL (blank to skip): '
