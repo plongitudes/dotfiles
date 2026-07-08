@@ -58,8 +58,9 @@
   home.packages = with pkgs; [
     # LSP — flake-aware, completes home-manager/NixOS options
     nixd
-    # formatter — official RFC 166 style (what nixpkgs uses)
-    nixfmt-rfc-style
+    # formatter — nixfmt IS the official RFC 166 style now; the old
+    # nixfmt-rfc-style name is a deprecated alias for this same derivation.
+    nixfmt
     # linter — flags Nix anti-patterns
     statix
     # linter — finds dead/unused bindings
