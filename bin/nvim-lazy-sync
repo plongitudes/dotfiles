@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# nvim-lazy-sync — headless lazy.nvim plugin sync with a completeness gate.
+#
+# Runs `Lazy! sync` (the SYNCHRONOUS form — blocks instead of racing the quit),
+# then asks lazy which specced plugins actually have an install dir. If any are
+# missing it prints one clear line and EXITS NON-ZERO — a plain `Lazy! sync`
+# exits 0 even when a clone failed, so this is what turns a buried, retried error
+# into a catchable one. Output streams to the terminal (nothing hidden).
+#
+# Called by bootstrap.sh after the repo is cloned; also fine to run by hand.
+
+set -euo pipefail
+
+nvim_bin="${NVIM:-$HOME/.nix-profile/bin/nvim}"
+[ -x "$nvim_bin" ] || nvim_bin="$(command -v nvim || true)"
+[ -n "$nvim_bin" ] && [ -x "$nvim_bin" ] || { echo "nvim-lazy-sync: no nvim found" >&2; exit 1; }
+
+check="$(mktemp)"; trap 'rm -f "$check"' EXIT
+cat > "$check" <<'LUA'
+-- definitive check: any specced plugin whose install dir is absent = a failed clone
+local plugins = require("lazy.core.config").plugins
+local missing = {}
+for name, p in pairs(plugins) do
+  if p.dir and vim.fn.isdirectory(p.dir) == 0 then table.insert(missing, name) end
+end
+if #missing > 0 then
+  io.stderr:write("\n✗ lazy install INCOMPLETE — missing: " .. table.concat(missing, ", ") .. "\n")
+  vim.cmd("cquit 1")   -- non-zero so callers (and set -e) notice
+else
+  io.stderr:write("\n✓ lazy: all plugins installed\n")
+  vim.cmd("qa")
+end
+LUA
+
+# not exec'd, so the EXIT trap cleans up the temp check; set -e propagates cquit 1
+"$nvim_bin" --headless "+Lazy! sync" -c "luafile $check"

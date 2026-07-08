@@ -46,6 +46,10 @@ while [ $# -gt 0 ]; do
     esac
 done
 
+# Non-blocking problems (e.g. plugin/tool install) are collected here and printed
+# as a summary at the end, so they're visible without aborting the whole run.
+warnings=()
+
 os="$(uname)"
 
 # ── phase 0: platform prereqs ─────────────────────────────────────────────
@@ -163,14 +167,14 @@ if [ -x "$mise_bin" ]; then
 fi
 
 # ── phase 3.6 (optional): install nvim plugins + LSP tooling ───────────────
-# lazy.nvim (plugins) and mason (LSP servers / formatters / linters) both install
-# on first run. Do it headlessly here so a fresh box has a working editor with no
-# manual first launch. Both use the SYNCHRONOUS forms — `Lazy! sync` and
-# MasonToolsInstallSync BLOCK until done (the async variants would race the quit
-# and leave installs half-finished). Output streams straight to the terminal:
-# headless nvim exits 0 even on a plugin/tool error, so we DON'T hide the output —
-# errors are printed for you to see rather than swallowed. Skip and launch nvim
-# yourself later if you'd rather watch it install interactively.
+# lazy.nvim (plugins) and mason (LSP / formatters / linters) install on first run.
+# Do it headlessly here so a fresh box has a working editor with no manual launch.
+# Delegates to bin/nvim-lazy-sync + bin/nvim-mason-install (from the repo cloned in
+# phase 2): both use the SYNC install form (blocks, no racing the quit) and stream
+# output (nothing hidden). lazy adds a completeness gate (non-zero if a clone is
+# missing); mason relies on a timeout guard + its own logging (no stable API to
+# gate on). Called non-blocking — any failure lands in $warnings for the end-of-run
+# summary rather than aborting. Skip to install later via a normal nvim launch.
 nvim_bin="${HOME}/.nix-profile/bin/nvim"
 if [ -x "$nvim_bin" ]; then
     printf '\n      install nvim plugins + LSP tooling now (lazy + mason)? [y/N]: '
@@ -178,11 +182,11 @@ if [ -x "$nvim_bin" ]; then
     case "$ans" in
         [yY]*)
             say "Syncing lazy.nvim plugins"
-            "$nvim_bin" --headless "+Lazy! sync" +qa
+            NVIM="$nvim_bin" "$DOTFILES/bin/nvim-lazy-sync" \
+                || warnings+=("lazy plugin install incomplete — editor may be degraded; re-run bin/nvim-lazy-sync or :Lazy sync")
             say "Installing mason tools (LSP / formatters / linters)"
-            "$nvim_bin" --headless -c 'Lazy load mason-tool-installer.nvim' \
-                -c 'MasonToolsInstallSync' -c 'quitall'
-            step "done — scroll up to check for any install errors"
+            NVIM="$nvim_bin" "$DOTFILES/bin/nvim-mason-install" \
+                || warnings+=("mason tool install had problems — re-run bin/nvim-mason-install or use :Mason")
             ;;
         *) step "skipped — launch nvim later; plugins + tools install on first run" ;;
     esac
@@ -235,6 +239,15 @@ if [ -x "$nix_zsh" ] && [ "${SHELL:-}" != "$nix_zsh" ]; then
     say "Optional: make the Nix zsh your login shell"
     step "sudo sh -c 'echo $nix_zsh >> /etc/shells'"
     step "chsh -s $nix_zsh"
+fi
+
+# ── summary ────────────────────────────────────────────────────────────────
+# Non-blocking problems (nvim plugins/tools) are surfaced here so they're visible
+# without having aborted the run. The count guard avoids the bash-3.2 + `set -u`
+# empty-array expansion error.
+if [ ${#warnings[@]} -gt 0 ]; then
+    say "Bootstrap finished with ${#warnings[@]} warning(s) — review:"
+    for w in "${warnings[@]}"; do step "⚠ $w"; done
 fi
 
 say "Bootstrap complete. Open a fresh terminal to land in the new shell."

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#
+# nvim-mason-install — headless mason tool install (LSP servers / formatters /
+# linters) with a timeout guard. Runs MasonToolsInstallSync (blocks until done).
+#
+# NOTE on error visibility: unlike bin/nvim-lazy-sync — where lazy exposes a clean
+# way to check every plugin's install dir — mason-tool-installer exposes NO stable
+# runtime API to read its configured tool list (settings module isn't requireable,
+# no accessor on the main module, and MasonToolsUpdateCompleted is empty when
+# everything's already installed). Rather than hardcode a drift-prone copy of the
+# list, we rely on mason's OWN logging (which streams to the terminal, so a failed
+# download is emitted) plus the timeout guard for the known deadlock-on-bad-tool.
+# Meant to be called non-blocking (bootstrap warns + continues) — mason tooling
+# isn't required for a working editor; re-run this or use :Mason later.
+# Override the timeout with MASON_TIMEOUT (seconds).
+
+set -uo pipefail   # NOT -e: we return a code for callers but don't self-abort
+
+nvim_bin="${NVIM:-$HOME/.nix-profile/bin/nvim}"
+[ -x "$nvim_bin" ] || nvim_bin="$(command -v nvim || true)"
+[ -n "$nvim_bin" ] && [ -x "$nvim_bin" ] || { echo "⚠ mason: no nvim found — skipping" >&2; exit 0; }
+
+# hang-guard: timeout if we have it (macOS ships neither by default — comes from
+# coreutils via nix/brew); a fresh box without it just runs unguarded, which is
+# fine because our real tool list is valid (the deadlock needs a bad tool NAME).
+timeout_bin="$(command -v timeout || command -v gtimeout || true)"
+mason_timeout="${MASON_TIMEOUT:-300}"
+run() { if [ -n "$timeout_bin" ]; then "$timeout_bin" "$mason_timeout" "$@"; else "$@"; fi; }
+
+run "$nvim_bin" --headless \
+    -c 'Lazy load mason-tool-installer.nvim' \
+    -c 'MasonToolsInstallSync' \
+    -c 'quitall'
+rc=$?
+
+case "$rc" in
+  0)   echo "✓ mason: install finished (review output above for any per-tool errors)" ;;
+  124) echo "⚠ mason install timed out after ${mason_timeout}s — re-run bin/nvim-mason-install or use :Mason (non-blocking)" >&2 ;;
+  *)   echo "⚠ mason install exited $rc — see output above; :Mason to inspect (non-blocking)" >&2 ;;
+esac
+exit "$rc"   # honest code; bootstrap calls this non-blocking (warns, continues)
