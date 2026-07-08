@@ -82,6 +82,11 @@
     # shows what's fetching/compiling instead of going silent. See nix-kho.
     nix-output-monitor
 
+    # nvd — diffs two generations' closures and prints exactly which packages
+    # changed version. `nixup` (aliases.zsh) runs it after a flake update so an
+    # update produces a readable changelog instead of a silent version bump.
+    nvd
+
     # ── De-brewed CLI tooling (nix-9zy) ──────────────────────────────────────
     # Dev CLIs sourced from Nix so the exact same binaries exist on the Mac and
     # the NixOS VM. Pragmatic split: only small/fast-building tools live here;

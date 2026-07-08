@@ -239,6 +239,33 @@ function nixie() {
     printf '~/.dotfiles:\n  rebuild  %s\n  push     %s\n  pull     %s\n' "$rebuild" "$push" "$pull"
 }
 
+# `nixup` — pull newer package versions by re-locking the flake, then rebuild and
+# show what changed. No config editing: default.nix/shell.nix declare WHAT you
+# have; flake.lock pins WHICH version, and this bumps the lock. Args pass through
+# to `nix flake update`, so bare `nixup` updates every input and `nixup nixpkgs`
+# bumps just nixpkgs. Reversible: if a bump misbehaves, `git -C ~/.dotfiles
+# checkout flake.lock && switch` restores the old world. Uses switch() under the
+# hood, so you get the nom progress tree and the profile-marker dispatch for free.
+function nixup() {
+    local d="$HOME/.dotfiles" before after
+    [ -d "$d/.git" ] || { echo "nixup: $d is not a git repo" >&2; return 1; }
+    before=$(readlink -f ~/.local/state/nix/profiles/home-manager 2>/dev/null)
+    ( cd "$d" && nix flake update "$@" ) || return
+    switch || return
+    after=$(readlink -f ~/.local/state/nix/profiles/home-manager 2>/dev/null)
+    echo
+    if command -v nvd >/dev/null 2>&1 && [ -n "$before" ] && [ "$before" != "$after" ]; then
+        nvd diff "$before" "$after"   # readable version-change list
+    else
+        echo "nixup: no package changes (generation unchanged)"
+    fi
+    printf '\nother update surfaces (not flake-managed):\n'
+    printf '  brew upgrade               # Homebrew casks/formulae\n'
+    printf '  mise upgrade               # go/node/rust/uv ("latest" pins)\n'
+    printf '  nvim +"Lazy update" +qa    # nvim plugins (writes lazy-lock.json)\n'
+    printf 'commit when happy: git -C %s add flake.lock && git -C %s commit\n' "$d" "$d"
+}
+
 # Startup nudge: warn if ~/.dotfiles has local work the fleet can't see yet.
 # Free & offline — no fetch (that's `nixie -f`). Push axis only. Called from zshrc.
 function _nixie_hint() {

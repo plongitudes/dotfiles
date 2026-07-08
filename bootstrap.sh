@@ -162,6 +162,32 @@ if [ -x "$mise_bin" ]; then
     esac
 fi
 
+# ── phase 3.6 (optional): install nvim plugins + LSP tooling ───────────────
+# lazy.nvim (plugins) and mason (LSP servers / formatters / linters) both install
+# on first run. Do it headlessly here so a fresh box has a working editor with no
+# manual first launch. Both use the SYNCHRONOUS forms — `Lazy! sync` and
+# MasonToolsInstallSync BLOCK until done (the async variants would race the quit
+# and leave installs half-finished). Output streams straight to the terminal:
+# headless nvim exits 0 even on a plugin/tool error, so we DON'T hide the output —
+# errors are printed for you to see rather than swallowed. Skip and launch nvim
+# yourself later if you'd rather watch it install interactively.
+nvim_bin="${HOME}/.nix-profile/bin/nvim"
+if [ -x "$nvim_bin" ]; then
+    printf '\n      install nvim plugins + LSP tooling now (lazy + mason)? [y/N]: '
+    read -r ans
+    case "$ans" in
+        [yY]*)
+            say "Syncing lazy.nvim plugins"
+            "$nvim_bin" --headless "+Lazy! sync" +qa
+            say "Installing mason tools (LSP / formatters / linters)"
+            "$nvim_bin" --headless -c 'Lazy load mason-tool-installer.nvim' \
+                -c 'MasonToolsInstallSync' -c 'quitall'
+            step "done — scroll up to check for any install errors"
+            ;;
+        *) step "skipped — launch nvim later; plugins + tools install on first run" ;;
+    esac
+fi
+
 # ── phase 4 (macOS only, LAST): Homebrew ──────────────────────────────────
 # Only the pragmatic-split set lives here: heavy media stacks and GUI apps that
 # would be huge Nix closures on a storage-tight Mac, the neovide-app cask (which
