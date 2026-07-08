@@ -97,6 +97,8 @@
     bat
     ripgrep # provides `rg`
     tree
+    fortune # fortsplat() (zshrc) + `fort` alias — the fzf border label
+    lolcat  # colours fortsplat's output; both run on every prompt via _dynamic_fzf
     # General dev CLIs — not in the zsh hot path, but wanted identical fleet-wide:
     gh
     ncdu

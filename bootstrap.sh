@@ -28,6 +28,24 @@ say()  { printf '\n...---===### [[[ %s ]]]\n' "$1"; }
 step() { printf '      %s\n' "$1"; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# ── args ──────────────────────────────────────────────────────────────────
+# The script is re-runnable: every phase below is guarded to skip work already
+# done, so re-running is safe (e.g. to install mise later, or pick up new casks).
+# --profile <name> overrides/updates the saved profile on a re-run; without it a
+# saved profile is reused and a fresh box prompts.
+PROFILE_ARG=""
+usage() { printf 'usage: bootstrap.sh [--profile <name>]\n'; }
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --profile)
+            [ $# -ge 2 ] || { echo "bootstrap.sh: --profile needs a value" >&2; exit 1; }
+            PROFILE_ARG="$2"; shift 2 ;;
+        --profile=*) PROFILE_ARG="${1#*=}"; shift ;;
+        -h|--help) usage; exit 0 ;;
+        *) echo "bootstrap.sh: unknown argument: $1" >&2; usage >&2; exit 1 ;;
+    esac
+done
+
 os="$(uname)"
 
 # ── phase 0: platform prereqs ─────────────────────────────────────────────
@@ -72,9 +90,14 @@ fi
 # switch()/nixie() (aliases.zsh) build the flake profile named in $PROFILE_FILE,
 # NOT the hostname — so no machine identity lives in the public repo. Persist the
 # choice once here; re-runs reuse it.
-if [ -f "$PROFILE_FILE" ]; then
+if [ -n "$PROFILE_ARG" ]; then
+    HM_CONFIG="$PROFILE_ARG"
+    mkdir -p "$PROFILE_DIR"
+    printf '%s\n' "$HM_CONFIG" > "$PROFILE_FILE"
+    say "Profile set to $HM_CONFIG (from --profile)"
+elif [ -f "$PROFILE_FILE" ]; then
     HM_CONFIG="$(cat "$PROFILE_FILE")"
-    say "Using existing profile: $HM_CONFIG"
+    say "Using existing profile: $HM_CONFIG (pass --profile <name> to change)"
 else
     say "Select this machine's profile"
     step "darwin-personal — personal Mac"
@@ -122,6 +145,23 @@ elif [ "$os" = "Linux" ]; then
     exit 0
 fi
 
+# ── phase 3.5 (optional): install mise-pinned dev tools ───────────────────
+# home-manager installs mise + writes ~/.config/mise/config.toml, but the pinned
+# runtimes (go/node/python/rust/…) aren't fetched until `mise install` runs — so
+# a fresh shell warns about missing tools until then. This can be slow/large, so
+# ask first; skip and run `mise install` yourself later if you'd rather. (Called
+# by full path: the switch just created ~/.nix-profile but this shell's PATH
+# predates it.)
+mise_bin="${HOME}/.nix-profile/bin/mise"
+if [ -x "$mise_bin" ]; then
+    printf '\n      install mise-pinned dev tools now (go, node, python, rust, …)? [y/N]: '
+    read -r ans
+    case "$ans" in
+        [yY]*) say "Installing mise-pinned tools"; "$mise_bin" install ;;
+        *)     step "skipped — run 'mise install' later to fetch them" ;;
+    esac
+fi
+
 # ── phase 4 (macOS only, LAST): Homebrew ──────────────────────────────────
 # Only the pragmatic-split set lives here: heavy media stacks and GUI apps that
 # would be huge Nix closures on a storage-tight Mac, the neovide-app cask (which
@@ -145,6 +185,7 @@ if [ "$os" = "Darwin" ]; then
         imagemagick
     )
     brew_casks=(
+        ghostty                            # terminal emulator (config in config/ghostty)
         neovide-app                        # GUI nvim front-end (targets Nix nvim)
         font-fantasque-sans-mono-nerd-font # guifont in config/nvim .../settings.lua
         # GUI apps, e.g.:
