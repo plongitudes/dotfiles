@@ -30,8 +30,8 @@ export HOMEBREW_AUTO_UPDATE_SECS=43200
 export GITHUB_HOME="${HOME}/github/plongitudes"
 
 # Home-only shell extras (e.g. home-automation env) live in a private overlay
-# and load only when it's cloned to ~/.undisclosed — absent on work machines,
-# where this is a silent no-op.
+# and load only when it's cloned to ~/.undisclosed — absent on non-owned
+# devices, where this is a silent no-op.
 [ -f ~/.undisclosed/zshrc.local ] && source ~/.undisclosed/zshrc.local
 
 # eza env vars

@@ -5,7 +5,7 @@
 # hand-organized file — ASCII banners and all — stays the source of that content.
 # Later stages peel history / oh-my-zsh / mise / fzf into native options.
 # ─────────────────────────────────────────────────────────────────────────────
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 let
   # nixpkgs builds fzf-tab's native module as `fzftab.so`, but macOS zsh loads
   # dynamic modules with the `.bundle` extension — so zmodload fails and the
@@ -31,6 +31,12 @@ let
     tmux set-option -g @restored_once 1
     exec ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh
   '';
+
+  # Optional local files embedded verbatim at the tail when present; everything
+  # else in ~/.undisclosed is ignored here. Read impurely (build is --impure).
+  undisclosed = "${config.home.homeDirectory}/.undisclosed";
+  zprofileTail = "${undisclosed}/zprofile.tail";
+  zshrcTail = "${undisclosed}/zshrc.tail";
 in
 {
   # zsh-completions ships completion functions into the profile's
@@ -89,7 +95,8 @@ in
     profileExtra = lib.optionalString pkgs.stdenv.isDarwin ''
       eval "$(/opt/homebrew/bin/brew shellenv)"
       export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
-    '';
+    ''
+    + lib.optionalString (builtins.pathExists zprofileTail) (builtins.readFile zprofileTail);
 
     # ~/.zshenv (all shells). Keep ~/.local/bin on PATH everywhere (uv/pipx
     # shims), not just interactive shells.
@@ -111,6 +118,7 @@ in
       '')
       (lib.mkOrder 1000 (builtins.readFile ../../zshrc))
       (lib.mkOrder 1500 "source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh")
+      (lib.mkOrder 2000 (lib.optionalString (builtins.pathExists zshrcTail) (builtins.readFile zshrcTail)))
     ];
   };
 
