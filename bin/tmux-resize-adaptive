@@ -1,18 +1,38 @@
 #!/usr/bin/env bash
-# Adaptive pane resize. Arg: L|R|U|D.
-# Ease-out: each tap jumps a FRACTION of the remaining distance to the nearest
-# edge, so it's fast near center and settles to 1 near an edge. Fraction = 1/DIV,
-# so DIV is "tap this many times to roughly reach the edge." Screen-size
-# independent (d scales with the window) — NOT an aspect-ratio thing. H and V
-# differ only because terminals have far fewer rows than columns, so V uses a
-# smaller divisor + lower cap to avoid feeling sluggish on the short axis.
+# Adaptive pane resize with a midline detent. Arg: L|R|U|D.
+#
+# Step size: PROPORTIONAL to the moving split line's distance from the nearest
+# edge, scaled so it reaches `max` only at dead center and eases to 1 at the edge
+# (no flat region). s = d * 2 * max / dim, dim = window width (H) / height (V).
+# `max` = the step at center; H > V because there are more columns than rows.
+#
+# Moving border: a pane has two borders per axis; the one sitting ON the window
+# edge never moves, so we track the INTERIOR one (farther from an edge) — the
+# split line. resize-pane moves it consistently regardless of which pane is
+# active: -R/-D push it toward the far edge (higher coord), -L/-U toward the near
+# edge (lower). p = that border's position, `sign` = its direction of travel.
+#
+# Midline snap: if a step would carry the split ACROSS the window center, clamp
+# it so the split lands exactly on center — a detent at the balanced 50/50 split.
 dir="$1"
-read -r w h r b <<< "$(tmux display -p '#{window_width} #{window_height} #{pane_right} #{pane_bottom}')"
+read -r w h l r t b <<< "$(tmux display -p '#{window_width} #{window_height} #{pane_left} #{pane_right} #{pane_top} #{pane_bottom}')"
 case "$dir" in
-  L|R) d=$(( r < w-r ? r : w-r )); s=$(( d/4 )); max=12 ;;  # 25% of remaining, cap 12
-  U|D) d=$(( b < h-b ? b : h-b )); s=$(( d/3 )); max=8  ;;  # 33% of remaining, cap 8
+  L|R) dl=$(( l < w-l ? l : w-l )); dr=$(( r < w-r ? r : w-r ))
+       d=$(( dl > dr ? dl : dr )); p=$(( dl > dr ? l : r ))
+       dim=$w; max=16; [ "$dir" = R ] && sign=1 || sign=-1 ;;
+  U|D) dt=$(( t < h-t ? t : h-t )); db=$(( b < h-b ? b : h-b ))
+       d=$(( dt > db ? dt : db )); p=$(( dt > db ? t : b ))
+       dim=$h; max=10; [ "$dir" = D ] && sign=1 || sign=-1 ;;
   *) exit 1 ;;
 esac
+s=$(( d * 2 * max / dim ))
 (( s < 1 )) && s=1
-(( s > max )) && s=max
+(( s > max )) && s=$max
+# Midline detent: clamp a crossing step so the split lands exactly on center.
+mid=$(( dim / 2 ))
+target=$(( p + sign * s ))
+if (( (p < mid && target > mid) || (p > mid && target < mid) )); then
+  s=$(( p < mid ? mid - p : p - mid ))
+fi
+(( s < 1 )) && s=1
 tmux resize-pane "-$dir" "$s"
