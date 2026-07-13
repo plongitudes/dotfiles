@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Adaptive pane resize. Arg: L|R|U|D.
+# Ease-out: each tap jumps a FRACTION of the remaining distance to the nearest
+# edge, so it's fast near center and settles to 1 near an edge. Fraction = 1/DIV,
+# so DIV is "tap this many times to roughly reach the edge." Screen-size
+# independent (d scales with the window) — NOT an aspect-ratio thing. H and V
+# differ only because terminals have far fewer rows than columns, so V uses a
+# smaller divisor + lower cap to avoid feeling sluggish on the short axis.
+dir="$1"
+read -r w h r b <<< "$(tmux display -p '#{window_width} #{window_height} #{pane_right} #{pane_bottom}')"
+case "$dir" in
+  L|R) d=$(( r < w-r ? r : w-r )); s=$(( d/4 )); max=12 ;;  # 25% of remaining, cap 12
+  U|D) d=$(( b < h-b ? b : h-b )); s=$(( d/3 )); max=8  ;;  # 33% of remaining, cap 8
+  *) exit 1 ;;
+esac
+(( s < 1 )) && s=1
+(( s > max )) && s=max
+tmux resize-pane "-$dir" "$s"
