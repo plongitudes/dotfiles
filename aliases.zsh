@@ -199,8 +199,8 @@ function switch() {
 # Note: rebuild sees git-TRACKED state — `git add` new files first. push's
 # "unpushed" count needs a tracking branch (gitup sets it).
 function nixie() {
-    local d="$HOME/.dotfiles" fetch=0
-    [ "$1" = "-f" ] && fetch=1
+    local d="$HOME/.dotfiles" fetch=1
+    [ "$1" = "-n" ] && fetch=0
     [ -d "$d/.git" ] || { echo "nixie: $d is not a git repo" >&2; return 1; }
 
     # rebuild axis — per profile (only the local eval is expensive)
@@ -233,7 +233,7 @@ function nixie() {
         [ "${behind:-0}" -eq 0 ] && pull="✓ up to date" \
             || pull="⚠ ${behind} behind — pull + switch"
     else
-        pull="– not checked (nixie -f to fetch)"
+        pull="– not checked"
     fi
 
     printf '~/.dotfiles:\n  rebuild  %s\n  push     %s\n  pull     %s\n' "$rebuild" "$push" "$pull"
