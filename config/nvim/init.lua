@@ -11,7 +11,4 @@ if not vim.g.vscode then
   vim.api.nvim_set_hl(0, "LspReferenceText", { bg = "#615956", fg = "#d6a808", bold = true })
   vim.api.nvim_set_hl(0, "LspReferenceRead", { bg = "#425660", fg = "#139ee3", bold = true })
   vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = "#604428", fg = "#fd8915", bold = true })
-else
-  -- Load VSCode-specific keymaps
-  require("plongitudes.vscode-keymaps")
 end
