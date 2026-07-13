@@ -270,7 +270,7 @@ source ${HOME}/.aliases.zsh
 export PATH="$HOME/.codeium/windsurf/bin:$PATH"
 
 # prompt (oh-my-posh) is inited by programs.oh-my-posh (shell.nix); theme comes
-# from programs.oh-my-posh.configFile (.plongitudes.omp.json).
+# from programs.oh-my-posh.configFile (omp-plongitudes.json).
 
 # opencode
 export PATH="$HOME/.opencode/bin:$PATH"

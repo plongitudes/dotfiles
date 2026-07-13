@@ -22,7 +22,7 @@
     # and fresh shells resolve to the same file — alias edits need no switch.
     ".aliases.zsh".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.dotfiles/aliases.zsh";
-    # .plongitudes.omp.json is provided via programs.oh-my-posh.configFile (shell.nix)
+    # omp-plongitudes.json is provided via programs.oh-my-posh.configFile (shell.nix)
 
     # tmux config is owned by programs.tmux (shell.nix) — it writes the generated
     # config (settings + plugin run-shell lines) to ~/.config/tmux.
@@ -103,7 +103,7 @@
     ripgrep # provides `rg`
     tree
     fortune # fortsplat() (zshrc) + `fort` alias — the fzf border label
-    lolcat  # colours fortsplat's output; both run on every prompt via _dynamic_fzf
+    lolcat # colours fortsplat's output; both run on every prompt via _dynamic_fzf
     # General dev CLIs — not in the zsh hot path, but wanted identical fleet-wide:
     gh
     ncdu

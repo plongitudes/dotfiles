@@ -5,7 +5,12 @@
 # hand-organized file — ASCII banners and all — stays the source of that content.
 # Later stages peel history / oh-my-zsh / mise / fzf into native options.
 # ─────────────────────────────────────────────────────────────────────────────
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   # nixpkgs builds fzf-tab's native module as `fzftab.so`, but macOS zsh loads
   # dynamic modules with the `.bundle` extension — so zmodload fails and the
@@ -13,9 +18,11 @@ let
   # Mach-O bundle (just misnamed), so add a `.bundle` symlink beside it on Darwin.
   # (Works around a nixpkgs-darwin packaging quirk; upstream fix would drop this.)
   fzf-tab = pkgs.zsh-fzf-tab.overrideAttrs (old: {
-    postInstall = (old.postInstall or "") + lib.optionalString pkgs.stdenv.isDarwin ''
-      ln -s fzftab.so "$out/share/fzf-tab/modules/Src/aloxaf/fzftab.bundle"
-    '';
+    postInstall =
+      (old.postInstall or "")
+      + lib.optionalString pkgs.stdenv.isDarwin ''
+        ln -s fzftab.so "$out/share/fzf-tab/modules/Src/aloxaf/fzftab.bundle"
+      '';
   });
 
   # Restore the saved tmux session ONCE per server, when the first session is
@@ -54,7 +61,10 @@ in
     # suggestions dimmed. Grey matches nvim's gruvbox comment colour.
     autosuggestion = {
       enable = true;
-      strategy = [ "history" "completion" ];
+      strategy = [
+        "history"
+        "completion"
+      ];
       highlight = "fg=#665c54";
     };
 
@@ -70,7 +80,12 @@ in
     oh-my-zsh = {
       enable = true;
       theme = ""; # prompt is oh-my-posh (see programs.oh-my-posh below)
-      plugins = [ "git" "python" "pylint" "virtualenv" ]; # no 'mise' plugin — activation is via programs.mise (avoids double-activation)
+      plugins = [
+        "git"
+        "python"
+        "pylint"
+        "virtualenv"
+      ]; # no 'mise' plugin — activation is via programs.mise (avoids double-activation)
       # COMPLETION_WAITING_DOTS is intentionally omitted: it makes OMZ wrap Tab
       # with expand-or-complete-with-dots, which conflicts with fzf-tab (double-tab
       # on an empty buffer), and the dots are only cosmetic.
@@ -92,11 +107,12 @@ in
 
     # ~/.zprofile (login shells). brew shellenv + the Obsidian CLI path are
     # macOS-only, so guard them — the NixOS VM has neither.
-    profileExtra = lib.optionalString pkgs.stdenv.isDarwin ''
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-      export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
-    ''
-    + lib.optionalString (builtins.pathExists zprofileTail) (builtins.readFile zprofileTail);
+    profileExtra =
+      lib.optionalString pkgs.stdenv.isDarwin ''
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+        export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+      ''
+      + lib.optionalString (builtins.pathExists zprofileTail) (builtins.readFile zprofileTail);
 
     # ~/.zshenv (all shells). Keep ~/.local/bin on PATH everywhere (uv/pipx
     # shims), not just interactive shells.
@@ -118,7 +134,9 @@ in
       '')
       (lib.mkOrder 1000 (builtins.readFile ../../zshrc))
       (lib.mkOrder 1500 "source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh")
-      (lib.mkOrder 2000 (lib.optionalString (builtins.pathExists zshrcTail) (builtins.readFile zshrcTail)))
+      (lib.mkOrder 2000 (
+        lib.optionalString (builtins.pathExists zshrcTail) (builtins.readFile zshrcTail)
+      ))
     ];
   };
 
@@ -143,10 +161,10 @@ in
 
   # oh-my-posh — Nix-managed prompt. configFile points at your theme as-is (no
   # JSON→Nix round-trip); the zsh integration inits via the Nix binary. Edit the
-  # theme in .plongitudes.omp.json (needs a switch to take effect).
+  # theme in omp-plongitudes.json (needs a switch to take effect).
   programs.oh-my-posh = {
     enable = true;
-    configFile = ../../.plongitudes.omp.json;
+    configFile = ../../omp-plongitudes.json;
   };
 
   # fzf — Nix binary + zsh keybindings/completion via programs.fzf. No
