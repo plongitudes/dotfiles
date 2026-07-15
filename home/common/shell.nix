@@ -155,15 +155,7 @@ in
   programs.mise = {
     enable = true;
     globalConfig = {
-      tools = {
-        go = "latest";
-        node = "latest";
-        pipx = "latest";
-        pnpm = "latest";
-        python = "3.11.9";
-        rust = "latest";
-        uv = "latest";
-      };
+      tools = { };
       settings.experimental = true;
     };
   };

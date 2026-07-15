@@ -65,9 +65,12 @@ in
     "mise.toml".source = tomlFormat.generate "home-mise-toml" {
       tools = {
         go = "latest";
+        node = "latest";
+        pipx = "latest";
+        pnpm = "latest";
         python = "3.11.9";
+        rust = "latest";
         uv = "latest";
-        npm = "latest";
       };
     };
   };
