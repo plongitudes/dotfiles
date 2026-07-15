@@ -96,6 +96,15 @@
           "template": "  {{ .Full }} "
         },
         {
+          "type": "text",
+          "style": "diamond",
+          "leading_diamond": "",
+          "trailing_diamond": "<transparent,#900C3F></>",
+          "foreground": "#dddddd",
+          "background": "#900C3F",
+          "template": "{{ if .Env.OMP_CONTEXT }}  {{ .Env.OMP_CONTEXT }} {{ end }}"
+        },
+        {
           "properties": {
             "time_format": "15:04:05"
           },
