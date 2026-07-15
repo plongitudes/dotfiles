@@ -143,6 +143,15 @@ in
   # mise — Nix-managed. globalConfig writes ~/.config/mise/config.toml (in-repo,
   # reproducible); tools and settings live there. zsh integration activates via
   # the Nix mise binary, and _mise completion ships in the Nix profile.
+  #
+  # Tool versions are declared in ~/mise.toml instead of here (see
+  # home.file."mise.toml" in default.nix): mise's TRUE global config
+  # (~/.config/mise/config.toml) applies everywhere on disk regardless of cwd,
+  # but ~/mise.toml is just an ordinary project config that mise finds by
+  # walking up from cwd — so it only takes effect in $HOME and directories
+  # below it, same as any other project mise.toml. Individual repos under
+  # $HOME can still override/disable a tool (e.g. `python = "system"`) to
+  # defer to something else on PATH (e.g. /opt/marcom-cgs/bin).
   programs.mise = {
     enable = true;
     globalConfig = {

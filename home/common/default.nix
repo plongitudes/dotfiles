@@ -1,4 +1,9 @@
 { pkgs, config, ... }:
+let
+  # Same TOML generator programs.mise uses internally for its own config, so
+  # ~/mise.toml (below) round-trips through Nix the same way.
+  tomlFormat = pkgs.formats.toml { };
+in
 {
   imports = [ ./shell.nix ];
 
@@ -51,6 +56,20 @@
 
     # ghostty stays an in-store copy (nothing writes back into its config dir)
     ".config/ghostty".source = ../../config/ghostty;
+
+    # mise's tool pins for $HOME (see programs.mise in shell.nix for why these
+    # live in an ordinary project mise.toml here rather than globalConfig):
+    # mise walks up from cwd looking for mise.toml/.tool-versions, so this only
+    # activates in $HOME and directories below it — anywhere else on disk
+    # (e.g. /opt/marcom-cgs projects) falls through to whatever's on PATH.
+    "mise.toml".source = tomlFormat.generate "home-mise-toml" {
+      tools = {
+        go = "latest";
+        python = "3.11.9";
+        uv = "latest";
+        npm = "latest";
+      };
+    };
   };
 
   # Nix-editing toolchain. Sourced from Nix (not mason) so the exact same
