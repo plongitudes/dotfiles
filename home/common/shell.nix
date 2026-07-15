@@ -160,7 +160,7 @@ in
         node = "latest";
         pipx = "latest";
         pnpm = "latest";
-        python = "3.11.8";
+        python = "3.11.9";
         rust = "latest";
         uv = "latest";
       };
