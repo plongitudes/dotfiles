@@ -674,3 +674,9 @@ alias dmail='open http://localhost:1080'
 
 function cl() { claude --allow-dangerously-skip-permissions $*; }
 function cr() { claude --allow-dangerously-skip-permissions --resume $*; }
+
+
+# Machine-local alias overlay: extra aliases live in the ~/.undisclosed overlay and
+# load last so they can add to or override the above — absent elsewhere, a silent
+# no-op. At the tail of this file, so `sa` (re-source aliases) reloads it too.
+[ -f ~/.undisclosed/aliases.local ] && source ~/.undisclosed/aliases.local
