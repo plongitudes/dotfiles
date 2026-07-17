@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # Adaptive pane resize with a midline detent. Arg: L|R|U|D.
 #
-# Step size: PROPORTIONAL to the moving split line's distance from the nearest
+# Step size: proportional to the moving split line's distance from the nearest
 # edge, scaled so it reaches `max` only at dead center and eases to 1 at the edge
 # (no flat region). s = d * 2 * max / dim, dim = window width (H) / height (V).
-# `max` = the step at center; H > V because there are more columns than rows.
+# `max` = the step at center; H > V because there are more columns than rows and
+# this helps the resizing feel a little more consistent on both axes.
 #
 # Moving border: a pane has two borders per axis; the one sitting ON the window
 # edge never moves, so we track the INTERIOR one (farther from an edge) — the
