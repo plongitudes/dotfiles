@@ -122,6 +122,12 @@ in
     fd
     eza
     bat
+    bat-extras.batdiff
+    bat-extras.batgrep
+    bat-extras.batman
+    bat-extras.batpipe
+    bat-extras.batwatch
+    bat-extras.prettybat
     ripgrep # provides `rg`
     tree
     fortune # fortsplat() (zshrc) + `fort` alias — the fzf border label
