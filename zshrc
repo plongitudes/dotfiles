@@ -83,7 +83,9 @@ function fortsplat () {
 
 function _dynamic_fzf () {
     # when changing directories, update the fd search directories and generate a new fortune.
-    local search_paths=("${PWD}" "${FZF_DYNAMIC_PATHS}" "${HOME}/.config" "${HOME}")
+    # when making a custom FZF_DYNAMIC_PATHS, use:
+    # typeset -a FZF_DYNAMIC_PATHS=("path" "path2" "etc")
+    local search_paths=("${PWD}" "${FZF_DYNAMIC_PATHS[@]}" "${HOME}/.config" "${HOME}")
     # -I (don't honor .gitignore) but deliberately NOT -L (follow symlinks):
     # with -L, fd walks the home-manager store symlinks into /nix/store and
     # enumerates the whole closure on every Ctrl-T/Alt-C (~5M paths, ~110s).
