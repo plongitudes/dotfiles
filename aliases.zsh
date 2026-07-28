@@ -125,8 +125,7 @@ function brupdate () {
 function ag () { fnd $* ~/.dotfiles/aliases.zsh }
 alias sa='source ~/.dotfiles/aliases.zsh ; echo "alias file re-sourced!"'
 alias va='vi ~/.dotfiles/aliases.zsh; sa'
-alias vz='vi ~/.zshrc'
-alias vb='vi ~/.bashrc'
+alias vz='vi ~/.dotfiles/zshrc'
 alias vw='vi ~/.dotfiles/wezterm.lua'
 alias ez='exec zsh'
 #alias vqo       'vi $SCRIPTHOME/sig_quotes.txt'
