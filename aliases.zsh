@@ -585,7 +585,7 @@ alias gs='git status'
 #git: self explanatory :)
 alias gb='git branch'
 #git: tag a branch
-alias gt='git tag'
+#alias gt='git tag'
 #git: list files touched in each stash commit
 alias gsl='git stash list --stat'
 
@@ -672,7 +672,8 @@ alias dmail='open http://localhost:1080'
 # doing claude things           #
 #################################
 
-function cl() { claude --allow-dangerously-skip-permissions $*; }
+function cl() { claude --permission-mode "auto" $*; }
+function claudd() { claude --allow-dangerously-skip-permissions $*; }
 function cr() { claude --allow-dangerously-skip-permissions --resume $*; }
 
 

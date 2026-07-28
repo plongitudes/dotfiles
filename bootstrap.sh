@@ -213,6 +213,7 @@ if [ "$os" = "Darwin" ]; then
         # heavy CLIs / media stacks kept in brew on this storage-tight Mac:
         ffmpeg          # huge Nix closure; brew ships a bottle
         imagemagick
+        mermaid-cli
     )
     brew_casks=(
         ghostty                            # terminal emulator (config in config/ghostty)
