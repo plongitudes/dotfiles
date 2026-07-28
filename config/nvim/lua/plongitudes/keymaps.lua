@@ -23,6 +23,17 @@ function M.setup()
     -- Visual Mode: Replace selection with clipboard content
     vim.keymap.set("v", "<S-Insert>", '"+P', { noremap = true, silent = true })
 
+    -- Cmd+V to paste (macOS). Neovide forwards Cmd as <D-...>; without these
+    -- mappings the raw keycode "<D-v>" gets inserted as literal text.
+    vim.keymap.set("i", "<D-v>", "<C-R><C-o>+", { noremap = true, silent = true })
+    vim.keymap.set("c", "<D-v>", "<C-R>+", { noremap = true, silent = true })
+    vim.keymap.set("n", "<D-v>", '"+P', { noremap = true, silent = true })
+    vim.keymap.set("v", "<D-v>", '"+P', { noremap = true, silent = true })
+    vim.keymap.set("t", "<D-v>", [[<C-\><C-n>"+pi]], { noremap = true, silent = true })
+
+    -- Cmd+C to copy the visual selection to the system clipboard (macOS).
+    vim.keymap.set("v", "<D-c>", '"+y', { noremap = true, silent = true })
+
     -- dynamically resize UI in-session
     vim.keymap.set({ "n", "v" }, "<D-=>", ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>")
     vim.keymap.set({ "n", "v" }, "<D-->", ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>")
