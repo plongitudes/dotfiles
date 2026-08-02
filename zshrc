@@ -95,7 +95,8 @@ function _dynamic_fzf () {
     # dedupe: when PWD == $HOME the literal ~ would otherwise be searched twice,
     # doubling Alt-C results. ${(u)} keeps unique entries (fd already dedupes
     # subtree overlaps, so only the exact PWD==HOME collision needed handling).
-    for p in "${(u)search_paths[@]}"; do flags="${flags} --search-path ${p}"; done
+    # NOTE: see `man zshexpn` for more info on zsh shell expansions
+    for p in "${(u)search_paths[@]:#}"; do flags="${flags} --search-path ${p}"; done
     export FZF_DEFAULT_OPTS="--height=40% --min-height=10 --layout=reverse-list --border=rounded --border-label=\"$(fortsplat)\""
     export FZF_DEFAULT_COMMAND="fd --type f ${flags}"
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
