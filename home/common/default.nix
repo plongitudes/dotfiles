@@ -57,6 +57,12 @@ in
     # ghostty stays an in-store copy (nothing writes back into its config dir)
     ".config/ghostty".source = ../../config/ghostty;
 
+    # btop: in-store copy like ghostty. Rarely changed, so tweaks go through
+    # the repo + `switch`; in-app settings saves hit a read-only file and
+    # won't persist (btop logs a write error, otherwise harmless). Only the
+    # conf file, not the dir: btop writes btop.log next to it.
+    ".config/btop/btop.conf".source = ../../config/btop/btop.conf;
+
     # mise's tool pins for $HOME (see programs.mise in shell.nix for why these
     # live in an ordinary project mise.toml here rather than globalConfig):
     # mise walks up from cwd looking for mise.toml/.tool-versions, so this only
