@@ -64,7 +64,9 @@ end
 -- Returns table with {name, path, source, zoxide_rank} for each project directory
 local function get_project_directories()
   local projects = {}
-  local base_dirs = { "~/github/plongitudes/", "~/github/", "~/" }
+  -- TODO: should be able to dive into project dirs, or provide the user with a prepopulated list of dirs to dive into
+  -- and then just a whole-ass folder selection dialog?
+  local base_dirs = { "~/git/", "~/github/plongitudes/", "~/github/", "~/" }
 
   -- Get zoxide frecency data
   local zoxide_ranks = get_zoxide_ranks()
