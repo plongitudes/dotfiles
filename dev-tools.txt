@@ -1,0 +1,26 @@
+# Utility libraries for project venvs.
+# Installed by the `devtools` function. See zshrc.
+#
+# Deliberately loose/absent version specifiers.
+
+# --- output / logging -------------------------------------------------------
+rich
+loguru
+
+# --- interactive / debugging ------------------------------------------------
+ipython
+ipdb
+pdbpp
+
+# --- everyday utilities -----------------------------------------------------
+click
+requests
+python-dotenv
+deepdiff
+
+# --- opt-in ----------------------------------------------------------------
+# Uncomment per-project if wanted; each carries a cost noted below.
+#
+# git+https://github.com/shotgunsoftware/python-api.git#egg=shotgun-api3
+#                            # network clone on every fresh venv; prefer
+#                            # declaring it as a real project dependency

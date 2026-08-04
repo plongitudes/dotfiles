@@ -85,7 +85,7 @@ function _dynamic_fzf () {
     # when changing directories, update the fd search directories and generate a new fortune.
     # when making a custom FZF_DYNAMIC_PATHS, use:
     # typeset -a FZF_DYNAMIC_PATHS=("path" "path2" "etc")
-    local search_paths=("${PWD}" "${FZF_DYNAMIC_PATHS[@]}" "${HOME}/.config" "${HOME}")
+    local search_paths=("${PWD}" "${FZF_DYNAMIC_PATHS[@]}" "${HOME}")
     # -I (don't honor .gitignore) but deliberately NOT -L (follow symlinks):
     # with -L, fd walks the home-manager store symlinks into /nix/store and
     # enumerates the whole closure on every Ctrl-T/Alt-C (~5M paths, ~110s).
@@ -130,6 +130,19 @@ function _auto_activate_venv() {
             # Only activate if not already in this venv
             if [[ "$VIRTUAL_ENV" != "$venv_path" ]]; then
                 source "$venv_path/bin/activate"
+                # Cheap nudge, only on a *newly* activated venv -- entering
+                # subdirs of an already-active venv never reaches this branch.
+                # A sentinel dir test is ~10us; a `uv pip install --dry-run`
+                # would be 20ms warm but 2s+ whenever uv's index cache expires,
+                # which is far too slow to hang off every cd.
+                #
+                # Guarded on definition: this runs once at zshrc parse time
+                # (see "Run once on shell startup" below), so if _devtools_present
+                # ever moves to aliases.zsh -- which is sourced later -- an
+                # unguarded call would spew "command not found" on every shell.
+                if (( $+functions[_devtools_present] )); then
+                    _devtools_present || print -P "%F{242}(devtools not installed here)%f"
+                fi
             fi
             return 0
         fi
@@ -140,6 +153,66 @@ function _auto_activate_venv() {
     if [[ -n "$VIRTUAL_ENV" ]] && type deactivate &>/dev/null; then
         deactivate
     fi
+}
+
+# ── devtools ────────────────────────────────────────────────────────────────
+# rich/loguru/ipython/ipdb & co. are import-only libraries: they ship no
+#   devtools             install into the active venv
+#   devtools --check     report presence, touch nothing
+#   devtools --dry-run   show exactly what would change
+#
+: ${DEV_TOOLS_FILE:=$HOME/.dotfiles/dev-tools.txt}
+
+function _devtools_sitepackages() {
+    [[ -n "$VIRTUAL_ENV" ]] || return 1
+    local -a sp=("$VIRTUAL_ENV"/lib/python*/site-packages(N/))
+    (( $#sp )) || return 1
+    print -r -- "$sp[1]"
+}
+
+# Sentinel check: 'rich' is first in dev-tools.txt and has no other reason to
+# be installed, so its presence stands in for the whole set.
+function _devtools_present() {
+    local sp
+    sp="$(_devtools_sitepackages)" || return 1
+    [[ -d "$sp/rich" ]]
+}
+
+function devtools() {
+    if [[ -z "$VIRTUAL_ENV" ]]; then
+        print -u2 "devtools: no active venv"
+        return 1
+    fi
+    if [[ ! -r "$DEV_TOOLS_FILE" ]]; then
+        print -u2 "devtools: cannot read $DEV_TOOLS_FILE"
+        return 1
+    fi
+
+    if [[ "$1" == "--check" ]]; then
+        if _devtools_present; then
+            print -P "devtools: %F{green}present%f in ${VIRTUAL_ENV:h:t}"
+        else
+            print -P "devtools: %F{yellow}not installed%f (run: devtools)"
+        fi
+        return 0
+    fi
+
+    local lock
+    lock="$(mktemp -t devtools)" || return 1
+
+    # Only keep plain `name==version` pins.  freeze can also emit direct URL
+    # references (`pkg @ file:///...`) for locally-installed packages, which are
+    # invalid as constraints and would abort the resolve.
+    uv pip freeze --exclude-editable 2>/dev/null \
+        | grep -E '^[A-Za-z0-9._-]+==' > "$lock"
+
+    local -a args=(--constraints "$lock" --requirements "$DEV_TOOLS_FILE")
+    [[ "$1" == "--dry-run" ]] && args+=(--dry-run)
+
+    uv pip install "${args[@]}"
+    local rc=$?
+    rm -f "$lock"
+    return $rc
 }
 
 # Run once on shell startup
