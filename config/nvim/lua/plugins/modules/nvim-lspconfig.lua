@@ -194,26 +194,48 @@ return {
       capabilities = default_capabilities,
     }
 
-    -- Configure helpers for nix files
-    -- manual adjustment of nvim setup, not managed by Mason.
-    local flake_path = vim.fn.expand("~/.dotfiles")
-    -- Which profile's options nixd completes against — read the same marker
-    -- switch()/nixie() use, so it's correct on any machine (fallback darwin-personal).
-    local marker = vim.fn.expand("~/.config/dotfiles/profile")
-    local hm_profile = (vim.fn.filereadable(marker) == 1) and vim.fn.trim(vim.fn.readfile(marker)[1])
-      or "darwin-personal"
-    vim.lsp.config.nixd = {
-      cmd = { "nixd" },
+    -- Configure bash-language-server for shell scripts
+    -- Note: bashls runs shellcheck itself (bashIde.shellcheckPath) and publishes
+    -- the results as LSP diagnostics, so shellcheck is deliberately NOT in
+    -- nvim-lint's linters_by_ft for sh/bash -- that would double every warning.
+    vim.lsp.config.bashls = {
+      cmd = { "bash-language-server", "start" },
+      root_markers = { ".git" },
+      capabilities = default_capabilities,
+      settings = {
+        bashIde = {
+          -- Resolved on $PATH; mason.nvim prepends its bin dir to vim.env.PATH,
+          -- so this finds the mason-installed shellcheck. "" disables the
+          -- integration entirely.
+          shellcheckPath = "shellcheck",
+          -- Non-recursive on purpose (lspconfig's default, not upstream's
+          -- "**/*@(...)"): opening a stray ~/foo.sh with the recursive pattern
+          -- makes the background analyzer walk all of $HOME.
+          globPattern = "*@(.sh|.inc|.bash|.command)",
+        },
+      },
+    }
+
+    -- Configure nil for nix files. Mason-provided (not the flake) -- see the
+    -- note in home/common/default.nix.
+    -- nil is a pure-Nix-language server: it has no flake/option evaluation, so
+    -- unlike nixd it can't complete home-manager option paths. The profile
+    -- marker lookup that fed nixd's option expr is gone with it.
+    vim.lsp.config.nil_ls = {
+      cmd = { "nil" },
       root_markers = { "flake.nix", ".git" },
       capabilities = default_capabilities,
       settings = {
-        nixd = {
-          nixpkgs = {
-            expr = ('import (builtins.getFlake "%s").inputs.nixpkgs {}'):format(flake_path),
-          },
-          options = {
-            ["home-manager"] = {
-              expr = ('(builtins.getFlake "%s").homeConfigurations.%s.options'):format(flake_path, hm_profile),
+        ["nil"] = {
+          -- Formatting stays with conform (alejandra); leaving nil's own
+          -- formatting.command unset means nil advertises no formatting
+          -- provider, so there's nothing for lsp_fallback to collide with.
+          nix = {
+            flake = {
+              -- Don't auto-archive/eval flake inputs: on this flake that means
+              -- fetching and evaluating nixpkgs on every open.
+              autoArchive = false,
+              autoEvalInputs = false,
             },
           },
         },
@@ -237,11 +259,20 @@ return {
       end,
     })
 
-    -- Enable nixd for nix configs
+    -- Enable nil for nix configs
     vim.api.nvim_create_autocmd("FileType", {
       pattern = "nix",
       callback = function()
-        vim.lsp.enable("nixd")
+        vim.lsp.enable("nil_ls")
+      end,
+    })
+
+    -- Enable bashls for shell scripts. zsh is excluded: bashls parses with a
+    -- bash grammar and reports zsh-only syntax as errors.
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = { "sh", "bash" },
+      callback = function()
+        vim.lsp.enable("bashls")
       end,
     })
   end,

@@ -10,8 +10,7 @@
   lib,
   config,
   ...
-}:
-let
+}: let
   # nixpkgs builds fzf-tab's native module as `fzftab.so`, but macOS zsh loads
   # dynamic modules with the `.bundle` extension — so zmodload fails and the
   # plugin prompts to rebuild on every shell. The `.so` is already a valid arm64
@@ -44,11 +43,10 @@ let
   undisclosed = "${config.home.homeDirectory}/.undisclosed";
   zprofileTail = "${undisclosed}/zprofile.tail";
   zshrcTail = "${undisclosed}/zshrc.tail";
-in
-{
+in {
   # zsh-completions ships completion functions into the profile's
   # share/zsh/site-functions, which home-manager adds to fpath before compinit.
-  home.packages = [ pkgs.zsh-completions ];
+  home.packages = [pkgs.zsh-completions];
 
   programs.zsh = {
     enable = true;
@@ -155,7 +153,7 @@ in
   programs.mise = {
     enable = true;
     globalConfig = {
-      tools = { };
+      tools = {};
       settings.experimental = true;
     };
   };

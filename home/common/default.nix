@@ -1,18 +1,22 @@
-{ pkgs, config, ... }:
-let
+{
+  pkgs,
+  config,
+  ...
+}: let
   # Same TOML generator programs.mise uses internally for its own config, so
   # ~/mise.toml (below) round-trips through Nix the same way.
-  tomlFormat = pkgs.formats.toml { };
-in
-{
-  imports = [ ./shell.nix ];
+  tomlFormat = pkgs.formats.toml {};
+in {
+  imports = [./shell.nix];
 
   # Derived from $USER at build time (this is why every build needs `--impure`),
   # so no username is committed to this public repo. homeDirectory follows from it.
   home.username = builtins.getEnv "USER";
 
   home.homeDirectory =
-    if pkgs.stdenv.isDarwin then "/Users/${config.home.username}" else "/home/${config.home.username}";
+    if pkgs.stdenv.isDarwin
+    then "/Users/${config.home.username}"
+    else "/home/${config.home.username}";
 
   # See https://nix-community.github.io/home-manager/options.xhtml#opt-home.stateVersion
   # Don't change casually — controls backwards-compat behavior for HM-generated files.
@@ -81,18 +85,12 @@ in
     };
   };
 
-  # Nix-editing toolchain. Sourced from Nix (not mason) so the exact same
-  # binaries work on macOS now and on the NixOS VM later, with no nix-ld shim.
+  # NOTE: the Nix-editing toolchain (LSP + formatter) is NOT here — it moved to
+  # mason (nil + alejandra, see mason-tool-installer_nvim.lua). That inverts the
+  # old "Nix provides its own toolchain" split, so the M7 caveat now applies to
+  # nix editing too: mason ships prebuilt dynamically-linked binaries, and the
+  # NixOS VM will need nix-ld for them (or these two move back here).
   home.packages = with pkgs; [
-    # LSP — flake-aware, completes home-manager/NixOS options
-    nixd
-    # formatter — nixfmt IS the official RFC 166 style now; the old
-    # nixfmt-rfc-style name is a deprecated alias for this same derivation.
-    nixfmt
-    # linter — flags Nix anti-patterns
-    statix
-    # linter — finds dead/unused bindings
-    deadnix
     # fuzzy CLI search over nixpkgs / HM / NixOS / darwin option docs.
     # Uses prebuilt downloaded indexes (not channels/NIX_PATH), so HM
     # options work on this flakes-only setup. Preferred over manix, which is
