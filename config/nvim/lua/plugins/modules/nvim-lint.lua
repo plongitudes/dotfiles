@@ -5,6 +5,12 @@ return {
       python = { "ruff" },
       lua = { "selene" },
       swift = { "swiftlint" },
+      ruby = { "rubocop" },
+
+      -- zsh: `zsh -n --no-rcs` syntax check. Nothing else covers zsh --
+      -- shellcheck refuses the dialect and bashls isn't enabled for it, so
+      -- this is the only linting the repo's own zshrc/aliases.zsh files get.
+      zsh = { "zsh" },
     }
 
     -- Auto-lint on these events

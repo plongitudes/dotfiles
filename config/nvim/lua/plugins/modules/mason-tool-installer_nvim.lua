@@ -14,6 +14,23 @@ return {
       "stylua", -- formatter
       "selene", -- linter
 
+      -- Shell (sh/bash only; zsh is covered by nvim-lint's `zsh -n` check,
+      -- since neither bash-language-server nor shellcheck parse zsh)
+      "bash-language-server", -- LSP (also runs shellcheck internally)
+      "beautysh", -- formatter
+      "shellcheck", -- linter, invoked by bash-language-server
+
+      -- Ruby
+      "rubocop", -- formatter + linter
+
+      -- Nix (moved here from the flake's home.packages)
+      "nil", -- LSP
+      "alejandra", -- formatter
+
+      -- Swift (sourcekit-lsp is NOT here -- it ships with the Xcode CLI tools)
+      "swiftformat", -- formatter
+      "swiftlint", -- linter
+
       -- DAP (debuggers)
       "debugpy", -- Python debugger
       "local-lua-debugger-vscode", -- Lua debugger
