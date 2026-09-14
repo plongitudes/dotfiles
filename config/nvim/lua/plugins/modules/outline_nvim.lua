@@ -1,7 +1,6 @@
 return {
   "hedyhli/outline.nvim",
   lazy = true,
-  event = { "UIEnter" },
   cmd = { "Outline", "OutlineOpen" },
   enabled = true,
   dependencies = {
@@ -14,9 +13,11 @@ return {
         position = "left",
         width = 22,
         relative_width = true,
-        auto_width = true,
-        max_width = 60,
-        max_depth = 3,
+        auto_width = {
+          enabled = true,
+          max_width = 60,
+          include_symbol_details = false,
+        },
         auto_jump = true,
         focus_on_open = true,
         center_on_jump = true,
