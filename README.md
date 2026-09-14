@@ -38,6 +38,24 @@ Once it's live, three commands carry most of the weight (all defined in `aliases
 - **`nixie`** — quiet status probe: what's out of date, what would change, without the build noise.
 - **`ns <query>`** — fuzzy-search nixpkgs / home-manager / NixOS options right in the terminal (via [nix-search-tv](https://github.com/3timeslazy/nix-search-tv)).
 
+## Updates
+### There's a bit of an order to things:
+- make sure dotfiles is clean:
+    - git -C ~/.dotfiles status
+- nixup to update the flake and dependencies, and to rebuild
+    - `nixup` does:
+        - nix flake update
+        - switch (see above)
+        - nvd diff old new
+- commit flake.lock in case mise/brew/nvim break something on update
+- upgrade mise
+    - `mise upgrade`
+- update and upgrade homebrew
+    - `brupdate`
+- update nvim and dependencies
+    - nvim: update plugins through Lazy
+    - nvim: update Mason binaries
+
 ## Caveats and gotchas
 - __Opinionated and Specific__ Everything here is fairly heavily to my own prefs — `zshrc`, the prompt, the app list, but very especially the neovim config. Fork it, gut it, make it yours. Or don't.
 - __Xcode CLT prompt (macOS).__ On a fresh Mac, `bootstrap.sh` triggers the Command Line Tools GUI installer and then exits; let that finish, then re-run. Everything after is unattended until brew.

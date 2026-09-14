@@ -36,9 +36,38 @@ return {
         local wk = require("which-key")
         wk.add({
           { "gD", vim.lsp.buf.declaration, desc = "Go to Declaration", buffer = ev.buf },
-          { "K", vim.lsp.buf.hover, desc = "Hover Documentation", buffer = ev.buf },
+          {
+            "K",
+            function()
+              -- TypeScope takes over K for python: function symbols get the
+              -- hover float + structure tree; everything else (and load
+              -- failures) falls back to plain hover inside typescope.hover()
+              local ok, typescope = pcall(require, "typescope")
+              if ok and vim.bo.filetype == "python" then
+                typescope.hover()
+              else
+                vim.lsp.buf.hover()
+              end
+            end,
+            desc = "Hover Documentation (+TypeScope)",
+            buffer = ev.buf,
+          },
           { "gi", vim.lsp.buf.implementation, desc = "Go to Implementation", buffer = ev.buf },
-          { "<C-k>", vim.lsp.buf.signature_help, desc = "Signature Help", buffer = ev.buf },
+          {
+            "<C-k>",
+            function()
+              -- TypeScope unification (U1): same muscle memory, structured
+              -- answer; core signature help for non-python buffers
+              local ok, typescope = pcall(require, "typescope")
+              if ok and vim.bo.filetype == "python" then
+                typescope.open()
+              else
+                vim.lsp.buf.signature_help()
+              end
+            end,
+            desc = "Signature Help (+TypeScope)",
+            buffer = ev.buf,
+          },
           { "<leader>wa", vim.lsp.buf.add_workspace_folder, desc = "Add Workspace Folder", buffer = ev.buf },
           {
             "<leader>wr",
@@ -116,8 +145,12 @@ return {
             autoImportCompletions = true,
             --autoSearchPaths = true,
             --useLibraryCodeForTypes = true,
-            ignore = { "*" },
+            -- lint stays with ruff; basedpyright's "off" silences everything
+            -- (unlike pyright), so missing imports need an explicit opt-in
             typeCheckingMode = "off",
+            diagnosticSeverityOverrides = {
+              reportMissingImports = "warning",
+            },
             -- Custom stubs for completion (e.g., Pyscript)
             extraPaths = {
               vim.fn.expand("~/.dotfiles/python_stubs/stubs"),

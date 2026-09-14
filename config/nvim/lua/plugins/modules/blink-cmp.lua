@@ -58,6 +58,11 @@ return {
       },
     },
 
+    -- Insert-mode signature help retired 2026-07-31: typescope's insert-mode
+    -- surface (U3) covers it in python, with structure instead of a flat
+    -- label. Re-enable if typing in other languages misses it.
+    signature = { enabled = false },
+
     -- Default list of enabled providers defined so that you can extend it
     -- elsewhere in your config, without redefining it, due to `opts_extend`
     sources = {

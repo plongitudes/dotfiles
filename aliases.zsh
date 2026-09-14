@@ -10,7 +10,7 @@ done
 
 alias cat="bat"
 alias vi="nvim"
-alias v="neovide"
+function v() { neovide $* 2>&1 &!; }
 alias p='poetry'
 alias m='mise'
 
@@ -116,6 +116,11 @@ fi
 function brupdate () {
     brew update
     brew upgrade
+    # we're a little short on space here, so let's be frugal
+    brew cleanup -s --prune=all
+    if [[ -d /opt/homebrew/var/homebrew/tmp/.caskroom ]]; then
+        rm -rf /opt/homebrew/var/homebrew/tmp/.caskroom
+    fi
 }
 
 ###########################
