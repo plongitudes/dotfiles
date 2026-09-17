@@ -34,7 +34,7 @@ The brew formulae/casks in `bootstrap.sh` should be altered to taste, unless you
 ### Day to day
 Once it's live, three commands carry most of the weight (all defined in `aliases.zsh`):
 
-- **`switch`** — rebuild from the flake. Picks the right config by hostname and pipes the build through [nom](https://github.com/maralorn/nix-output-monitor) so you get a live progress tree instead of a long silence.
+- **`switch`** — rebuild from the flake. Picks the right config by hostname and pipes the build through [nom](https://github.com/maralorn/nix-output-monitor) so you get a live progress tree instead of a long silence. Finishes with a one-line report per update surface the flake doesn't manage — brew, mise, nvim plugins — saying whether each is current or has upstream updates waiting (`brew upgrade` / `mise upgrade` / `Lazy update`).
 - **`nixie`** — quiet status probe: what's out of date, what would change, without the build noise.
 - **`ns <query>`** — fuzzy-search nixpkgs / home-manager / NixOS options right in the terminal (via [nix-search-tv](https://github.com/3timeslazy/nix-search-tv)).
 
@@ -45,7 +45,7 @@ Once it's live, three commands carry most of the weight (all defined in `aliases
 - nixup to update the flake and dependencies, and to rebuild
     - `nixup` does:
         - nix flake update
-        - switch (see above)
+        - switch (see above — including the brew/mise/nvim surfaces report)
         - nvd diff old new
 - commit flake.lock in case mise/brew/nvim break something on update
 - upgrade mise

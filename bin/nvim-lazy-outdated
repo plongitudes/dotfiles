@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#
+# nvim-lazy-outdated — headless lazy.nvim update check: one plugin name per
+# line for every plugin whose upstream has commits past what's installed; empty
+# output = all current. Network (~5s: one git fetch per plugin). The fix is
+# `nvim +"Lazy update" +qa`, which also rewrites lazy-lock.json.
+#
+# Same shape as bin/nvim-lazy-sync: Lua in a temp file, run under headless nvim.
+# lazy's headless progress chatter is switched off so stdout is only the answer.
+# A plugin whose fetch failed fails the whole probe (names on stderr, non-zero
+# exit) rather than passing as current, and nvim's own stderr is held back and
+# replayed only on failure — plugins log on exit (claudecode.nvim) and that
+# would otherwise land in every switch. Called by _surfaces() in aliases.zsh;
+# fine to run by hand.
+
+set -euo pipefail
+
+nvim_bin="${NVIM:-$HOME/.nix-profile/bin/nvim}"
+[ -x "$nvim_bin" ] || nvim_bin="$(command -v nvim || true)"
+[ -n "$nvim_bin" ] && [ -x "$nvim_bin" ] || { echo "nvim-lazy-outdated: no nvim found" >&2; exit 1; }
+
+lua="$(mktemp)"; err="$(mktemp)"; trap 'rm -f "$lua" "$err"' EXIT
+cat > "$lua" <<'LUA'
+local ok, e = pcall(function()
+  local Config = require("lazy.core.config")
+  -- quiet: we want the verdict, not lazy's per-task progress lines
+  for _, k in ipairs({ "process", "log", "task" }) do Config.options.headless[k] = false end
+  require("lazy.manage").check({ wait = true, show = false })
+  local has_errors = require("lazy.core.plugin").has_errors
+  local out, errs = {}, {}
+  for _, p in pairs(Config.plugins) do
+    if has_errors(p) then
+      table.insert(errs, p.name)
+    elseif p._.updates then
+      table.insert(out, p.name)
+    end
+  end
+  table.sort(out); table.sort(errs)
+  if #out > 0 then io.stdout:write(table.concat(out, "\n") .. "\n") end
+  if #errs > 0 then error("check failed for: " .. table.concat(errs, ", "), 0) end
+end)
+if not ok then
+  io.stderr:write("nvim-lazy-outdated: " .. tostring(e) .. "\n")
+  vim.cmd("cquit 1")
+end
+vim.cmd("qa")
+LUA
+
+if ! "$nvim_bin" --headless -c "luafile $lua" 2>"$err"; then
+    cat "$err" >&2
+    exit 1
+fi

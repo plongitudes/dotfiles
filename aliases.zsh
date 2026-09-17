@@ -153,6 +153,10 @@ alias ez='exec zsh'
 # build/download happens once, under nom. The `{ ! command -v nom || nom build …; }`
 # guard means: no nom → plain switch; nom build fails → stop before activating.
 # (nixie stays nom-free on purpose — a quiet status probe, usually a no-op build.)
+#
+# Ends with _surfaces(): one line each for brew / mise / nvim plugins — the
+# update surfaces the flake doesn't manage — so a switch also tells you whether
+# anything outside Nix is waiting on an upgrade.
 function switch() {
     local d="$HOME/.dotfiles" attr out
     local profile="${DOTFILES_PROFILE:-$(cat "${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/profile" 2>/dev/null)}"
@@ -192,7 +196,51 @@ function switch() {
     if [[ $rc -eq 0 && -n "$TMUX" ]] && command -v tmux >/dev/null 2>&1; then
         tmux source-file "${XDG_CONFIG_HOME:-$HOME/.config}/tmux/tmux.conf"
     fi
+    [ $rc -eq 0 ] && _surfaces
     return $rc
+}
+
+# `_surfaces` — the three update surfaces the flake doesn't manage (brew, mise,
+# nvim plugins): does any of them have something newer upstream? One ✓/⚠ line
+# each, with the upgrade command when ⚠. Counts only, on purpose — the question
+# is "is there anything?"; the tool itself lists what. All three probes hit the
+# network (~2–6s each) and run concurrently in a subshell (no job-control
+# chatter there), so the report costs about as much as the slowest one. A
+# surface whose tool isn't on this machine prints nothing (brew on the VM).
+# Runs at the end of switch(), so nixup inherits it; fine to call by hand too.
+# Drift (installed ≠ lazy-lock.json / mise.toml) is deliberately not checked —
+# nixie and _nixie_hint are the repo-standing probes.
+function _surfaces() {
+    local d="$HOME/.dotfiles" t
+    t=$(mktemp -d) || return
+    ( # one background probe per surface; a .failed marker means it blew up
+        command -v brew >/dev/null 2>&1 &&
+            { brew outdated --quiet >"$t/brew" || touch "$t/brew.failed"; } &
+        command -v mise >/dev/null 2>&1 &&
+            { mise outdated >"$t/mise" || touch "$t/mise.failed"; } &
+        command -v nvim >/dev/null 2>&1 &&
+            { "$d/bin/nvim-lazy-outdated" >"$t/nvim" || touch "$t/nvim.failed"; } &
+        wait
+    )
+    local name n s
+    printf 'surfaces (not flake-managed):\n'
+    for name in brew mise nvim; do
+        [ -e "$t/$name" ] || [ -e "$t/$name.failed" ] || continue   # tool not on this machine
+        n=$(grep -c . "$t/$name" 2>/dev/null)
+        if [ -e "$t/$name.failed" ]; then
+            s="– check failed (see above)"
+        elif [ "${n:-0}" -eq 0 ]; then
+            s="✓ up to date"
+        else
+            case $name in
+                brew) s="⚠ $n outdated → brew upgrade" ;;
+                mise) s="⚠ $n outdated → mise upgrade" ;;
+                nvim) s="⚠ $n outdated → nvim +\"Lazy update\" +qa" ;;
+            esac
+        fi
+        printf '  %-5s %s\n' "$name" "$s"
+    done
+    rm -rf "$t"
 }
 
 # `nixie` — where does THIS machine stand vs the shared config? (nix-check)
@@ -249,7 +297,8 @@ function nixie() {
 # to `nix flake update`, so bare `nixup` updates every input and `nixup nixpkgs`
 # bumps just nixpkgs. Reversible: if a bump misbehaves, `git -C ~/.dotfiles
 # checkout flake.lock && switch` restores the old world. Uses switch() under the
-# hood, so you get the nom progress tree and the profile-marker dispatch for free.
+# hood, so you get the nom progress tree, the profile-marker dispatch and the
+# brew/mise/nvim surfaces report for free.
 function nixup() {
     local d="$HOME/.dotfiles" before after
     [ -d "$d/.git" ] || { echo "nixup: $d is not a git repo" >&2; return 1; }
@@ -263,11 +312,7 @@ function nixup() {
     else
         echo "nixup: no package changes (generation unchanged)"
     fi
-    printf '\nother update surfaces (not flake-managed):\n'
-    printf '  brew upgrade               # Homebrew casks/formulae\n'
-    printf '  mise upgrade               # go/node/rust/uv ("latest" pins)\n'
-    printf '  nvim +"Lazy update" +qa    # nvim plugins (writes lazy-lock.json)\n'
-    printf 'commit when happy: git -C %s add flake.lock && git -C %s commit\n' "$d" "$d"
+    printf '\ncommit when happy: git -C %s add flake.lock && git -C %s commit\n' "$d" "$d"
 }
 
 # Startup nudge: warn if ~/.dotfiles has local work the fleet can't see yet.
