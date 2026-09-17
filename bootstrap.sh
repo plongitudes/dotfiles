@@ -206,19 +206,18 @@ if [ "$os" = "Darwin" ]; then
 
     say "Installing brew formulae + casks (pragmatic-split set)"
 
-    # ── TODO: curate these two lists ─────────────────────────────────────
     # Only what the Mac genuinely wants from brew rather than Nix. Leave a
     # short comment on each so future-you knows WHY it's here and not in Nix.
     brew_formulae=(
         # heavy CLIs / media stacks kept in brew on this storage-tight Mac:
         ffmpeg          # huge Nix closure; brew ships a bottle
         imagemagick
-        mermaid-cli
     )
     brew_casks=(
         ghostty                            # terminal emulator (config in config/ghostty)
         neovide-app                        # GUI nvim front-end (targets Nix nvim)
         font-fantasque-sans-mono-nerd-font # guifont in config/nvim .../settings.lua
+        hammerspoon                        # lock/sleep → Bluetooth release (config in config/hammerspoon); .app bundle, not in nixpkgs
         # GUI apps, e.g.:
         # firefox
         # rectangle
@@ -228,6 +227,42 @@ if [ "$os" = "Darwin" ]; then
 
     if [ ${#brew_formulae[@]} -gt 0 ]; then brew install "${brew_formulae[@]}"; fi
     if [ ${#brew_casks[@]} -gt 0 ]; then brew install --cask "${brew_casks[@]}"; fi
+fi
+
+# ── phase 4.5 (macOS only): Hammerspoon → Bluetooth permission ────────────
+# config/hammerspoon/init.lua shells out to blueutil, and TCC judges the
+# *responsible app* — Hammerspoon, not blueutil. Hammerspoon ships no
+# NSBluetoothAlwaysUsageDescription, so macOS never prompts; without the grant
+# blueutil fails silently under it (while working fine from a terminal that has
+# the grant, which is the confusing part). There's no supported way to script a
+# TCC grant — tccutil only resets, PPPC profiles can't allow Bluetooth — and
+# writing TCC.db by hand is the kind of hack that breaks on the next OS update.
+# So this phase only DETECTS and STEERS: read the grant if we can, say what's
+# about to happen, open the exact pane. The grant is keyed to Hammerspoon's
+# bundle ID + Developer ID signature, so it's once per machine, not once per
+# cask upgrade.
+if [ "$os" = "Darwin" ] && [ -d /Applications/Hammerspoon.app ]; then
+    tcc_db="$HOME/Library/Application Support/com.apple.TCC/TCC.db"
+    # Reading the user TCC.db needs Full Disk Access for the terminal, which a
+    # fresh box won't have — so a failed read means "unknown", not "missing".
+    hs_bt="$(sqlite3 "$tcc_db" "select auth_value from access \
+    where service='kTCCServiceBluetoothAlways' and client='org.hammerspoon.Hammerspoon';" 2>/dev/null \
+        || echo unknown)"
+    if [ "$hs_bt" = "2" ]; then
+        step "Hammerspoon already has Bluetooth permission"
+    else
+        say "Hammerspoon needs Bluetooth permission — manual step, macOS won't prompt for it"
+        step "This will open System Settings → Privacy & Security → Bluetooth."
+        step "In that pane: click +, choose /Applications/Hammerspoon.app, and make sure its toggle is on."
+        step "Then launch Hammerspoon and grant Accessibility when it asks."
+        printf '\n      open System Settings now? [Y/n]: '
+        read -r ans
+        case "$ans" in
+            [nN]*) step "skipped — grant it later; Hammerspoon's console shows 'bt: … failed' until you do" ;;
+            *)     open "x-apple.systempreferences:com.apple.preference.security?Privacy_Bluetooth" ;;
+        esac
+        warnings+=("Hammerspoon Bluetooth permission was missing or unverifiable — confirm it in System Settings → Privacy & Security → Bluetooth")
+    fi
 fi
 
 # ── phase 5: login shell ──────────────────────────────────────────────────

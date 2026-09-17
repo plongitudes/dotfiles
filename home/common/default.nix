@@ -7,7 +7,7 @@
   # ~/mise.toml (below) round-trips through Nix the same way.
   tomlFormat = pkgs.formats.toml {};
 in {
-  imports = [./shell.nix];
+  imports = [./shell.nix ./darwin.nix];
 
   # Derived from $USER at build time (this is why every build needs `--impure`),
   # so no username is committed to this public repo. homeDirectory follows from it.
@@ -66,6 +66,8 @@ in {
     # won't persist (btop logs a write error, otherwise harmless). Only the
     # conf file, not the dir: btop writes btop.log next to it.
     ".config/btop/btop.conf".source = ../../config/btop/btop.conf;
+
+    # ~/.hammerspoon/init.lua is Mac-only and lives in ./darwin.nix
 
     # mise's tool pins for $HOME (see programs.mise in shell.nix for why these
     # live in an ordinary project mise.toml here rather than globalConfig):
