@@ -147,7 +147,7 @@ return {
             --useLibraryCodeForTypes = true,
             -- lint stays with ruff; basedpyright's "off" silences everything
             -- (unlike pyright), so missing imports need an explicit opt-in
-            typeCheckingMode = "off",
+            typeCheckingMode = "recommended",
             diagnosticSeverityOverrides = {
               reportMissingImports = "warning",
             },
@@ -160,27 +160,22 @@ return {
       },
     }
 
-    -- Ruff: deactivate signature help to avoid duplicate popups
+    -- Ruff: lint diagnostics, code actions, and formatting only. basedpyright
+    -- is the language server (definition, references, completion, signature
+    -- help, ...). The one capability the two share is hover -- ruff answers
+    -- with rule docs when the cursor is on a flagged line -- so it's dropped
+    -- here to keep K single-sourced. Server capabilities can only be turned
+    -- off after the handshake, hence on_attach rather than `capabilities`.
     vim.lsp.config.ruff = {
       root_markers = { "pyproject.toml", "ruff.toml", ".git" },
-      capabilities = vim.tbl_deep_extend("force", default_capabilities, {
-        signatureHelpProvider = false, -- Disable signature help (basedpyright handles this)
-      }),
+      capabilities = default_capabilities,
+      on_attach = function(client, _)
+        client.server_capabilities.hoverProvider = false
+      end,
       settings = {
-        -- Ruff uses project's ruff.toml configuration
+        -- Ruff uses project's ruff.toml / pyproject.toml configuration
         logLevel = "warn",
         configurationPreference = "filesystemFirst",
-        format = {
-          enable = true,
-        },
-        codeAction = {
-          enable = true,
-          disableRuleCommand = { enable = true },
-          organizeImports = true,
-          showSyntaxErrors = true,
-          fixViolation = { enable = true },
-          lint = { enable = true },
-        },
       },
     }
 
