@@ -90,6 +90,10 @@ return {
       sources = {
         files = { hidden = true },
         grep = { hidden = true },
+        -- Snacks defaults this to cwd-only, and cwd here is whatever the
+        -- project switcher last restored -- often not the file being edited,
+        -- which made <leader>dD come up empty. Show every loaded buffer.
+        diagnostics = { filter = { cwd = false } },
       },
       -- Use smart case matching
       matcher = {

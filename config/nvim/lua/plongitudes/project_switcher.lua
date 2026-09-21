@@ -32,8 +32,24 @@ function M.get_last_project()
   return nil
 end
 
---- Restore the last project's working directory on startup
+--- Set the working directory on startup.
+---
+--- Launched with a file or directory arg, the arg is the intent: cd to its
+--- git root so pickers cover the whole repo (or leave the shell's cwd alone
+--- when there's no .git above it). Only a bare `nvim` (dashboard) falls back
+--- to the last picked project.
 function M.restore()
+  if vim.fn.argc() > 0 then
+    -- Runs from init.lua, before any buffer is loaded, so resolve from the
+    -- arg path rather than buffer 0.
+    local arg = vim.fn.fnamemodify(vim.fn.argv(0), ":p")
+    local root = vim.fs.root(arg, ".git")
+    if root then
+      vim.cmd("cd " .. vim.fn.fnameescape(root))
+    end
+    return
+  end
+
   local proj = M.get_last_project()
   if proj and vim.fn.isdirectory(proj.path) == 1 then
     vim.cmd("cd " .. vim.fn.fnameescape(proj.path))
