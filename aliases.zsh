@@ -36,7 +36,7 @@ alias duf='sudo /usr/bin/du -d 1 -h'
 alias h='history'
 alias hg='history | grep -i'
 alias gk='gitkraken'
-alias i='ipython'
+alias i='ptipython'
 alias psh='source $(poetry env info --path)/bin/activate'
 alias pos='poetry shell'
 
@@ -598,7 +598,7 @@ alias gbn='git rev-parse --abbrev-ref HEAD'
 # git: get tag name
 alias ggt='git describe --abbrev=0 --tags'
 # shallow pull for a dir of repos
-alias gpull='find . -maxdepth 1 -type d -exec sh -c "(cd {} && echo {} && git pull)" ";"'
+alias gpull='fd --type d --max-depth 1 --exec sh -c "(cd {} && echo {} && git fetch && git pull)"'
 # fetch and pull
 alias fep='git fetch; git pull'
 # git: push <branch name>
