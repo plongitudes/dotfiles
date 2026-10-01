@@ -1,8 +1,5 @@
-
-# ▌                  ▐
-# ▛▀▖▝▀▖▞▀▘▞▀▖ ▞▀▘▞▀▖▜▀ ▌ ▌▛▀▖
-# ▌ ▌▞▀▌▝▀▖▛▀  ▝▀▖▛▀ ▐ ▖▌ ▌▙▄▘
-# ▀▀ ▝▀▘▀▀ ▝▀▘ ▀▀ ▝▀▘ ▀ ▝▀▘▌
+# 𜶖𜶿▂  𜴧𜶜𜺣𜺠𜵡𜴧𜴉𜺠𜵡𜶜𜺣    𜺠𜵡𜴧𜴉𜺠𜵡𜶜𜺣𜴘𜶤𜵥𜴉▗▖▗▖▗𜵡𜶜𜺣
+# 𜴡𜴬𜴱▘𜴃𜴮𜴲𜴍𜴘𜴪𜴲𜴀▝𜴮𜴪𜺨    𜴘𜴪𜴲𜴀▝𜴮𜴪𜺨 ▝𜴬𜴉▝𜴬𜴱𜴍▐𜵏𜴈𜺨
 
 #GITSTATUS_LOG_LEVEL=DEBUG
 export PATH=$HOME/bin:$PATH:/opt/homebrew/bin:$HOME/.local/bin
@@ -39,11 +36,8 @@ export EXA_COLORS="da=1;36"
 export TIME_STYLE="long-iso"
 
 
-
-#                   ▜ ▗         ▌ ▗▀▖         ▐  ▗
-# ▞▀▌▞▀▖▛▀▖▞▀▖▙▀▖▝▀▖▐ ▄ ▀▜▘▞▀▖▞▀▌ ▐  ▌ ▌▛▀▖▞▀▖▜▀ ▄ ▞▀▖▛▀▖▞▀▘
-# ▚▄▌▛▀ ▌ ▌▛▀ ▌  ▞▀▌▐ ▐ ▗▘ ▛▀ ▌ ▌ ▜▀ ▌ ▌▌ ▌▌ ▖▐ ▖▐ ▌ ▌▌ ▌▝▀▖
-# ▗▄▘▝▀▘▘ ▘▝▀▘▘  ▝▀▘ ▘▀▘▀▀▘▝▀▘▝▀▘ ▐  ▝▀▘▘ ▘▝▀  ▀ ▀▘▝▀ ▘ ▘▀▀
+# 𜺠𜵡𜶜▖𜺠𜵡𜶜𜺣▗𜵡𜶜𜺣𜺠𜵡𜶜𜺣▗𜵡𜶜𜺣 𜴧𜶜𜺣 𜶙𜵈  𜶳𜴹 𜴘𜴧▄𜴉𜺠𜵡𜶜𜺣 ▂𜷓𜵈     𜷋𜷇𜴹▗▖▗▖▗𜵡𜶜𜺣𜺠𜵡𜴧 𜴘𜶤𜵥𜴉 𜶳𜴹 𜺠𜵡𜶜𜺣▗𜵡𜶜𜺣𜺠𜵡𜴧𜴉
+# 𜵲𜶸𜷙𜴍▝𜴮𜴪𜺨𜴡𜴍𜴡𜴍▝𜴮𜴪𜺨𜴡𜴍  𜴃𜴮𜴲𜴍 𜴱𜴬  𜴱𜴬 𜴘𜴵𜴨𜴉▝𜴮𜴪𜺨▝𜴬𜴱𜴍     𜴡𜴍 ▝𜴬𜴱𜴍𜴡𜴍𜴡𜴍▝𜴬𜴧  ▝𜴬𜴉 𜴱𜴬 ▝𜴬𜴱▘𜴡𜴍𜴡𜴍𜴘𜴪𜴲𜴀
 
 function stringContains() {
     # takes 2 args, tests if $1 is a substring of $2
@@ -63,10 +57,9 @@ function trim() {
     printf '%s' "$var"
 }
 
-# ▗▀▖   ▗▀▖ ▗                    ▐  ▌  ▗
-# ▐  ▀▜▘▐   ▄ ▛▀▖ ▞▀▖▌ ▌▞▀▖▙▀▖▌ ▌▜▀ ▛▀▖▄ ▛▀▖▞▀▌
-# ▜▀ ▗▘ ▜▀  ▐ ▌ ▌ ▛▀ ▐▐ ▛▀ ▌  ▚▄▌▐ ▖▌ ▌▐ ▌ ▌▚▄▌
-# ▐  ▀▀▘▐   ▀▘▘ ▘ ▝▀▘ ▘ ▝▀▘▘  ▗▄▘ ▀ ▘ ▘▀▘▘ ▘▗▄▘
+
+#  𜷋𜷇𜴹𜴘𜴧▄𜴉 𜷋𜷇𜴹     𜶳𜴹 ▗𜵡𜶜𜺣    𜺠𜵡𜶜𜺣▗▖▗▖𜺠𜵡𜶜𜺣▗𜵡𜶜𜺣▗▖▗▖𜴘𜶤𜵥𜴉𜶖𜶿▂  𜶳𜴹 ▗𜵡𜶜𜺣𜺠𜵡𜶜▖
+#  𜴡𜴍 𜴘𜴵𜴨𜴉 𜴡𜴍      𜴱𜴬 𜴡𜴍𜴡𜴍    ▝𜴮𜴪𜺨𜺫𜴤𜴖𜺨▝𜴮𜴪𜺨𜴡𜴍  𜵲𜶸𜵯▘ ▝𜴬𜴉𜴡𜴍𜴡𜴍 𜴱𜴬 𜴡𜴍𜴡𜴍𜵲𜶸𜷙𜴍
 
 function fortsplat () {
     # only run when stdin is a real terminal; skip in non-interactive/piped shells
@@ -117,10 +110,8 @@ function ns() {
 }
 
 
-# ▌  ▗        ▐         ▗       ▐  ▗
-# ▌  ▄ ▛▀▖▌ ▌▝▀▖▙▀▖▌ ▌  ▞▀▖▌ ▌▞▀▌▞▀▖▜▀ ▄ ▌ ▌▝▀▖▞▀▌▞▀▖
-# ▐  ▐ ▌ ▌▚▄▌▞▀▌▌  ▚▄▌  ▛▀ ▐▐ ▌ ▌▌ ▖▐ ▖▐ ▐▐ ▞▀▌▌ ▌▛▀
-#  ▘▀▘▘ ▘▗▄▘▝▀▘▘  ▗▄▘  ▝▀▘ ▘ ▝▀▘▝▀  ▀ ▀▘ ▘▝▀▘▝▀▘▝▀▘
+# ▗▖▗▖𜺠𜵡𜶜𜺣▗𜵡𜶜𜺣▗▖▗▖    𜴘𜶤𜵥𜴉𜺠𜵡𜶜𜺣𜺠𜵡𜶜𜺣 𜶙𜵈  𜶳𜴹 ▗𜵡𜶜𜺣𜺠𜵡𜶜▖
+# 𜺫𜴤𜴖𜺨▝𜴮𜴪𜺨𜴡𜴍𜴡𜴍𜺫𜴤𜴖𜺨     ▝𜴬𜴉▝𜴬𜴱▘▝𜴬𜴱▘ 𜴱𜴬  𜴱𜴬 𜴡𜴍𜴡𜴍𜵲𜶸𜷙𜴍
 
 function _auto_activate_venv() {
     # Find .venv by walking up the directory tree
@@ -249,10 +240,8 @@ export FZF_CTRL_R_OPTS="
   --header 'Press CTRL-Y to copy command into clipboard'"
 
 
-#       ▌         ▐
-# ▀▜▘▞▀▘▛▀▖ ▞▀▘▞▀▖▜▀ ▌ ▌▛▀▖
-# ▗▘ ▝▀▖▌ ▌ ▝▀▖▛▀ ▐ ▖▌ ▌▙▄▘
-# ▀▀▘▀▀ ▘ ▘ ▀▀ ▝▀▘ ▀ ▝▀▘▌
+# 𜴘𜴧▄𜴉𜺠𜵡𜴧𜴉𜶖𜶿▂     𜺠𜵡𜴧𜴉𜺠𜵡𜶜𜺣𜴘𜶤𜵥𜴉▗▖▗▖▗𜵡𜶜𜺣
+# 𜴘𜴵𜴨𜴉𜴘𜴪𜴲𜴀𜴡𜴍𜴡𜴍    𜴘𜴪𜴲𜴀▝𜴮𜴪𜺨 ▝𜴬𜴉▝𜴬𜴱𜴍▐𜵏𜴈𜺨
 
 # zsh env vars
 # strategy + highlight colour now set via programs.zsh.autosuggestion (shell.nix)
@@ -276,30 +265,20 @@ setopt share_history
 # runs compinit; zsh-completions comes from the Nix profile.
 
 
-#    ▌                     ▌
-# ▞▀▖▛▀▖▄▄▖▛▚▀▖▌ ▌▄▄▖▀▜▘▞▀▘▛▀▖
-# ▌ ▌▌ ▌   ▌▐ ▌▚▄▌   ▗▘ ▝▀▖▌ ▌
-# ▝▀ ▘ ▘   ▘▝ ▘▗▄▘   ▀▀▘▀▀ ▘ ▘
+# 𜺠𜵡𜶜𜺣𜶖𜶿▂ 𜺠▂▂𜺣▗𜶻𜷋𜶻▗▖▗▖𜺠▂▂𜺣𜴘𜴧▄𜴉𜺠𜵡𜴧𜴉𜶖𜶿▂ 
+# ▝𜴬𜴱▘𜴡𜴍𜴡𜴍    𜴡𜴏𜴂🮅𜵲𜶸𜵯▘    𜴘𜴵𜴨𜴉𜴘𜴪𜴲𜴀𜴡𜴍𜴡𜴍
 
 # oh-my-zsh + its plugins are configured in programs.zsh.oh-my-zsh (shell.nix).
 # HM sources oh-my-zsh at mkOrder 800, before this file (mkOrder 1000), so its
 # plugins and settings (HYPHEN_INSENSITIVE, HIST_STAMPS) are already in place.
 export VIRTUAL_ENV_DISABLE_PROMPT=0
 
-#    ▐       ▞        ▌▗▀▖▝▖
-# ▙▀▖▜▀ ▚▗▘ ▐ ▝▀▖▞▀▘▞▀▌▐   ▐
-# ▌  ▐ ▖▗▚  ▝▖▞▀▌▝▀▖▌ ▌▜▀  ▞
-# ▘   ▀ ▘ ▘  ▝▝▀▘▀▀ ▝▀▘▐  ▝
+# ▗𜶻𜷋𜶻 𜶳𜴹 𜺠𜵡𜴧𜴉𜺠𜵡𜶜𜺣
+# 𜴡𜴏𜴂🮅 𜴱𜴬 𜴘𜴪𜴲𜴀▝𜴮𜴪𜺨
 
 # mise is activated by programs.mise (shell.nix); its tools/settings live in
 # that module's globalConfig.
 export EXA_ICON_SPACING=2
-
-
-#          ▐       ▐          ▗              ▐
-# ▛▀▖▞▀▖▞▀▘▜▀▄▄▖▙▀▖▜▀ ▚▗▘ ▛▚▀▖▄ ▞▀▘▞▀▖ ▞▀▘▞▀▖▜▀ ▌ ▌▛▀▖
-# ▙▄▘▌ ▌▝▀▖▐ ▖  ▌  ▐ ▖▗▚  ▌▐ ▌▐ ▝▀▖▌ ▖ ▝▀▖▛▀ ▐ ▖▌ ▌▙▄▘
-# ▌  ▝▀ ▀▀  ▀   ▘   ▀ ▘ ▘ ▘▝ ▘▀▘▀▀ ▝▀  ▀▀ ▝▀▘ ▀ ▝▀▘▌
 
 # this gets the version number of the currently installed Python via mise. There
 # are obviously better and easier ways to get it, but I spent 5 minutes writing
@@ -318,10 +297,8 @@ export EXA_ICON_SPACING=2
 # export NVIM_PYTHON_PATH=`which python`  # python3_host_prog is set in settings.lua instead
 
 
-#    ▜ ▗                      ▌ ▗▀▖▗    ▗    ▌  ▗
-# ▝▀▖▐ ▄ ▝▀▖▞▀▘▞▀▖▞▀▘ ▝▀▖▛▀▖▞▀▌ ▐  ▄ ▛▀▖▄ ▞▀▘▛▀▖▄ ▛▀▖▞▀▌ ▌ ▌▛▀▖
-# ▞▀▌▐ ▐ ▞▀▌▝▀▖▛▀ ▝▀▖ ▞▀▌▌ ▌▌ ▌ ▜▀ ▐ ▌ ▌▐ ▝▀▖▌ ▌▐ ▌ ▌▚▄▌ ▌ ▌▙▄▘
-# ▝▀▘ ▘▀▘▝▀▘▀▀ ▝▀▘▀▀  ▝▀▘▘ ▘▝▀▘ ▐  ▀▘▘ ▘▀▘▀▀ ▘ ▘▀▘▘ ▘▗▄▘ ▝▀▘▌
+#  𜴧𜶜𜺣 𜶙𜵈  𜶳𜴹  𜴧𜶜𜺣𜺠𜵡𜴧𜴉𜺠𜵡𜶜𜺣𜺠𜵡𜴧𜴉     𜴧𜶜𜺣▗𜵡𜶜𜺣 ▂𜷓𜵈     𜷋𜷇𜴹 𜶳𜴹 ▗𜵡𜶜𜺣 𜶳𜴹 𜺠𜵡𜴧𜴉𜶖𜶿▂  𜶳𜴹 ▗𜵡𜶜𜺣𜺠𜵡𜶜▖    ▗▖▗▖▗𜵡𜶜𜺣
+# 𜴃𜴮𜴲𜴍 𜴱𜴬  𜴱𜴬 𜴃𜴮𜴲𜴍𜴘𜴪𜴲𜴀▝𜴮𜴪𜺨𜴘𜴪𜴲𜴀    𜴃𜴮𜴲𜴍𜴡𜴍𜴡𜴍▝𜴬𜴱𜴍     𜴡𜴍  𜴱𜴬 𜴡𜴍𜴡𜴍 𜴱𜴬 𜴘𜴪𜴲𜴀𜴡𜴍𜴡𜴍 𜴱𜴬 𜴡𜴍𜴡𜴍𜵲𜶸𜷙𜴍    ▝𜴬𜴱𜴍▐𜵏𜴈𜺨
 
 source ${HOME}/.aliases.zsh
 
