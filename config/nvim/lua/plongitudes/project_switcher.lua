@@ -82,7 +82,18 @@ local function get_project_directories()
   local projects = {}
   -- TODO: should be able to dive into project dirs, or provide the user with a prepopulated list of dirs to dive into
   -- and then just a whole-ass folder selection dialog?
-  local base_dirs = { "~/git/", "~/github/plongitudes/", "~/github/", "~/" }
+  local base_dirs = { "~/git/gh/plongitudes", "~/git", "~/.dotfiles" }
+
+  -- Extra machine-local roots, one per line, from the ~/.undisclosed overlay.
+  -- Absent on machines without the overlay, which leaves the list above as-is.
+  local extra = vim.fn.expand("~/.undisclosed/nvim/project_dirs")
+  if vim.fn.filereadable(extra) == 1 then
+    for _, line in ipairs(vim.fn.readfile(extra)) do
+      if line ~= "" then
+        table.insert(base_dirs, line)
+      end
+    end
+  end
 
   -- Get zoxide frecency data
   local zoxide_ranks = get_zoxide_ranks()

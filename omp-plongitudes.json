@@ -29,7 +29,7 @@
           "foreground": "#333333",
           "background": "#ffc300",
           "properties": {
-              "style": "unique"
+              "style": "full"
           }
         },
         {
