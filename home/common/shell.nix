@@ -112,9 +112,15 @@ in {
       ''
       + lib.optionalString (builtins.pathExists zprofileTail) (builtins.readFile zprofileTail);
 
-    # ~/.zshenv (all shells). Keep ~/.local/bin on PATH everywhere (uv/pipx
-    # shims), not just interactive shells.
+    # ~/.zshenv (all shells). Source the Nix daemon profile here rather than
+    # relying on the installer's hook in /etc/zshrc, which macOS updates reset
+    # to stock (15.8.2 did). nix-daemon.sh is guarded, so a double-source is a
+    # no-op. Keep ~/.local/bin on PATH everywhere (uv/pipx shims), not just
+    # interactive shells.
     envExtra = ''
+      if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+      fi
       export PATH="$HOME/.local/bin:$PATH"
     '';
 

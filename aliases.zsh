@@ -351,10 +351,6 @@ function alf () {
 
 alias tm='tmux attach -d'
 
-function vlc () {
-     /Applications/VLC.app/Contents/MacOS/VLC -f $*
-}
-
 if [[ $(uname) == "Darwin" ]]; then
     function it2prof() { echo -e "\033]50;SetProfile=$1\a" }
     alias godark='it2prof gruvbox-dark'

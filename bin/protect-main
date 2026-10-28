@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Block force-pushes and deletion on a repo's default branch.
+# Usage: protect-main [owner/repo]   (defaults to the current repo)
+set -euo pipefail
+
+repo="${1:-$(gh repo view --json nameWithOwner -q .nameWithOwner)}"
+
+if gh api "repos/$repo/rulesets" -q '.[].name' | grep -qx protect-main; then
+  echo "$repo: already protected"
+  exit 0
+fi
+
+gh api "repos/$repo/rulesets" -X POST --silent --input - <<'EOF'
+{
+  "name": "protect-main",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {"ref_name": {"include": ["~DEFAULT_BRANCH"], "exclude": []}},
+  "rules": [{"type": "non_fast_forward"}, {"type": "deletion"}]
+}
+EOF
+
+echo "$repo: protected"

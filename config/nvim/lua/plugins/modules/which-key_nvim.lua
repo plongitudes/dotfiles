@@ -76,6 +76,8 @@ return {
         desc = "Toggle terminal",
       },
 
+      { "<leader>k", "<cmd>Screenkey toggle<cr>", desc = "Toggle screen[k]ey (show keypresses)" },
+
       {
         "<leader><leader>",
         function()
