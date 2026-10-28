@@ -305,6 +305,7 @@ source ${HOME}/.aliases.zsh
 # Nudge (once per interactive shell) if ~/.dotfiles has unpushed work. Defined in
 # aliases.zsh; run here so `sa` (re-source aliases) doesn't re-fire it.
 [[ -o interactive ]] && _nixie_hint
+[[ -o interactive ]] && _etc_hint
 
 # set vi mode for the prompt
 #bindkey -v

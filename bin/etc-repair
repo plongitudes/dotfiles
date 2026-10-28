@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Restore the /etc lines that macOS updates reset to stock (15.8.2 did): the
+# /mnt synthetic link and the auto_nfs automount. Idempotent — only appends
+# what's missing. /etc/auto_nfs itself is checked but deliberately not stored
+# here (it names hosts on the tailnet); restore it by hand if it's ever gone.
+# Usage: etc-repair [--check]   (--check: report only, no sudo; exit 1 if drifted)
+set -euo pipefail
+
+check=0
+[ "${1:-}" = "--check" ] && check=1
+
+# Parallel arrays: file, and the exact line it must contain (fields tab-separated).
+files=(/etc/synthetic.conf /etc/auto_master)
+lines=(
+  $'mnt\tSystem/Volumes/Data/mnt'
+  $'/System/Volumes/Data/mnt\tauto_nfs\t-nosuid'
+)
+
+drift=0
+[ -f /etc/auto_nfs ] || { echo "missing: /etc/auto_nfs (restore by hand)"; drift=1; }
+
+for i in "${!files[@]}"; do
+  f="${files[$i]}" l="${lines[$i]}"
+  grep -qxF "$l" "$f" 2>/dev/null && continue
+  drift=1
+  if [ "$check" -eq 1 ]; then
+    echo "missing in $f: $l"
+    continue
+  fi
+  printf '%s\n' "$l" | sudo tee -a "$f" >/dev/null
+  echo "restored in $f: $l"
+  case "$f" in
+    /etc/synthetic.conf) /System/Library/Filesystems/apfs.fs/Contents/Resources/apfs.util -t || echo "  /mnt appears after a reboot" ;;
+    /etc/auto_master) sudo automount -cv ;;
+  esac
+done
+
+[ "$check" -eq 1 ] && exit "$drift"
+[ "$drift" -eq 0 ] && echo "/etc: nothing to repair"
+exit 0

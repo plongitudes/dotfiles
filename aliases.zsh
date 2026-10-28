@@ -331,6 +331,14 @@ function _nixie_hint() {
     [ -n "$parts" ] && printf '\033[33m⚠ ~/.dotfiles: %s — push to sync the fleet\033[0m\n' "$parts"
 }
 
+# Startup nudge: warn if a macOS update reset the /etc lines bin/etc-repair
+# restores (/mnt link, NFS automount). Free & offline — greps two files.
+function _etc_hint() {
+    [[ $(uname) == "Darwin" ]] || return 0
+    etc-repair --check >/dev/null 2>&1 \
+        || printf '\033[33m⚠ /etc reset (macOS update?) — run etc-repair\033[0m\n'
+}
+
 
 ###########################
 # Alfred Things           #
