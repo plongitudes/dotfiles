@@ -3,7 +3,7 @@
 if [[ $# -eq 1 ]]; then
     q=$1
     if [[ $(xattr "$q") == *"quarantine"* ]]; then
-        eval "sudo xattr -r -d com.apple.quarantine ${q}"
+        sudo xattr -r -d com.apple.quarantine "$q"
         echo "removed from quarantine: ${q}"
     else
         echo "${q} is not quarantined. Stopping."
